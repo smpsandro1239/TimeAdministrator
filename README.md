@@ -90,8 +90,8 @@ TimeAdministrator/
 
 ### Pré-requisitos
 - **Docker Desktop** (obrigatório)
+- **Node.js 18+** (obrigatório)
 - **Git** para clonar o repositório
-- **Node.js 18+** (opcional, apenas se não usar Docker)
 
 ### 🚀 Início Rápido
 
@@ -101,23 +101,37 @@ git clone https://github.com/smpsandro1239/TimeAdministrator.git
 cd TimeAdministrator
 ```
 
-2. **Inicie a aplicação**
+2. **Execute o script de instalação**
 ```bash
-# Windows
-scripts\start.bat
-
-# Linux/Mac
-chmod +x scripts/start.sh && ./scripts/start.sh
+scripts\start-final.bat
 ```
 
-3. **Aceda à aplicação**
+3. **Abra duas janelas de terminal**
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+npm install --legacy-peer-deps
+npm run start:dev
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd frontend
+npm install --legacy-peer-deps
+ng serve
+```
+
+4. **Aceda à aplicação**
 - **Frontend**: http://localhost:4200
 - **Backend API**: http://localhost:3000/api/v1
 - **MongoDB**: localhost:27017
 
-4. **Credenciais padrão**
+5. **Credenciais padrão**
 - **Email**: admin@timeadministrator.com
 - **Password**: admin123
+
+📋 **Guia completo**: Ver [INSTALACAO.md](INSTALACAO.md)
 
 ### 🔧 Desenvolvimento
 
