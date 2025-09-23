@@ -1,14 +1,17 @@
 # Dockerfile para Backend NestJS
 FROM node:18-alpine AS builder
 
+# Instalar NestJS CLI globalmente
+RUN npm install -g @nestjs/cli
+
 # Definir diretório de trabalho
 WORKDIR /app
 
-# Copiar package.json e package-lock.json
-COPY package*.json ./
+# Copiar package.json
+COPY package.json ./
 
 # Instalar dependências
-RUN npm install --only=production && npm cache clean --force
+RUN npm install
 
 # Copiar código fonte
 COPY . .
@@ -32,7 +35,7 @@ WORKDIR /app
 # Copiar dependências do estágio builder
 COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nestjs:nodejs /app/package*.json ./
+COPY --from=builder --chown=nestjs:nodejs /app/package.json ./
 
 # Criar diretório para logs
 RUN mkdir -p /app/logs && chown -R nestjs:nodejs /app/logs

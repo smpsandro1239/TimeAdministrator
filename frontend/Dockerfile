@@ -1,20 +1,23 @@
 # Dockerfile para Frontend Angular
 FROM node:18-alpine AS builder
 
+# Instalar Angular CLI globalmente
+RUN npm install -g @angular/cli@18
+
 # Definir diretório de trabalho
 WORKDIR /app
 
-# Copiar package.json e package-lock.json
-COPY package*.json ./
+# Copiar package.json
+COPY package.json ./
 
 # Instalar dependências
-RUN npm install && npm cache clean --force
+RUN npm install --legacy-peer-deps
 
 # Copiar código fonte
 COPY . .
 
 # Build da aplicação para produção
-RUN npm run build
+RUN ng build --configuration production
 
 # Estágio de produção com Nginx
 FROM nginx:alpine AS production
