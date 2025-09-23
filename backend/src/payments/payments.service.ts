@@ -88,8 +88,9 @@ export class PaymentsService {
       hasNextPage: page < totalPages,
       hasPrevPage: page > 1,
     };
-  }  asyn
-c findById(id: string): Promise<Payment> {
+  }
+
+  async findById(id: string): Promise<Payment> {
     const payment = await this.paymentModel
       .findById(id)
       .populate('clientId', 'name email phone')

@@ -11,7 +11,7 @@ export class EmailService {
     private configService: ConfigService,
     private logger: Logger,
   ) {
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       host: this.configService.get<string>('SMTP_HOST', 'smtp.gmail.com'),
       port: this.configService.get<number>('SMTP_PORT', 587),
       secure: false,

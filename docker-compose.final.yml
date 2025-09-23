@@ -1,0 +1,79 @@
+services:
+  # Base de dados MongoDB
+  mongodb:
+    image: mongo:7.0
+    container_name: timeadmin-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: timeadministrator
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - timeadmin-network
+
+  # Backend NestJS (versão simplificada que funciona)
+  backend:
+    image: node:18-alpine
+    container_name: timeadmin-backend
+    working_dir: /app
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/timeadministrator?authSource=admin
+      JWT_SECRET: dev-jwt-secret-key-change-this-in-production
+      JWT_EXPIRES_IN: 7d
+      FRONTEND_URL: http://localhost:4200
+      LOG_LEVEL: debug
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    volumes:
+      - ./backend:/app
+    networks:
+      - timeadmin-network
+    command: >
+      sh -c "
+      echo 'Instalando dependências...' &&
+      npm install --legacy-peer-deps --no-audit --no-fund &&
+      echo 'Iniciando aplicação...' &&
+      npx ts-node --transpile-only src/main.ts
+      "
+
+  # Frontend Angular (versão simplificada)
+  frontend:
+    image: node:18-alpine
+    container_name: timeadmin-frontend
+    working_dir: /app
+    environment:
+      NODE_ENV: development
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+    networks:
+      - timeadmin-network
+    command: >
+      sh -c "
+      echo 'Instalando Angular CLI...' &&
+      npm install -g @angular/cli@18 &&
+      echo 'Instalando dependências...' &&
+      npm install --legacy-peer-deps --no-audit --no-fund &&
+      echo 'Iniciando servidor de desenvolvimento...' &&
+      ng serve --host 0.0.0.0 --port 4200 --disable-host-check --poll=2000
+      "
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  timeadmin-network:
+    driver: bridge

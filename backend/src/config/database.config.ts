@@ -8,9 +8,6 @@ export const databaseConfig = async (
   
   return {
     uri,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     retryWrites: true,
-    w: 'majority',
   };
 };
