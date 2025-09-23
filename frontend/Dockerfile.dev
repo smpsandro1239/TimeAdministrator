@@ -1,0 +1,23 @@
+# Dockerfile para desenvolvimento do Frontend
+FROM node:18-alpine
+
+# Definir diretório de trabalho
+WORKDIR /app
+
+# Copiar package.json e package-lock.json
+COPY package*.json ./
+
+# Instalar dependências
+RUN npm install
+
+# Instalar Angular CLI globalmente
+RUN npm install -g @angular/cli
+
+# Copiar código fonte
+COPY . .
+
+# Expor porta
+EXPOSE 4200
+
+# Comando de inicialização para desenvolvimento
+CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]

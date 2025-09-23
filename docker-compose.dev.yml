@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # Base de dados MongoDB
+  mongodb:
+    image: mongo:7.0
+    container_name: timeadmin-mongodb-dev
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: timeadministrator
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_dev_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - timeadmin-dev-network
+
+  # Backend NestJS (Desenvolvimento)
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: timeadmin-backend-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/timeadministrator?authSource=admin
+      JWT_SECRET: dev-jwt-secret-key
+      JWT_EXPIRES_IN: 7d
+      FRONTEND_URL: http://localhost:4200
+      LOG_LEVEL: debug
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Debug port
+    depends_on:
+      - mongodb
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - backend_dev_logs:/app/logs
+    networks:
+      - timeadmin-dev-network
+    command: npm run start:debug
+
+  # Frontend Angular (Desenvolvimento)
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: timeadmin-frontend-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend-dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - timeadmin-dev-network
+    command: npm start
+
+volumes:
+  mongodb_dev_data:
+    driver: local
+  backend_dev_logs:
+    driver: local
+
+networks:
+  timeadmin-dev-network:
+    driver: bridge
