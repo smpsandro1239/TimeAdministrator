@@ -111,7 +111,7 @@ import { UserRole } from '../../../models/user.model';
           </form>
         </mat-card-content>
         
-        <mat-card-actions align="center">
+        <mat-card-actions>
           <p>Já tem conta? <a routerLink="/auth/login">Iniciar Sessão</a></p>
         </mat-card-actions>
       </mat-card>
@@ -151,6 +151,7 @@ import { UserRole } from '../../../models/user.model';
 
     mat-card-actions {
       margin-top: 20px;
+      text-align: center;
     }
 
     a {

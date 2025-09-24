@@ -72,7 +72,7 @@ import { UserRole } from '../../../models/user.model';
           </form>
         </mat-card-content>
         
-        <mat-card-actions align="center">
+        <mat-card-actions>
           <p>Não tem conta? <a routerLink="/auth/register">Registar-se</a></p>
         </mat-card-actions>
       </mat-card>
@@ -112,6 +112,7 @@ import { UserRole } from '../../../models/user.model';
 
     mat-card-actions {
       margin-top: 20px;
+      text-align: center;
     }
 
     a {

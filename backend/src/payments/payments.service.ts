@@ -52,7 +52,7 @@ export class PaymentsService {
         limit: 1000, 
         search 
       });
-      const clientIds = clients.data.map(client => client.id);
+      const clientIds = clients.data.map(client => (client as any).id);
       filter.clientId = { $in: clientIds };
     }
 
@@ -166,21 +166,21 @@ export class PaymentsService {
         amount: Math.round(createStripePaymentDto.amount * 100), // Stripe usa centavos
         currency: 'eur',
         metadata: {
-          paymentId: payment.id,
+          paymentId: (payment as any).id,
           clientId: createStripePaymentDto.clientId,
           subscriptionPeriod: createStripePaymentDto.subscriptionPeriod,
         },
       });
 
       // Atualizar o pagamento com o ID do Stripe
-      await this.paymentModel.findByIdAndUpdate(payment.id, {
+      await this.paymentModel.findByIdAndUpdate((payment as any).id, {
         stripePaymentIntentId: paymentIntent.id,
         status: PaymentStatus.PROCESSING,
       });
 
       return {
         clientSecret: paymentIntent.client_secret,
-        paymentId: payment.id,
+        paymentId: (payment as any).id,
       };
     } catch (error) {
       this.logger.error('Erro ao criar PaymentIntent do Stripe', error.stack, 'PaymentsService');
@@ -229,7 +229,7 @@ async handleStripeWebhook(signature: string, payload: Buffer): Promise<void> {
     await this.paymentModel.findByIdAndUpdate(paymentId, {
       status: PaymentStatus.COMPLETED,
       paidAt: new Date(),
-      receiptUrl: paymentIntent.charges?.data[0]?.receipt_url,
+      receiptUrl: (paymentIntent as any).charges?.data[0]?.receipt_url,
     });
 
     // Criar a subscrição
@@ -248,7 +248,7 @@ async handleStripeWebhook(signature: string, payload: Buffer): Promise<void> {
 
     // Associar a subscrição ao pagamento
     await this.paymentModel.findByIdAndUpdate(paymentId, {
-      subscriptionId: subscription.id,
+      subscriptionId: (subscription as any).id,
     });
 
     this.logger.log(`Pagamento processado com sucesso: ${paymentId}`, 'PaymentsService');
@@ -294,7 +294,7 @@ async handleStripeWebhook(signature: string, payload: Buffer): Promise<void> {
           paidAt: new Date(),
           approvedBy,
           approvedAt: new Date(),
-          subscriptionId: subscription.id,
+          subscriptionId: (subscription as any).id,
         },
         { new: true }
       )

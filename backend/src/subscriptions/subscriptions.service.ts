@@ -45,7 +45,7 @@ export class SubscriptionsService {
         limit: 1000, 
         search 
       });
-      const clientIds = clients.data.map(client => client.id);
+      const clientIds = clients.data.map(client => (client as any).id);
       filter.clientId = { $in: clientIds };
     }
 

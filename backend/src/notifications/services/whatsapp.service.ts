@@ -16,8 +16,14 @@ export class WhatsAppService {
     const authToken = this.configService.get<string>('TWILIO_AUTH_TOKEN');
     this.fromNumber = this.configService.get<string>('TWILIO_WHATSAPP_FROM', 'whatsapp:+14155238886');
 
-    if (accountSid && authToken) {
-      this.client = new Twilio(accountSid, authToken);
+    if (accountSid && authToken && accountSid.startsWith('AC')) {
+      try {
+        this.client = new Twilio(accountSid, authToken);
+      } catch (error) {
+        this.logger.warn('Erro ao inicializar Twilio, serviço WhatsApp desabilitado', 'WhatsAppService');
+      }
+    } else {
+      this.logger.warn('Credenciais Twilio não configuradas, serviço WhatsApp desabilitado', 'WhatsAppService');
     }
   }
 

@@ -113,7 +113,7 @@ export class NotificationsService {
         }
 
         // Desativar o cliente
-        await this.clientsService.update(client.id, { isActive: false });
+        await this.clientsService.update((client as any).id, { isActive: false });
 
         this.logger.log(`Cliente desativado e notificado: ${client.name}`, 'NotificationsService');
       } catch (error) {
