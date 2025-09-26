@@ -20,10 +20,10 @@ export class Subscription {
   @Prop({ type: Types.ObjectId, ref: 'Client', required: true })
   clientId: Types.ObjectId;
 
-  @Prop({ enum: SubscriptionPeriod, required: true })
+  @Prop({ type: String, enum: SubscriptionPeriod, required: true })
   period: SubscriptionPeriod;
 
-  @Prop({ enum: SubscriptionStatus, default: SubscriptionStatus.PENDING })
+  @Prop({ type: String, enum: SubscriptionStatus, default: SubscriptionStatus.PENDING })
   status: SubscriptionStatus;
 
   @Prop({ required: true })

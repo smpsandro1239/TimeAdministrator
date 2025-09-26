@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { JwtModule } from '@nestjs/jwt';
+import { AppController } from './app.controller';
 
 // Módulos da aplicação
 import { AuthModule } from './auth/auth.module';
@@ -18,6 +19,7 @@ import { databaseConfig } from './config/database.config';
 import { jwtConfig } from './config/jwt.config';
 
 @Module({
+  controllers: [AppController],
   imports: [
     // Configuração
     ConfigModule.forRoot({

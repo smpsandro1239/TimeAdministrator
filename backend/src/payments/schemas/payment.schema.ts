@@ -30,13 +30,13 @@ export class Payment {
   @Prop({ default: 'EUR' })
   currency: string;
 
-  @Prop({ enum: PaymentStatus, default: PaymentStatus.PENDING })
+  @Prop({ type: String, enum: PaymentStatus, default: PaymentStatus.PENDING })
   status: PaymentStatus;
 
-  @Prop({ enum: PaymentMethod, required: true })
+  @Prop({ type: String, enum: PaymentMethod, required: true })
   method: PaymentMethod;
 
-  @Prop({ enum: SubscriptionPeriod, required: true })
+  @Prop({ type: String, enum: SubscriptionPeriod, required: true })
   subscriptionPeriod: SubscriptionPeriod;
 
   @Prop({ type: String })
