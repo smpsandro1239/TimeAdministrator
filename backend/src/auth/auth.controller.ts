@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Request, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Request, Get, Patch } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -37,6 +37,18 @@ export class AuthController {
   getProfile(@Request() req) {
     return {
       user: req.user,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('profile')
+  async updateProfile(@Request() req, @Body() updateData: any) {
+    this.logger.log(`Atualização de perfil para usuário: ${req.user.email}`, 'AuthController');
+    const result = await this.authService.updateProfile(req.user.id, updateData);
+    this.logger.log(`Perfil atualizado com sucesso para: ${req.user.email}`, 'AuthController');
+    return {
+      message: 'Perfil atualizado com sucesso',
+      user: result,
     };
   }
 

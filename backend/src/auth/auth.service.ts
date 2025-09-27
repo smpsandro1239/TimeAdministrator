@@ -62,6 +62,16 @@ export class AuthService {
     return result;
   }
 
+  async updateProfile(userId: string, updateData: Partial<User>): Promise<User> {
+    const user = await this.usersService.update(userId, updateData);
+    if (!user) {
+      throw new UnauthorizedException('Usuário não encontrado');
+    }
+
+    const { password: _, ...result } = (user as any).toObject();
+    return result;
+  }
+
   async validateJwtPayload(payload: any): Promise<User> {
     const user = await this.usersService.findById(payload.sub);
     if (!user) {
