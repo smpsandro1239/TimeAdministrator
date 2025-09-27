@@ -1,0 +1,89 @@
+<h2 mat-dialog-title>Detalhes do Cliente</h2>
+
+<mat-dialog-content>
+  <div class="client-details">
+    <div class="info-section">
+      <h3>Informações Básicas</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <strong>Nome:</strong>
+          <span>{{ client.name }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Email:</strong>
+          <span>{{ client.email }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Telefone:</strong>
+          <span>{{ client.phone || 'Não informado' }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Status:</strong>
+          <mat-chip [color]="getStatusColor()" selected>{{ getStatusText() }}</mat-chip>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section" *ngIf="client.notes">
+      <h3>Observações</h3>
+      <p>{{ client.notes }}</p>
+    </div>
+
+    <div class="info-section">
+      <h3>Subscrição</h3>
+      <div class="subscription-info">
+        <div class="subscription-item">
+          <mat-icon>event</mat-icon>
+          <div>
+            <strong>Dias Restantes:</strong>
+            <span [class]="daysRemaining < 0 ? 'expired' : daysRemaining <= 7 ? 'warning' : 'active'">
+              {{ daysRemainingText }}
+            </span>
+          </div>
+        </div>
+
+        <div class="subscription-item" *ngIf="client.subscriptionStartDate">
+          <mat-icon>play_arrow</mat-icon>
+          <div>
+            <strong>Data de Início:</strong>
+            <span>{{ client.subscriptionStartDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="subscription-item" *ngIf="client.subscriptionEndDate">
+          <mat-icon>stop</mat-icon>
+          <div>
+            <strong>Data de Fim:</strong>
+            <span>{{ client.subscriptionEndDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="subscription-item" *ngIf="client.nextRenewalDate">
+          <mat-icon>refresh</mat-icon>
+          <div>
+            <strong>Próxima Renovação:</strong>
+            <span>{{ client.nextRenewalDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h3>Datas do Sistema</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <strong>Criado em:</strong>
+          <span>{{ client.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Atualizado em:</strong>
+          <span>{{ client.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">Fechar</button>
+</mat-dialog-actions>

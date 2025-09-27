@@ -1,0 +1,47 @@
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  .form-field {
+    flex: 1;
+
+    &.full-width {
+      flex: 1 1 100%;
+    }
+  }
+}
+
+.toggle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  .toggle-description {
+    font-size: 12px;
+    color: #666;
+    margin-left: 16px;
+  }
+}
+
+mat-dialog-content {
+  min-width: 600px;
+  padding: 24px !important;
+}
+
+mat-dialog-actions {
+  padding: 16px 24px !important;
+}
+
+@media (max-width: 600px) {
+  mat-dialog-content {
+    min-width: 300px;
+    padding: 16px !important;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

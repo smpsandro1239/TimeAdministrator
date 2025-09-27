@@ -53,6 +53,16 @@
         </td>
       </ng-container>
 
+      <!-- Days Remaining Column -->
+      <ng-container matColumnDef="daysRemaining">
+        <th mat-header-cell *matHeaderCellDef>Dias Restantes</th>
+        <td mat-cell *matCellDef="let client">
+          <span class="days-remaining" [class]="getDaysRemainingClass(client)">
+            {{ getDaysRemainingText(client) }}
+          </span>
+        </td>
+      </ng-container>
+
       <!-- Actions Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Ações</th>

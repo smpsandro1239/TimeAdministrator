@@ -14,6 +14,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ClientService } from '../../../services/client.service';
 import { Client } from '../../../models/client.model';
 import { PaginatedResponse, PaginationParams } from '../../../models/common.model';
+import { AddClientDialogComponent } from './add-client-dialog/add-client-dialog.component';
+import { EditClientDialogComponent } from './edit-client-dialog/edit-client-dialog.component';
+import { ViewClientDialogComponent } from './view-client-dialog/view-client-dialog.component';
 
 @Component({
   selector: 'app-clients',
@@ -35,7 +38,7 @@ import { PaginatedResponse, PaginationParams } from '../../../models/common.mode
   styleUrl: './clients.component.scss'
 })
 export class ClientsComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'email', 'phone', 'subscriptionStatus', 'actions'];
+  displayedColumns: string[] = ['name', 'email', 'phone', 'subscriptionStatus', 'daysRemaining', 'actions'];
   clients: Client[] = [];
   loading = false;
   totalClients = 0;
@@ -88,13 +91,31 @@ export class ClientsComponent implements OnInit {
   }
 
   addClient(): void {
-    // TODO: Implement add client dialog
-    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 2000 });
+    const dialogRef = this.dialog.open(AddClientDialogComponent, {
+      width: '600px',
+      disableClose: true,
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadClients(); // Reload the list after adding a client
+      }
+    });
   }
 
   editClient(client: Client): void {
-    // TODO: Implement edit client dialog
-    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 2000 });
+    const dialogRef = this.dialog.open(EditClientDialogComponent, {
+      width: '600px',
+      disableClose: true,
+      data: { client }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadClients(); // Reload the list after editing a client
+      }
+    });
   }
 
   deleteClient(client: Client): void {
@@ -113,7 +134,52 @@ export class ClientsComponent implements OnInit {
   }
 
   viewClient(client: Client): void {
-    // TODO: Implement view client details
-    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 2000 });
+    const dialogRef = this.dialog.open(ViewClientDialogComponent, {
+      width: '700px',
+      data: { client }
+    });
+  }
+
+  getDaysRemaining(client: Client): number {
+    if (!client.subscriptionEndDate) {
+      return -1; // No subscription
+    }
+
+    const endDate = new Date(client.subscriptionEndDate);
+    const today = new Date();
+    const diffTime = endDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+  }
+
+  getDaysRemainingText(client: Client): string {
+    const days = this.getDaysRemaining(client);
+
+    if (days === -1) {
+      return 'Sem subscrição';
+    } else if (days < 0) {
+      return 'Expirada';
+    } else if (days === 0) {
+      return 'Expira hoje';
+    } else if (days === 1) {
+      return '1 dia';
+    } else {
+      return `${days} dias`;
+    }
+  }
+
+  getDaysRemainingClass(client: Client): string {
+    const days = this.getDaysRemaining(client);
+
+    if (days === -1) {
+      return 'no-subscription';
+    } else if (days < 0) {
+      return 'expired';
+    } else if (days <= 7) {
+      return 'warning';
+    } else {
+      return 'active';
+    }
   }
 }

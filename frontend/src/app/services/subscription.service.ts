@@ -84,4 +84,8 @@ export class SubscriptionService {
   expireSubscription(id: string): Observable<Subscription> {
     return this.http.patch<Subscription>(`${this.API_URL}/${id}/expire`, {});
   }
+
+  cancelSubscription(id: string): Observable<Subscription> {
+    return this.http.patch<Subscription>(`${this.API_URL}/${id}/cancel`, {});
+  }
 }
