@@ -35,6 +35,9 @@ export class ProfileComponent implements OnInit {
   loading = false;
   saving = false;
 
+  // Make UserRole available in template
+  UserRole = UserRole;
+
   profileForm: FormGroup;
 
   constructor(
@@ -79,22 +82,21 @@ export class ProfileComponent implements OnInit {
   saveProfile(): void {
     if (this.profileForm.valid) {
       this.saving = true;
-
-      const formData = this.profileForm.value;
-
-      // TODO: Implement API call to update profile
-      // For now, just simulate saving
-      setTimeout(() => {
-        this.saving = false;
-        this.isEditing = false;
-        this.snackBar.open('Perfil atualizado com sucesso!', 'Fechar', {
-          duration: 3000
+      this.authService.updateProfile(this.profileForm.value)
+        .subscribe({
+          next: (updatedUser) => {
+            this.currentUser = updatedUser;           // update local view
+            this.saving = false;
+            this.isEditing = false;
+            this.snackBar.open('Perfil atualizado com sucesso!', 'Fechar', { duration: 3000 });
+          },
+          error: () => {
+            this.saving = false;
+            this.snackBar.open('Erro ao salvar perfil.', 'Fechar', { duration: 5000 });
+          }
         });
-      }, 1000);
     } else {
-      this.snackBar.open('Por favor, corrija os erros no formulário.', 'Fechar', {
-        duration: 3000
-      });
+      this.snackBar.open('Por favor, corrija os erros no formulário.', 'Fechar', { duration: 3000 });
     }
   }
 

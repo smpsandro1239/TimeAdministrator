@@ -55,6 +55,16 @@ export class AuthService {
     return this.http.get<{ user: User }>(`${this.API_URL}/auth/profile`);
   }
 
+  updateProfile(payload: Partial<User>): Observable<User> {
+    return this.http.patch<User>(`${this.API_URL}/auth/profile`, payload)
+      .pipe(
+        tap(user => {
+          localStorage.setItem('current_user', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+        })
+      );
+  }
+
   isAuthenticated(): boolean {
     return !!localStorage.getItem('access_token');
   }

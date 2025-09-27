@@ -20,7 +20,7 @@
             <p><strong>Email:</strong> {{ currentUser?.email }}</p>
             <p><strong>Telefone:</strong> {{ currentUser?.phone || 'Não informado' }}</p>
             <p><strong>Data de registo:</strong> {{ currentUser?.createdAt | date:'dd/MM/yyyy' }}</p>
-            <p><strong>Role:</strong> Cliente</p>
+            <p><strong>Role:</strong> {{ currentUser?.role === UserRole.ADMIN ? 'Administrador' : 'Cliente' }}</p>
           </div>
         </div>
 
