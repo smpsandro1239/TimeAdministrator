@@ -22,6 +22,11 @@
   gap: 16px;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
 .search-field {
   flex: 1;
   max-width: 400px;

@@ -24,6 +24,7 @@
     "@stripe/stripe-js": "^4.4.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.6.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {
@@ -34,7 +35,6 @@
     "@types/node": "^20.0.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
-
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",

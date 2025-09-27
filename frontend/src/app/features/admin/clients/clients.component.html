@@ -11,10 +11,21 @@
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="addClient()">
-      <mat-icon>add</mat-icon>
-      Novo Cliente
-    </button>
+    <div class="action-buttons">
+      <input type="file"
+             #fileInput
+             (change)="onFileSelected($event)"
+             accept=".xlsx,.xls,.csv"
+             style="display: none;">
+      <button mat-stroked-button color="accent" (click)="fileInput.click()">
+        <mat-icon>upload_file</mat-icon>
+        Importar Excel
+      </button>
+      <button mat-raised-button color="primary" (click)="addClient()">
+        <mat-icon>add</mat-icon>
+        Novo Cliente
+      </button>
+    </div>
   </div>
 
   <div class="loading-container" *ngIf="loading">
