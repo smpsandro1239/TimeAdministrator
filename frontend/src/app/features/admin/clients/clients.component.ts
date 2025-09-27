@@ -175,11 +175,13 @@ export class ClientsComponent implements OnInit {
     if (days === -1) {
       return 'no-subscription';
     } else if (days < 0) {
-      return 'expired';
-    } else if (days <= 7) {
-      return 'warning';
+      return 'expired-red'; // Vermelho para expirado
+    } else if (days <= 30) {
+      return 'warning-orange'; // Laranja para 0-30 dias
+    } else if (days <= 60) {
+      return 'warning-yellow'; // Amarelo para 30-60 dias
     } else {
-      return 'active';
+      return 'active-green'; // Verde para >60 dias
     }
   }
 }

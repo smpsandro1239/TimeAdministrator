@@ -80,18 +80,23 @@
   display: inline-block;
 }
 
-.days-remaining.active {
-  background-color: #4caf50;
+.days-remaining.active-green {
+  background-color: #4caf50; /* Verde para >60 dias */
   color: white;
 }
 
-.days-remaining.warning {
-  background-color: #ff9800;
+.days-remaining.warning-yellow {
+  background-color: #ffeb3b; /* Amarelo para 30-60 dias */
+  color: #333;
+}
+
+.days-remaining.warning-orange {
+  background-color: #ff9800; /* Laranja para 0-30 dias */
   color: white;
 }
 
-.days-remaining.expired {
-  background-color: #f44336;
+.days-remaining.expired-red {
+  background-color: #f44336; /* Vermelho para <0 dias */
   color: white;
 }
 
