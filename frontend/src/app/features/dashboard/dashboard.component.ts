@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 
-import { LayoutComponent } from '../../shared/components/layout/layout.component';
 import { AuthService } from '../../services/auth.service';
 import { UserRole } from '../../models/user.model';
 
@@ -16,7 +15,6 @@ import { UserRole } from '../../models/user.model';
   standalone: true,
   imports: [
     CommonModule,
-    LayoutComponent,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -24,113 +22,111 @@ import { UserRole } from '../../models/user.model';
     MatDividerModule
   ],
   template: `
-    <app-layout>
-      <div class="dashboard-container">
-        <h1>Bem-vindo ao TimeAdministrator</h1>
-        <p class="subtitle">Sistema de Gestão de Subscrições de Clientes</p>
+    <div class="dashboard-container">
+      <h1>Bem-vindo ao TimeAdministrator</h1>
+      <p class="subtitle">Sistema de Gestão de Subscrições de Clientes</p>
 
-        <div class="cards-container" *ngIf="!loading">
-          <!-- Cards para Admin -->
-          <ng-container *ngIf="isAdmin">
-            <mat-card class="dashboard-card" (click)="navigate('/admin/clients')">
-              <mat-card-header>
-                <mat-icon mat-card-avatar>people</mat-icon>
-                <mat-card-title>Clientes</mat-card-title>
-                <mat-card-subtitle>Gerir clientes e subscrições</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-actions>
-                <button mat-button color="primary">Ver Clientes</button>
-              </mat-card-actions>
-            </mat-card>
+      <div class="cards-container" *ngIf="!loading">
+        <!-- Cards para Admin -->
+        <ng-container *ngIf="isAdmin">
+          <mat-card class="dashboard-card" (click)="navigate('/admin/clients')">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>people</mat-icon>
+              <mat-card-title>Clientes</mat-card-title>
+              <mat-card-subtitle>Gerir clientes e subscrições</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Clientes</button>
+            </mat-card-actions>
+          </mat-card>
 
-            <mat-card class="dashboard-card" (click)="navigate('/admin/subscriptions')">
-              <mat-card-header>
-                <mat-icon mat-card-avatar>subscriptions</mat-icon>
-                <mat-card-title>Subscrições</mat-card-title>
-                <mat-card-subtitle>Gerir subscrições ativas</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-actions>
-                <button mat-button color="primary">Ver Subscrições</button>
-              </mat-card-actions>
-            </mat-card>
+          <mat-card class="dashboard-card" (click)="navigate('/admin/subscriptions')">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>subscriptions</mat-icon>
+              <mat-card-title>Subscrições</mat-card-title>
+              <mat-card-subtitle>Gerir subscrições ativas</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Subscrições</button>
+            </mat-card-actions>
+          </mat-card>
 
-            <mat-card class="dashboard-card" (click)="navigate('/admin/payments')">
-              <mat-card-header>
-                <mat-icon mat-card-avatar>payment</mat-icon>
-                <mat-card-title>Pagamentos</mat-card-title>
-                <mat-card-subtitle>Aprovar e gerir pagamentos</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-actions>
-                <button mat-button color="primary">Ver Pagamentos</button>
-              </mat-card-actions>
-            </mat-card>
+          <mat-card class="dashboard-card" (click)="navigate('/admin/payments')">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>payment</mat-icon>
+              <mat-card-title>Pagamentos</mat-card-title>
+              <mat-card-subtitle>Aprovar e gerir pagamentos</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Pagamentos</button>
+            </mat-card-actions>
+          </mat-card>
 
-            <mat-card class="dashboard-card" (click)="navigate('/admin/notifications')">
-              <mat-card-header>
-                <mat-icon mat-card-avatar>notifications</mat-icon>
-                <mat-card-title>Notificações</mat-card-title>
-                <mat-card-subtitle>Enviar notificações</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-actions>
-                <button mat-button color="primary">Ver Notificações</button>
-              </mat-card-actions>
-            </mat-card>
-          </ng-container>
+          <mat-card class="dashboard-card" (click)="navigate('/admin/notifications')">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>notifications</mat-icon>
+              <mat-card-title>Notificações</mat-card-title>
+              <mat-card-subtitle>Enviar notificações</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Notificações</button>
+            </mat-card-actions>
+          </mat-card>
+        </ng-container>
 
-          <!-- Cards para Cliente -->
-          <ng-container *ngIf="isClient">
-            <mat-card class="dashboard-card" (click)="navigate('/client/profile')">
-              <mat-card-header>
-                <mat-icon mat-card-avatar>person</mat-icon>
-                <mat-card-title>Meu Perfil</mat-card-title>
-                <mat-card-subtitle>Ver e editar informações pessoais</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-actions>
-                <button mat-button color="primary">Ver Perfil</button>
-              </mat-card-actions>
-            </mat-card>
+        <!-- Cards para Cliente -->
+        <ng-container *ngIf="isClient">
+          <mat-card class="dashboard-card" (click)="navigate('/client/profile')">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>person</mat-icon>
+              <mat-card-title>Meu Perfil</mat-card-title>
+              <mat-card-subtitle>Ver e editar informações pessoais</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Perfil</button>
+            </mat-card-actions>
+          </mat-card>
 
-            <mat-card class="dashboard-card" (click)="navigate('/client/subscription')">
-              <mat-card-header>
-                <mat-icon mat-card-avatar>card_membership</mat-icon>
-                <mat-card-title>Minha Subscrição</mat-card-title>
-                <mat-card-subtitle>Estado da subscrição atual</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-actions>
-                <button mat-button color="primary">Ver Subscrição</button>
-              </mat-card-actions>
-            </mat-card>
+          <mat-card class="dashboard-card" (click)="navigate('/client/subscription')">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>card_membership</mat-icon>
+              <mat-card-title>Minha Subscrição</mat-card-title>
+              <mat-card-subtitle>Estado da subscrição atual</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Subscrição</button>
+            </mat-card-actions>
+          </mat-card>
 
-            <mat-card class="dashboard-card" (click)="navigate('/client/payments')">
-              <mat-card-header>
-                <mat-icon mat-card-avatar>receipt</mat-icon>
-                <mat-card-title>Meus Pagamentos</mat-card-title>
-                <mat-card-subtitle>Histórico de pagamentos</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-actions>
-                <button mat-button color="primary">Ver Pagamentos</button>
-              </mat-card-actions>
-            </mat-card>
+          <mat-card class="dashboard-card" (click)="navigate('/client/payments')">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>receipt</mat-icon>
+              <mat-card-title>Meus Pagamentos</mat-card-title>
+              <mat-card-subtitle>Histórico de pagamentos</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-button color="primary">Ver Pagamentos</button>
+            </mat-card-actions>
+          </mat-card>
 
-            <mat-card class="dashboard-card" (click)="navigate('/client/new-subscription')">
-              <mat-card-header>
-                <mat-icon mat-card-avatar>add_circle</mat-icon>
-                <mat-card-title>Nova Subscrição</mat-card-title>
-                <mat-card-subtitle>Adquirir nova subscrição</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-actions>
-                <button mat-button color="accent">Subscrever</button>
-              </mat-card-actions>
-            </mat-card>
-          </ng-container>
-        </div>
-
-        <div class="loading-container" *ngIf="loading">
-          <mat-spinner></mat-spinner>
-          <p>A carregar...</p>
-        </div>
+          <mat-card class="dashboard-card" (click)="navigate('/client/new-subscription')">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>add_circle</mat-icon>
+              <mat-card-title>Nova Subscrição</mat-card-title>
+              <mat-card-subtitle>Adquirir nova subscrição</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <button mat-button color="accent">Subscrever</button>
+            </mat-card-actions>
+          </mat-card>
+        </ng-container>
       </div>
-    </app-layout>
+
+      <div class="loading-container" *ngIf="loading">
+        <mat-spinner></mat-spinner>
+        <p>A carregar...</p>
+      </div>
+    </div>
   `,
   styles: [`
     .dashboard-container {
