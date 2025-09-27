@@ -2,24 +2,80 @@
   <h2>Meu Perfil</h2>
   <p>Gerencie suas informações pessoais e configurações da conta.</p>
 
-  <div class="profile-card">
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+    <p>Carregando perfil...</p>
+  </div>
+
+  <div class="profile-card" *ngIf="!loading">
     <mat-card>
       <mat-card-header>
         <mat-card-title>Informações Pessoais</mat-card-title>
         <mat-card-subtitle>Dados da sua conta</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <div class="profile-info">
-          <p><strong>Nome:</strong> João Silva</p>
-          <p><strong>Email:</strong> joao.silva&#64;exemplo.com</p>
-          <p><strong>Telefone:</strong> +351 912 345 678</p>
-          <p><strong>Data de registo:</strong> 2025-01-01</p>
+        <div *ngIf="!isEditing">
+          <div class="profile-info">
+            <p><strong>Nome:</strong> {{ currentUser?.name }}</p>
+            <p><strong>Email:</strong> {{ currentUser?.email }}</p>
+            <p><strong>Telefone:</strong> {{ currentUser?.phone || 'Não informado' }}</p>
+            <p><strong>Data de registo:</strong> {{ currentUser?.createdAt | date:'dd/MM/yyyy' }}</p>
+            <p><strong>Role:</strong> Cliente</p>
+          </div>
         </div>
+
+        <form [formGroup]="profileForm" *ngIf="isEditing">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Nome</mat-label>
+              <input matInput formControlName="name" placeholder="Seu nome completo">
+              <mat-error *ngIf="profileForm.get('name')?.hasError('required')">
+                Nome é obrigatório
+              </mat-error>
+              <mat-error *ngIf="profileForm.get('name')?.hasError('minlength')">
+                Nome deve ter pelo menos 2 caracteres
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" type="email" placeholder="seu.email@exemplo.com">
+              <mat-error *ngIf="profileForm.get('email')?.hasError('required')">
+                Email é obrigatório
+              </mat-error>
+              <mat-error *ngIf="profileForm.get('email')?.hasError('email')">
+                Email inválido
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Telefone</mat-label>
+              <input matInput formControlName="phone" placeholder="+351 912 345 678">
+              <mat-error *ngIf="profileForm.get('phone')?.hasError('pattern')">
+                Formato de telefone inválido
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </form>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-raised-button color="primary">
+        <button mat-raised-button color="primary" *ngIf="!isEditing" (click)="toggleEdit()">
           <mat-icon>edit</mat-icon>
           Editar Perfil
+        </button>
+
+        <button mat-button *ngIf="isEditing" (click)="cancelEdit()">
+          Cancelar
+        </button>
+
+        <button mat-raised-button color="primary" *ngIf="isEditing" (click)="saveProfile()" [disabled]="saving || profileForm.invalid">
+          <mat-icon *ngIf="!saving">save</mat-icon>
+          <mat-spinner diameter="20" *ngIf="saving"></mat-spinner>
+          {{ saving ? 'Salvando...' : 'Salvar' }}
         </button>
       </mat-card-actions>
     </mat-card>

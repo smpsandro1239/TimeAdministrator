@@ -3,26 +3,92 @@
   <p>Aqui você pode gerenciar todos os clientes do sistema.</p>
 
   <div class="actions">
-    <button mat-raised-button color="primary">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Pesquisar clientes</mat-label>
+      <input matInput
+             (input)="onSearchChange($any($event.target).value)"
+             placeholder="Nome, email ou telefone">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="addClient()">
       <mat-icon>add</mat-icon>
       Novo Cliente
     </button>
   </div>
 
-  <div class="clients-list">
-    <mat-card class="client-card">
-      <mat-card-header>
-        <mat-card-title>Cliente Exemplo</mat-card-title>
-        <mat-card-subtitle>cliente&#64;exemplo.com</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>Estado: Ativo</p>
-        <p>Subscrição: Premium</p>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button>Editar</button>
-        <button mat-button color="warn">Eliminar</button>
-      </mat-card-actions>
-    </mat-card>
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+    <p>Carregando clientes...</p>
+  </div>
+
+  <div class="table-container" *ngIf="!loading">
+    <table mat-table [dataSource]="clients" class="clients-table">
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nome</th>
+        <td mat-cell *matCellDef="let client">{{ client.name }}</td>
+      </ng-container>
+
+      <!-- Email Column -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let client">{{ client.email }}</td>
+      </ng-container>
+
+      <!-- Phone Column -->
+      <ng-container matColumnDef="phone">
+        <th mat-header-cell *matHeaderCellDef>Telefone</th>
+        <td mat-cell *matCellDef="let client">{{ client.phone || 'Não informado' }}</td>
+      </ng-container>
+
+      <!-- Subscription Status Column -->
+      <ng-container matColumnDef="subscriptionStatus">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let client">
+          <span class="status-badge" [class.active]="client.isActive" [class.inactive]="!client.isActive">
+            {{ client.isActive ? 'Ativo' : 'Inativo' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Ações</th>
+        <td mat-cell *matCellDef="let client">
+          <button mat-icon-button color="primary" (click)="viewClient(client)" title="Ver detalhes">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button color="accent" (click)="editClient(client)" title="Editar">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteClient(client)" title="Excluir">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator
+      [length]="totalClients"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+
+  <div class="no-clients" *ngIf="!loading && clients.length === 0">
+    <mat-icon>people_outline</mat-icon>
+    <h3>Nenhum cliente encontrado</h3>
+    <p>Comece adicionando seu primeiro cliente ao sistema.</p>
+    <button mat-raised-button color="primary" (click)="addClient()">
+      <mat-icon>add</mat-icon>
+      Adicionar Primeiro Cliente
+    </button>
   </div>
 </div>

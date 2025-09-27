@@ -2,31 +2,91 @@
   <h2>Minha Subscrição</h2>
   <p>Veja os detalhes da sua subscrição atual.</p>
 
-  <div class="subscription-card">
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+    <p>Carregando dados da subscrição...</p>
+  </div>
+
+  <div class="subscription-card" *ngIf="!loading && subscription">
     <mat-card>
       <mat-card-header>
-        <mat-card-title>Subscrição Ativa</mat-card-title>
-        <mat-card-subtitle>Plano Premium</mat-card-subtitle>
+        <mat-card-title>Detalhes da Subscrição</mat-card-title>
+        <mat-card-subtitle>
+          <mat-chip [color]="getStatusColor()" selected>{{ getSubscriptionStatus() }}</mat-chip>
+        </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <div class="subscription-info">
-          <p><strong>Estado:</strong> Ativa</p>
-          <p><strong>Valor mensal:</strong> €30.00</p>
-          <p><strong>Data de início:</strong> 2025-01-01</p>
-          <p><strong>Próxima cobrança:</strong> 2025-02-01</p>
-          <p><strong>Recursos incluídos:</strong> Acesso completo, Suporte prioritário</p>
+          <div class="info-row">
+            <span class="label">Plano:</span>
+            <span class="value">{{ subscription.period | titlecase }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Valor:</span>
+            <span class="value">€{{ subscription.price.toFixed(2) }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Data de início:</span>
+            <span class="value">{{ subscription.startDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Data de término:</span>
+            <span class="value">{{ subscription.endDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Próxima renovação:</span>
+            <span class="value">{{ subscription.renewalDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Renovação automática:</span>
+            <span class="value">
+              <mat-icon *ngIf="subscription.autoRenew" class="auto-renew-icon">check_circle</mat-icon>
+              <mat-icon *ngIf="!subscription.autoRenew" class="no-renew-icon">cancel</mat-icon>
+              {{ subscription.autoRenew ? 'Ativada' : 'Desativada' }}
+            </span>
+          </div>
+
+          <mat-divider *ngIf="subscription.notes"></mat-divider>
+
+          <div class="info-row" *ngIf="subscription.notes">
+            <span class="label">Observações:</span>
+            <span class="value">{{ subscription.notes }}</span>
+          </div>
         </div>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-raised-button color="primary">
+        <button mat-raised-button color="primary" (click)="renewSubscription()">
+          <mat-icon>refresh</mat-icon>
+          Renovar Subscrição
+        </button>
+        <button mat-raised-button color="accent" (click)="upgradeSubscription()">
           <mat-icon>upgrade</mat-icon>
           Atualizar Plano
         </button>
-        <button mat-button color="warn">
+        <button mat-button color="warn" (click)="cancelSubscription()">
           <mat-icon>cancel</mat-icon>
           Cancelar Subscrição
         </button>
       </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div class="no-subscription" *ngIf="!loading && !subscription">
+    <mat-card>
+      <mat-card-content class="no-subscription-content">
+        <mat-icon class="large-icon">card_membership</mat-icon>
+        <h3>Você não possui uma subscrição ativa</h3>
+        <p>Para acessar todos os recursos, adquira uma subscrição.</p>
+        <button mat-raised-button color="primary" routerLink="/client/new-subscription">
+          <mat-icon>add</mat-icon>
+          Adquirir Subscrição
+        </button>
+      </mat-card-content>
     </mat-card>
   </div>
 </div>
