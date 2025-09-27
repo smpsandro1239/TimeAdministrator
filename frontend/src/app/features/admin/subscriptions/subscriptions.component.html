@@ -1,1 +1,29 @@
-<p>subscriptions works!</p>
+<div class="subscriptions-container">
+  <h2>Gestão de Subscrições</h2>
+  <p>Aqui você pode gerenciar todas as subscrições ativas.</p>
+
+  <div class="actions">
+    <button mat-raised-button color="primary">
+      <mat-icon>add</mat-icon>
+      Nova Subscrição
+    </button>
+  </div>
+
+  <div class="subscriptions-list">
+    <mat-card class="subscription-card">
+      <mat-card-header>
+        <mat-card-title>Subscrição Premium</mat-card-title>
+        <mat-card-subtitle>Cliente: Maria Santos</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Estado: Ativa</p>
+        <p>Valor: €30.00/mês</p>
+        <p>Próxima cobrança: 2025-02-15</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button>Editar</button>
+        <button mat-button color="warn">Cancelar</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

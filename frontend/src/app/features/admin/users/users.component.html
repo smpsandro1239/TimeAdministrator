@@ -1,1 +1,29 @@
-<p>users works!</p>
+<div class="users-container">
+  <h2>Gestão de Utilizadores</h2>
+  <p>Aqui você pode gerenciar todos os utilizadores do sistema.</p>
+
+  <div class="actions">
+    <button mat-raised-button color="primary">
+      <mat-icon>person_add</mat-icon>
+      Novo Utilizador
+    </button>
+  </div>
+
+  <div class="users-list">
+    <mat-card class="user-card">
+      <mat-card-header>
+        <mat-card-title>Administrador</mat-card-title>
+        <mat-card-subtitle>admin&#64;exemplo.com</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Função: Administrador</p>
+        <p>Estado: Ativo</p>
+        <p>Último acesso: 2025-01-15</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button>Editar</button>
+        <button mat-button color="warn">Desativar</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
