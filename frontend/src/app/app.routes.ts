@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { ClientGuard } from './guards/client.guard';
+import { LayoutComponent } from './shared/components/layout/layout.component';
 
 export const routes: Routes = [
   {
@@ -16,17 +17,63 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.dashboardRoutes)
+    component: LayoutComponent,
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      }
+    ]
   },
   {
     path: 'admin',
     canActivate: [AuthGuard, AdminGuard],
-    loadChildren: () => import('./features/admin/admin.routes').then(m => m.adminRoutes)
+    component: LayoutComponent,
+    children: [
+      {
+        path: 'clients',
+        loadComponent: () => import('./features/admin/clients/clients.component').then(m => m.ClientsComponent)
+      },
+      {
+        path: 'payments',
+        loadComponent: () => import('./features/admin/payments/payments.component').then(m => m.PaymentsComponent)
+      },
+      {
+        path: 'subscriptions',
+        loadComponent: () => import('./features/admin/subscriptions/subscriptions.component').then(m => m.SubscriptionsComponent)
+      },
+      {
+        path: 'notifications',
+        loadComponent: () => import('./features/admin/notifications/notifications.component').then(m => m.NotificationsComponent)
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/admin/users/users.component').then(m => m.UsersComponent)
+      }
+    ]
   },
   {
     path: 'client',
     canActivate: [AuthGuard, ClientGuard],
-    loadChildren: () => import('./features/client/client.routes').then(m => m.clientRoutes)
+    component: LayoutComponent,
+    children: [
+      {
+        path: 'profile',
+        loadComponent: () => import('./features/client/profile/profile.component').then(m => m.ProfileComponent)
+      },
+      {
+        path: 'subscription',
+        loadComponent: () => import('./features/client/subscription/subscription.component').then(m => m.SubscriptionComponent)
+      },
+      {
+        path: 'payments',
+        loadComponent: () => import('./features/client/payments/payments.component').then(m => m.PaymentsComponent)
+      },
+      {
+        path: 'new-subscription',
+        loadComponent: () => import('./features/client/new-subscription/new-subscription.component').then(m => m.NewSubscriptionComponent)
+      }
+    ]
   },
   {
     path: '**',
