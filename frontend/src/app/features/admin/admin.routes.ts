@@ -17,23 +17,23 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'clients',
-        loadComponent: () => import('../dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./clients/clients.component').then(m => m.ClientsComponent)
       },
       {
         path: 'subscriptions',
-        loadComponent: () => import('../dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./subscriptions/subscriptions.component').then(m => m.SubscriptionsComponent)
       },
       {
         path: 'payments',
-        loadComponent: () => import('../dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./payments/payments.component').then(m => m.PaymentsComponent)
       },
       {
         path: 'notifications',
-        loadComponent: () => import('../dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./notifications/notifications.component').then(m => m.NotificationsComponent)
       },
       {
         path: 'users',
-        loadComponent: () => import('../dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./users/users.component').then(m => m.UsersComponent)
       }
     ]
   }

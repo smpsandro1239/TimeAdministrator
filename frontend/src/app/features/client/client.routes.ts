@@ -17,19 +17,19 @@ export const clientRoutes: Routes = [
       },
       {
         path: 'profile',
-        loadComponent: () => import('../dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./profile/profile.component').then(m => m.ProfileComponent)
       },
       {
         path: 'subscription',
-        loadComponent: () => import('../dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./subscription/subscription.component').then(m => m.SubscriptionComponent)
       },
       {
         path: 'payments',
-        loadComponent: () => import('../dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./payments/payments.component').then(m => m.PaymentsComponent)
       },
       {
         path: 'new-subscription',
-        loadComponent: () => import('../dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./new-subscription/new-subscription.component').then(m => m.NewSubscriptionComponent)
       }
     ]
   }
