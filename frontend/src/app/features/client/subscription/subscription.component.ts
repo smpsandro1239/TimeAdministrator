@@ -163,9 +163,8 @@ export class SubscriptionComponent implements OnInit {
   }
 
   renewSubscription(): void {
-    // TODO: Implementar a lógica de pagamento (Stripe) antes de renovar.
-    // Por agora, esta funcionalidade será um placeholder.
-    this.snackBar.open('A renovação automática via Stripe será implementada em breve.', 'Fechar', { duration: 3000 });
+    // A renovação é funcionalmente idêntica a um upgrade: o utilizador é levado a escolher um novo plano.
+    this.router.navigate(['/client/new-subscription']);
   }
 
   upgradeSubscription(): void {
@@ -185,8 +184,8 @@ export class SubscriptionComponent implements OnInit {
       // O diálogo retorna 'true' se o utilizador confirmar.
       if (result && this.subscription) {
         this.isCancelling = true;
-        this.subscriptionService.cancel(this.subscription.id).subscribe({
-          next: (updatedSubscription) => {
+        this.subscriptionService.cancelSubscription(this.subscription.id).subscribe({
+          next: (updatedSubscription: Subscription) => {
             this.snackBar.open('Subscrição cancelada com sucesso!', 'Fechar', {
               duration: 3000,
               panelClass: ['success-snackbar'],
@@ -195,7 +194,7 @@ export class SubscriptionComponent implements OnInit {
             this.subscription = updatedSubscription;
             this.loadClientProfile();
           },
-          error: (err) => {
+          error: (err: any) => {
             console.error('Erro ao cancelar a subscrição:', err);
             this.snackBar.open(
               'Não foi possível cancelar a subscrição. Tente novamente.',

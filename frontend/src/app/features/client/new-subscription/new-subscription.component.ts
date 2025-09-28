@@ -10,6 +10,7 @@ import { environment } from '@env/environment';
 import { SubscriptionPlan } from '../../../models/plan.model';
 import { SubscriptionPeriod } from '../../../models/subscription.model';
 import { PaymentService } from '../../../services/payment.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-new-subscription',
@@ -67,6 +68,7 @@ export class NewSubscriptionComponent implements OnInit {
   constructor(
     private paymentService: PaymentService,
     private snackBar: MatSnackBar,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -80,17 +82,25 @@ export class NewSubscriptionComponent implements OnInit {
     this.selectedPlan = plan;
     this.isLoading = true;
 
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser?.clientId) {
+      this.snackBar.open('Erro: Utilizador não associado a um cliente.', 'Fechar', { duration: 3000 });
+      this.isLoading = false;
+      return;
+    }
+
     this.paymentService
-      .createPaymentIntent({
+      .createStripePaymentIntent({
+        clientId: currentUser.clientId,
         subscriptionPeriod: plan.period,
         amount: plan.price,
       })
       .subscribe({
-        next: (response) => {
+        next: (response: { clientSecret: string }) => {
           this.setupStripeElements(response.clientSecret);
           this.isLoading = false;
         },
-        error: (err) => {
+        error: (err: any) => {
           this.snackBar.open('Falha ao preparar o pagamento. Tente novamente.', 'Fechar', { duration: 3000 });
           this.isLoading = false;
           this.selectedPlan = null;
