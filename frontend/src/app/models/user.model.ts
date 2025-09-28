@@ -9,6 +9,7 @@ export interface User {
   email: string;
   role: UserRole;
   phone?: string;
+  clientId?: string; // Adicionado para associar utilizador a um cliente
   isActive: boolean;
   lastLogin?: Date;
   createdAt: Date;
@@ -35,5 +36,6 @@ export interface LoginResponse {
     email: string;
     name: string;
     role: UserRole;
+    clientId?: string;
   };
 }
