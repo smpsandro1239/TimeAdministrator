@@ -12,34 +12,17 @@
       <mat-card-header>
         <mat-card-title>Detalhes da Subscrição</mat-card-title>
         <mat-card-subtitle>
-          <mat-chip [color]="getStatusColor()" selected>{{ getSubscriptionStatus() }}</mat-chip>
+          <mat-chip [color]="getSubscriptionStatus().color" selected>{{ getSubscriptionStatus().text }}</mat-chip>
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <div class="subscription-info">
-          <div class="info-row">
-            <span class="label">Plano:</span>
-            <span class="value">{{ subscription.period | titlecase }}</span>
-          </div>
-
-          <div class="info-row">
-            <span class="label">Valor:</span>
-            <span class="value">€{{ subscription.price.toFixed(2) }}</span>
-          </div>
-
-          <div class="info-row">
-            <span class="label">Data de início:</span>
-            <span class="value">{{ subscription.startDate | date:'dd/MM/yyyy' }}</span>
-          </div>
-
-          <div class="info-row">
-            <span class="label">Data de término:</span>
-            <span class="value">{{ subscription.endDate | date:'dd/MM/yyyy' }}</span>
-          </div>
-
-          <div class="info-row">
-            <span class="label">Próxima renovação:</span>
-            <span class="value">{{ subscription.renewalDate | date:'dd/MM/yyyy' }}</span>
+          <!-- Itera sobre os detalhes da subscrição para evitar repetição de código -->
+          <div *ngFor="let detail of getSubscriptionDetailsForDisplay()" class="info-row">
+            <span class="label">{{ detail.label }}:</span>
+            <span class="value">
+              {{ detail.isDate ? (detail.value | date:'dd/MM/yyyy') : detail.value }}
+            </span>
           </div>
 
           <div class="info-row">
@@ -50,27 +33,29 @@
               {{ subscription.autoRenew ? 'Ativada' : 'Desativada' }}
             </span>
           </div>
-
-          <mat-divider *ngIf="subscription.notes"></mat-divider>
-
-          <div class="info-row" *ngIf="subscription.notes">
-            <span class="label">Observações:</span>
-            <span class="value">{{ subscription.notes }}</span>
-          </div>
         </div>
       </mat-card-content>
       <mat-card-actions>
-        <button mat-raised-button color="primary" (click)="renewSubscription()">
-          <mat-icon>refresh</mat-icon>
-          Renovar Subscrição
+        <!-- Botão de Renovar (funcionalidade futura) -->
+        <button mat-raised-button color="primary" (click)="renewSubscription()" [disabled]="isRenewing || isCancelling">
+          <mat-spinner *ngIf="isRenewing" diameter="20"></mat-spinner>
+          <mat-icon *ngIf="!isRenewing">refresh</mat-icon>
+          <span *ngIf="!isRenewing">Renovar Subscrição</span>
         </button>
-        <button mat-raised-button color="accent" (click)="upgradeSubscription()">
+
+        <!-- Botão de Atualizar Plano -->
+        <button mat-raised-button color="accent" (click)="upgradeSubscription()" [disabled]="isRenewing || isCancelling">
           <mat-icon>upgrade</mat-icon>
           Atualizar Plano
         </button>
-        <button mat-button color="warn" (click)="cancelSubscription()">
-          <mat-icon>cancel</mat-icon>
-          Cancelar Subscrição
+
+        <!-- Botão de Cancelar -->
+        <button mat-button color="warn" (click)="cancelSubscription()" [disabled]="isRenewing || isCancelling || subscription.status === 'cancelled'">
+          <mat-spinner *ngIf="isCancelling" diameter="20"></mat-spinner>
+          <mat-icon *ngIf="!isCancelling">cancel</mat-icon>
+          <span *ngIf="!isCancelling">
+            {{ subscription.status === 'cancelled' ? 'Cancelada' : 'Cancelar Subscrição' }}
+          </span>
         </button>
       </mat-card-actions>
     </mat-card>

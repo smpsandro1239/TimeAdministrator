@@ -1,0 +1,61 @@
+.payments-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.loading-container,
+.no-payments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: #777;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 2rem;
+
+  .large-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    color: #ccc;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+}
+
+.payments-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.payment-card {
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.payment-details p strong {
+  min-width: 80px;
+  display: inline-block;
+}
