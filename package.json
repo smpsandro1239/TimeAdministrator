@@ -12,7 +12,16 @@
     "stop": "docker-compose down",
     "clean": "docker-compose down -v --rmi all"
   },
-  "keywords": ["angular", "nestjs", "mongodb", "docker", "subscriptions"],
+  "keywords": [
+    "angular",
+    "nestjs",
+    "mongodb",
+    "docker",
+    "subscriptions"
+  ],
   "author": "TimeAdministrator Team",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
 }
