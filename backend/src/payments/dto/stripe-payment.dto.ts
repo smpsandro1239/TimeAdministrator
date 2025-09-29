@@ -1,13 +1,17 @@
-import { IsNotEmpty, IsEnum, IsNumber } from 'class-validator';
+import { IsString, IsNumber, IsEnum, IsOptional } from 'class-validator';
 import { SubscriptionPeriod } from '../../subscriptions/enums/subscription-period.enum';
 
 export class CreateStripePaymentDto {
-  @IsNotEmpty({ message: 'ID do cliente é obrigatório' })
+  @IsString()
   clientId: string;
 
-  @IsNumber({}, { message: 'Valor deve ser um número válido' })
+  @IsNumber()
   amount: number;
 
-  @IsEnum(SubscriptionPeriod, { message: 'Período de subscrição inválido' })
+  @IsEnum(SubscriptionPeriod)
   subscriptionPeriod: SubscriptionPeriod;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }
