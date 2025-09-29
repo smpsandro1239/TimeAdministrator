@@ -17,6 +17,7 @@ import { PaginatedResponse, PaginationParams } from '../../../models/common.mode
 import { AddClientDialogComponent } from './add-client-dialog/add-client-dialog.component';
 import { EditClientDialogComponent } from './edit-client-dialog/edit-client-dialog.component';
 import { ViewClientDialogComponent } from './view-client-dialog/view-client-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 import * as XLSX from 'xlsx';
 
@@ -34,7 +35,8 @@ import * as XLSX from 'xlsx';
     MatDialogModule,
     MatSnackBarModule,
     MatInputModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    ConfirmDialogComponent
   ],
   templateUrl: './clients.component.html',
   styleUrl: './clients.component.scss'
@@ -121,18 +123,33 @@ export class ClientsComponent implements OnInit {
   }
 
   deleteClient(client: Client): void {
-    if (confirm(`Tem certeza que deseja excluir o cliente ${client.name}?`)) {
-      this.clientService.deleteClient(client.id).subscribe({
-        next: () => {
-          this.snackBar.open('Cliente excluído com sucesso', 'Fechar', { duration: 3000 });
-          this.loadClients(); // Reload the list
-        },
-        error: (error) => {
-          console.error('Erro ao excluir cliente:', error);
-          this.snackBar.open('Erro ao excluir cliente', 'Fechar', { duration: 3000 });
-        }
-      });
-    }
+    // Sanitizar nome do cliente para prevenir XSS
+    const sanitizedName = this.sanitizeText(client.name);
+    
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirmar Exclusão',
+        message: `Tem certeza que deseja excluir o cliente ${sanitizedName}?`,
+        confirmText: 'Excluir',
+        cancelText: 'Cancelar'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.clientService.deleteClient(client.id).subscribe({
+          next: () => {
+            this.snackBar.open('Cliente excluído com sucesso', 'Fechar', { duration: 3000 });
+            this.loadClients();
+          },
+          error: (error) => {
+            console.error('Erro ao excluir cliente:', error);
+            this.snackBar.open('Erro ao excluir cliente', 'Fechar', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
 
   viewClient(client: Client): void {
@@ -268,10 +285,22 @@ export class ClientsComponent implements OnInit {
       return;
     }
 
-    // Confirmar importação
-    if (confirm(`Deseja importar ${clientsToCreate.length} cliente(s)?`)) {
-      this.importClients(clientsToCreate);
-    }
+    // Confirmar importação usando dialog
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirmar Importação',
+        message: `Deseja importar ${clientsToCreate.length} cliente(s)?`,
+        confirmText: 'Importar',
+        cancelText: 'Cancelar'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.importClients(clientsToCreate);
+      }
+    });
   }
 
   private getCellValue(row: any[], index: number): string {
@@ -303,6 +332,20 @@ export class ClientsComponent implements OnInit {
       } else {
         this.snackBar.open(`${successCount} importado(s), ${errorCount} erro(s)`, 'Fechar', { duration: 5000 });
       }
+    });
+  }
+
+  private sanitizeText(text: string): string {
+    if (!text) return '';
+    return text.replace(/[<>"'&]/g, (match) => {
+      const escapeMap: { [key: string]: string } = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '&': '&amp;'
+      };
+      return escapeMap[match];
     });
   }
 }

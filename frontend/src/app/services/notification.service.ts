@@ -2,28 +2,65 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import { NotificationRequest } from '../models/common.model';
+
+interface NotificationStatus {
+  email: {
+    configured: boolean;
+    host: string;
+    user: string;
+  };
+  whatsapp: {
+    configured: boolean;
+    from: string;
+  };
+  cronJobs: {
+    enabled: boolean;
+    schedule: string;
+  };
+}
+
+interface NotificationResponse {
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-  private readonly API_URL = `${environment.apiUrl}/notifications`;
+  private readonly API_URL = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
-  checkExpiringSubscriptions(): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.API_URL}/check-expiring`, {});
+  getNotificationStatus(): Observable<NotificationStatus> {
+    return this.http.get<NotificationStatus>(`${this.API_URL}/notifications/status`);
   }
 
-  sendCustomNotification(notification: NotificationRequest): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.API_URL}/send-custom`, notification);
+  checkExpiringSubscriptions(): Observable<NotificationResponse> {
+    return this.http.post<NotificationResponse>(`${this.API_URL}/notifications/check-expiring`, {});
   }
 
-  notifyAdmins(subject: string, message: string): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.API_URL}/notify-admins`, {
-      subject,
-      message
-    });
+  sendCustomNotification(data: {
+    clientId: string;
+    subject: string;
+    message: string;
+    sendEmail?: boolean;
+    sendWhatsApp?: boolean;
+  }): Observable<NotificationResponse> {
+    return this.http.post<NotificationResponse>(`${this.API_URL}/notifications/send-custom`, data);
+  }
+
+  sendTestEmail(data: {
+    email: string;
+    subject: string;
+    message: string;
+  }): Observable<NotificationResponse> {
+    return this.http.post<NotificationResponse>(`${this.API_URL}/notifications/test-email`, data);
+  }
+
+  notifyAdmins(data: {
+    subject: string;
+    message: string;
+  }): Observable<NotificationResponse> {
+    return this.http.post<NotificationResponse>(`${this.API_URL}/notifications/notify-admins`, data);
   }
 }
