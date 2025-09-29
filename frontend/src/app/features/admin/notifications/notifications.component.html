@@ -1,29 +1,118 @@
 <div class="notifications-container">
-  <h2>Gestão de Notificações</h2>
-  <p>Aqui você pode enviar notificações para clientes e administradores.</p>
-
-  <div class="actions">
-    <button mat-raised-button color="primary">
-      <mat-icon>send</mat-icon>
-      Nova Notificação
-    </button>
+  <div class="header">
+    <h1>Gestão de Notificações</h1>
+    <p>Enviar notificações personalizadas e gerir sistema de notificações</p>
   </div>
 
-  <div class="notifications-list">
-    <mat-card class="notification-card">
-      <mat-card-header>
-        <mat-card-title>Lembrete de Pagamento</mat-card-title>
-        <mat-card-subtitle>Enviado para: Todos os clientes</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>Estado: Enviado</p>
-        <p>Data: 2025-01-10</p>
-        <p>Taxa de abertura: 85%</p>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button>Ver Estatísticas</button>
-        <button mat-button>Reenviar</button>
-      </mat-card-actions>
-    </mat-card>
+  <!-- Status do Sistema -->
+  <mat-card class="status-card">
+    <mat-card-header>
+      <mat-card-title>Estado do Sistema de Notificações</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="status-grid" *ngIf="notificationStatus">
+        <div class="status-item">
+          <mat-icon [class]="notificationStatus.email.configured ? 'status-ok' : 'status-error'">
+            {{ notificationStatus.email.configured ? 'check_circle' : 'error' }}
+          </mat-icon>
+          <div>
+            <h3>Email</h3>
+            <p>{{ notificationStatus.email.configured ? 'Configurado' : 'Não configurado' }}</p>
+            <small>{{ notificationStatus.email.host }}</small>
+          </div>
+        </div>
+        
+        <div class="status-item">
+          <mat-icon [class]="notificationStatus.whatsapp.configured ? 'status-ok' : 'status-error'">
+            {{ notificationStatus.whatsapp.configured ? 'check_circle' : 'error' }}
+          </mat-icon>
+          <div>
+            <h3>WhatsApp</h3>
+            <p>{{ notificationStatus.whatsapp.configured ? 'Configurado' : 'Não configurado' }}</p>
+            <small>{{ notificationStatus.whatsapp.from }}</small>
+          </div>
+        </div>
+        
+        <div class="status-item">
+          <mat-icon class="status-ok">schedule</mat-icon>
+          <div>
+            <h3>Cron Jobs</h3>
+            <p>Ativo</p>
+            <small>Todos os dias às 9:00</small>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Ações Rápidas -->
+  <div class="actions-section">
+    <h2>Ações Rápidas</h2>
+    
+    <div class="actions-grid">
+      <mat-card class="action-card" (click)="checkExpiringSubscriptions()">
+        <mat-card-content>
+          <mat-icon>search</mat-icon>
+          <h3>Verificar Expirações</h3>
+          <p>Executar verificação manual de subscrições a expirar</p>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="action-card" (click)="openTestEmailDialog()">
+        <mat-card-content>
+          <mat-icon>email</mat-icon>
+          <h3>Testar Email</h3>
+          <p>Enviar email de teste para verificar configuração</p>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="action-card" (click)="openCustomNotificationDialog()">
+        <mat-card-content>
+          <mat-icon>notification_important</mat-icon>
+          <h3>Notificação Personalizada</h3>
+          <p>Enviar notificação personalizada para cliente específico</p>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="action-card" (click)="openAdminNotificationDialog()">
+        <mat-card-content>
+          <mat-icon>admin_panel_settings</mat-icon>
+          <h3>Notificar Admins</h3>
+          <p>Enviar notificação para todos os administradores</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Histórico de Notificações -->
+  <mat-card class="history-card">
+    <mat-card-header>
+      <mat-card-title>Histórico Recente</mat-card-title>
+      <mat-card-subtitle>Últimas notificações enviadas pelo sistema</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="history-list">
+        <div class="history-item" *ngFor="let item of notificationHistory">
+          <mat-icon [class]="getHistoryIconClass(item.type)">{{ getHistoryIcon(item.type) }}</mat-icon>
+          <div class="history-content">
+            <h4>{{ item.title }}</h4>
+            <p>{{ item.description }}</p>
+            <small>{{ item.timestamp | date:'dd/MM/yyyy HH:mm' }}</small>
+          </div>
+          <mat-chip [class]="getStatusChipClass(item.status)">{{ item.status }}</mat-chip>
+        </div>
+        
+        <div *ngIf="notificationHistory.length === 0" class="no-history">
+          <mat-icon>history</mat-icon>
+          <p>Nenhum histórico de notificações disponível</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>A processar...</p>
   </div>
 </div>
