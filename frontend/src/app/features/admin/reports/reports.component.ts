@@ -6,23 +6,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
 
 @Component({
-  selector: 'app-notifications',
+  selector: 'app-reports',
   standalone: true,
   imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, LayoutComponent],
   template: `
     <app-layout>
       <div class="page-container">
         <div class="header">
-          <h1>Notificações</h1>
-          <p>Enviar notificações para clientes</p>
+          <h1>Relatórios</h1>
+          <p>Relatórios financeiros e estatísticas</p>
         </div>
         
         <mat-card>
           <mat-card-content>
             <div class="empty-state">
-              <mat-icon>notifications</mat-icon>
-              <h2>Sistema de Notificações</h2>
-              <p>Email e WhatsApp automáticos</p>
+              <mat-icon>assessment</mat-icon>
+              <h2>Relatórios e Análises</h2>
+              <p>Métricas de desempenho e receitas</p>
             </div>
           </mat-card-content>
         </mat-card>
@@ -40,4 +40,4 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .empty-state p { margin: 0; color: #666; }
   `]
 })
-export class NotificationsComponent {}
+export class ReportsComponent {}

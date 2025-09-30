@@ -6,23 +6,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
 
 @Component({
-  selector: 'app-notifications',
+  selector: 'app-settings',
   standalone: true,
   imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, LayoutComponent],
   template: `
     <app-layout>
       <div class="page-container">
         <div class="header">
-          <h1>Notificações</h1>
-          <p>Enviar notificações para clientes</p>
+          <h1>Configurações</h1>
+          <p>Configurações do sistema</p>
         </div>
         
         <mat-card>
           <mat-card-content>
             <div class="empty-state">
-              <mat-icon>notifications</mat-icon>
-              <h2>Sistema de Notificações</h2>
-              <p>Email e WhatsApp automáticos</p>
+              <mat-icon>settings</mat-icon>
+              <h2>Configurações do Sistema</h2>
+              <p>SMTP, Stripe, Twilio e outras integrações</p>
             </div>
           </mat-card-content>
         </mat-card>
@@ -40,4 +40,4 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .empty-state p { margin: 0; color: #666; }
   `]
 })
-export class NotificationsComponent {}
+export class SettingsComponent {}
