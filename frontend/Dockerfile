@@ -1,5 +1,5 @@
 # Dockerfile para Frontend Angular
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Instalar Angular CLI globalmente
 RUN npm install -g @angular/cli@18

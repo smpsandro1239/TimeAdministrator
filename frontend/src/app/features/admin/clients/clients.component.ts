@@ -18,6 +18,7 @@ import { AddClientDialogComponent } from './add-client-dialog/add-client-dialog.
 import { EditClientDialogComponent } from './edit-client-dialog/edit-client-dialog.component';
 import { ViewClientDialogComponent } from './view-client-dialog/view-client-dialog.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ClientActionsMenuComponent } from '../../../shared/components/client-actions-menu/client-actions-menu.component';
 
 import * as XLSX from 'xlsx';
 
@@ -36,7 +37,8 @@ import * as XLSX from 'xlsx';
     MatSnackBarModule,
     MatInputModule,
     MatFormFieldModule,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ClientActionsMenuComponent
   ],
   templateUrl: './clients.component.html',
   styleUrl: './clients.component.scss'
@@ -333,6 +335,21 @@ export class ClientsComponent implements OnInit {
         this.snackBar.open(`${successCount} importado(s), ${errorCount} erro(s)`, 'Fechar', { duration: 5000 });
       }
     });
+  }
+
+  manageSubscription(client: Client): void {
+    // TODO: Implementar gestão de subscrição
+    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 3000 });
+  }
+
+  viewPayments(client: Client): void {
+    // TODO: Implementar visualização de pagamentos
+    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 3000 });
+  }
+
+  sendNotification(client: Client): void {
+    // TODO: Implementar envio de notificação
+    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 3000 });
   }
 
   private sanitizeText(text: string): string {

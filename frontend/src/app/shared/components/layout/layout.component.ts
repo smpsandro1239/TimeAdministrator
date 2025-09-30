@@ -14,6 +14,7 @@ import { map, shareReplay } from 'rxjs/operators';
 
 import { AuthService } from '../../../services/auth.service';
 import { User, UserRole } from '../../../models/user.model';
+import { MobileNavComponent } from '../mobile-nav/mobile-nav.component';
 
 @Component({
   selector: 'app-layout',
@@ -28,7 +29,8 @@ import { User, UserRole } from '../../../models/user.model';
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    MatDividerModule
+    MatDividerModule,
+    MobileNavComponent
   ],
   template: `
     <mat-sidenav-container class="sidenav-container">
@@ -123,6 +125,9 @@ import { User, UserRole } from '../../../models/user.model';
         <div class="content">
           <router-outlet></router-outlet>
         </div>
+        
+        <!-- Mobile Navigation -->
+        <app-mobile-nav></app-mobile-nav>
       </mat-sidenav-content>
     </mat-sidenav-container>
   `,
@@ -153,6 +158,7 @@ import { User, UserRole } from '../../../models/user.model';
       padding: 20px;
       min-height: calc(100vh - 64px);
       background-color: #fafafa;
+      padding-bottom: 100px; /* Espaço para navegação móvel */
     }
 
     .active {
@@ -162,6 +168,7 @@ import { User, UserRole } from '../../../models/user.model';
     @media (max-width: 768px) {
       .content {
         padding: 10px;
+        padding-bottom: 90px; /* Mais espaço para navegação móvel */
       }
     }
   `]
