@@ -1,0 +1,22 @@
+services:
+  # Apenas MongoDB para desenvolvimento local
+  mongodb:
+    image: mongo:7.0
+    container_name: timeadmin-mongodb-dev
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_dev_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=timeadministrator
+    networks:
+      - timeadmin-dev-network
+
+volumes:
+  mongodb_dev_data:
+    driver: local
+
+networks:
+  timeadmin-dev-network:
+    driver: bridge
