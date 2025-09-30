@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed": "ts-node src/database/seed.ts",
     "seed:memory": "ts-node src/database/seed-memory.ts",
-    "seed:simple": "ts-node src/database/seed-simple.ts"
+    "seed:simple": "ts-node src/database/seed-simple.ts",
+    "start:mock": "ts-node src/main-mock.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.0",

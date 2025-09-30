@@ -50,6 +50,11 @@ import { User, UserRole } from '../../../models/user.model';
           <mat-icon>notifications</mat-icon>
           <span>Notificações</span>
         </a>
+        
+        <a routerLink="/admin/users" routerLinkActive="active" class="nav-item">
+          <mat-icon>admin_panel_settings</mat-icon>
+          <span>Utilizadores</span>
+        </a>
       </div>
 
       <!-- Client Navigation -->

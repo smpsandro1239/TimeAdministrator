@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { UserRole } from '../../models/user.model';
 import { DashboardMetrics } from '../../models/dashboard.model';
+import { LayoutComponent } from '../../shared/components/layout/layout.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,9 +28,11 @@ import { DashboardMetrics } from '../../models/dashboard.model';
     MatDividerModule,
     MatSelectModule,
     MatFormFieldModule,
-    MatGridListModule
+    MatGridListModule,
+    LayoutComponent
   ],
   template: `
+    <app-layout>
     <div class="dashboard-container">
       <div class="header">
         <h1>Dashboard - TimeAdministrator</h1>
@@ -187,6 +190,7 @@ import { DashboardMetrics } from '../../models/dashboard.model';
         <p>A carregar...</p>
       </div>
     </div>
+    </app-layout>
   `,
   styles: [`
     .dashboard-container {
