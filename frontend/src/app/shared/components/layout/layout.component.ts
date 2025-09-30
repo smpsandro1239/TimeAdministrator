@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,7 +13,6 @@ import { MobileNavComponent } from '../mobile-nav/mobile-nav.component';
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet,
     SidebarComponent,
     MobileNavComponent
   ],
@@ -21,7 +20,7 @@ import { MobileNavComponent } from '../mobile-nav/mobile-nav.component';
     <div class="layout">
       <app-sidebar *ngIf="!(isMobile$ | async)"></app-sidebar>
       <main class="main-content" [class.mobile]="isMobile$ | async">
-        <router-outlet></router-outlet>
+        <ng-content></ng-content>
       </main>
       <app-mobile-nav></app-mobile-nav>
     </div>
