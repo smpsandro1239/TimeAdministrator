@@ -387,7 +387,11 @@ export class DashboardComponent implements OnInit {
     this.loading = true;
     this.dashboardService.getAdminMetrics(this.selectedPeriod).subscribe({
       next: (metrics) => {
-        this.metrics = metrics;
+        this.metrics = {
+          ...metrics,
+          totalRevenue: 0,
+          monthlyRevenue: 0
+        };
         this.loading = false;
       },
       error: (error) => {

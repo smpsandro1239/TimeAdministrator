@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBottomSheetModule, MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { MatDividerModule } from '@angular/material/divider';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -18,7 +19,8 @@ import { Client } from '../../../models/client.model';
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatDividerModule
   ],
   template: `
     <!-- Desktop Menu -->
