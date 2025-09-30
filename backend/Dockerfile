@@ -1,5 +1,5 @@
 # Dockerfile para Backend NestJS
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Instalar NestJS CLI globalmente
 RUN npm install -g @nestjs/cli
@@ -20,7 +20,7 @@ COPY . .
 RUN npm run build
 
 # Estágio de produção
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 
 # Instalar dumb-init para gestão de processos
 RUN apk add --no-cache dumb-init

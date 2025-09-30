@@ -29,7 +29,7 @@ export interface ConfirmDialogData {
       </h2>
       
       <mat-dialog-content>
-        <p [innerHTML]="data.message"></p>
+        <p>{{ data.message }}</p>
       </mat-dialog-content>
       
       <mat-dialog-actions align="end">
