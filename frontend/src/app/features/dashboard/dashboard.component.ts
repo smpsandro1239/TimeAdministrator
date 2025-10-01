@@ -33,7 +33,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
   ],
   template: `
     <app-layout>
-    <div class="dashboard-container">
+      <div class="dashboard-container">
       <div class="header">
         <h1>Dashboard - TimeAdministrator</h1>
         <p class="subtitle">Sistema de Gestão de Subscrições</p>
@@ -124,14 +124,6 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
             </mat-card-content>
           </mat-card>
           
-          <mat-card class="action-card" (click)="navigate('/admin/payments')">
-            <mat-card-content>
-              <mat-icon>payment</mat-icon>
-              <h3>Aprovar Pagamentos</h3>
-              <p>Gerir pagamentos pendentes</p>
-            </mat-card-content>
-          </mat-card>
-          
           <mat-card class="action-card" (click)="navigate('/admin/subscriptions')">
             <mat-card-content>
               <mat-icon>subscriptions</mat-icon>
@@ -140,11 +132,35 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
             </mat-card-content>
           </mat-card>
           
+          <mat-card class="action-card" (click)="navigate('/admin/payments')">
+            <mat-card-content>
+              <mat-icon>payment</mat-icon>
+              <h3>Pagamentos</h3>
+              <p>Aprovar pagamentos pendentes</p>
+            </mat-card-content>
+          </mat-card>
+          
           <mat-card class="action-card" (click)="navigate('/admin/notifications')">
             <mat-card-content>
               <mat-icon>notifications</mat-icon>
               <h3>Notificações</h3>
-              <p>Enviar notificações personalizadas</p>
+              <p>Sistema de email e WhatsApp</p>
+            </mat-card-content>
+          </mat-card>
+          
+          <mat-card class="action-card" (click)="navigate('/admin/users')">
+            <mat-card-content>
+              <mat-icon>admin_panel_settings</mat-icon>
+              <h3>Utilizadores</h3>
+              <p>Controlo de acessos</p>
+            </mat-card-content>
+          </mat-card>
+          
+          <mat-card class="action-card" (click)="navigate('/admin/reports')">
+            <mat-card-content>
+              <mat-icon>assessment</mat-icon>
+              <h3>Relatórios</h3>
+              <p>Métricas e estatísticas</p>
             </mat-card-content>
           </mat-card>
         </div>
@@ -188,8 +204,8 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
       <div class="loading-container" *ngIf="loading">
         <mat-spinner></mat-spinner>
         <p>A carregar...</p>
+        </div>
       </div>
-    </div>
     </app-layout>
   `,
   styles: [`
@@ -373,36 +389,42 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log('Dashboard ngOnInit chamado');
     this.authService.currentUser$.subscribe(user => {
+      console.log('User no dashboard:', user);
       if (user) {
         this.isAdmin = user.role === UserRole.ADMIN;
         this.isClient = user.role === UserRole.CLIENT;
+        console.log('isAdmin:', this.isAdmin, 'isClient:', this.isClient);
         
         if (this.isAdmin) {
           this.loadMetrics();
         } else {
           this.loading = false;
         }
+      } else {
+        console.log('Nenhum user encontrado');
+        this.loading = false;
       }
     });
   }
 
   loadMetrics(): void {
+    console.log('loadMetrics chamado');
     this.loading = true;
-    this.dashboardService.getAdminMetrics(this.selectedPeriod).subscribe({
-      next: (metrics) => {
-        this.metrics = {
-          ...metrics,
-          totalRevenue: 0,
-          monthlyRevenue: 0
-        };
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Erro ao carregar métricas:', error);
-        this.loading = false;
-      }
-    });
+    // Mock data para desenvolvimento
+    setTimeout(() => {
+      this.metrics = {
+        totalClients: 25,
+        activeSubscriptions: 18,
+        expiringSoon: 3,
+        pendingPayments: 2,
+        totalRevenue: 1250,
+        monthlyRevenue: 450
+      };
+      console.log('Metrics carregadas:', this.metrics);
+      this.loading = false;
+    }, 1000);
   }
 
   onPeriodChange(): void {

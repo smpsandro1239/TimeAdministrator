@@ -13,6 +13,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api/v1');
   
+  // Rota de teste
+  app.getHttpAdapter().get('/', (req, res) => {
+    res.json({ message: 'TimeAdministrator Backend Mock - Funcionando!', status: 'OK' });
+  });
+  
   await app.listen(3000);
   console.log('🚀 Backend Mock rodando em http://localhost:3000');
   console.log('📋 Credenciais: admin@timeadministrator.com / admin123');

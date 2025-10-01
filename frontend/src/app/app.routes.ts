@@ -17,61 +17,68 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     canActivate: [AuthGuard],
-    loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
+    loadComponent: () => import('./features/dashboard/dashboard-simple.component').then(m => m.DashboardSimpleComponent)
   },
   {
-    path: 'admin',
-    canActivate: [AuthGuard, AdminGuard],
+    path: '',
+    component: LayoutComponent,
+    canActivate: [AuthGuard],
     children: [
       {
-        path: 'clients',
-        loadComponent: () => import('./features/admin/clients/clients.component').then(m => m.ClientsComponent)
+        path: 'admin',
+        canActivate: [AdminGuard],
+        children: [
+          {
+            path: 'clients',
+            loadComponent: () => import('./features/admin/clients/clients.component').then(m => m.ClientsComponent)
+          },
+          {
+            path: 'payments',
+            loadComponent: () => import('./features/admin/payments/payments.component').then(m => m.PaymentsComponent)
+          },
+          {
+            path: 'subscriptions',
+            loadComponent: () => import('./features/admin/subscriptions/subscriptions.component').then(m => m.SubscriptionsComponent)
+          },
+          {
+            path: 'notifications',
+            loadComponent: () => import('./features/admin/notifications/notifications.component').then(m => m.NotificationsComponent)
+          },
+          {
+            path: 'users',
+            loadComponent: () => import('./features/admin/users/users.component').then(m => m.UsersComponent)
+          },
+          {
+            path: 'reports',
+            loadComponent: () => import('./features/admin/reports/reports.component').then(m => m.ReportsComponent)
+          },
+          {
+            path: 'settings',
+            loadComponent: () => import('./features/admin/settings/settings.component').then(m => m.SettingsComponent)
+          }
+        ]
       },
       {
-        path: 'payments',
-        loadComponent: () => import('./features/admin/payments/payments.component').then(m => m.PaymentsComponent)
-      },
-      {
-        path: 'subscriptions',
-        loadComponent: () => import('./features/admin/subscriptions/subscriptions.component').then(m => m.SubscriptionsComponent)
-      },
-      {
-        path: 'notifications',
-        loadComponent: () => import('./features/admin/notifications/notifications.component').then(m => m.NotificationsComponent)
-      },
-      {
-        path: 'users',
-        loadComponent: () => import('./features/admin/users/users.component').then(m => m.UsersComponent)
-      },
-      {
-        path: 'reports',
-        loadComponent: () => import('./features/admin/reports/reports.component').then(m => m.ReportsComponent)
-      },
-      {
-        path: 'settings',
-        loadComponent: () => import('./features/admin/settings/settings.component').then(m => m.SettingsComponent)
-      }
-    ]
-  },
-  {
-    path: 'client',
-    canActivate: [AuthGuard, ClientGuard],
-    children: [
-      {
-        path: 'profile',
-        loadComponent: () => import('./features/client/profile/profile.component').then(m => m.ProfileComponent)
-      },
-      {
-        path: 'subscription',
-        loadComponent: () => import('./features/client/subscription/subscription.component').then(m => m.SubscriptionComponent)
-      },
-      {
-        path: 'payments',
-        loadComponent: () => import('./features/client/payments/payments.component').then(m => m.PaymentsComponent)
-      },
-      {
-        path: 'new-subscription',
-        loadComponent: () => import('./features/client/new-subscription/new-subscription.component').then(m => m.NewSubscriptionComponent)
+        path: 'client',
+        canActivate: [ClientGuard],
+        children: [
+          {
+            path: 'profile',
+            loadComponent: () => import('./features/client/profile/profile.component').then(m => m.ProfileComponent)
+          },
+          {
+            path: 'subscription',
+            loadComponent: () => import('./features/client/subscription/subscription.component').then(m => m.SubscriptionComponent)
+          },
+          {
+            path: 'payments',
+            loadComponent: () => import('./features/client/payments/payments.component').then(m => m.PaymentsComponent)
+          },
+          {
+            path: 'new-subscription',
+            loadComponent: () => import('./features/client/new-subscription/new-subscription.component').then(m => m.NewSubscriptionComponent)
+          }
+        ]
       }
     ]
   },
