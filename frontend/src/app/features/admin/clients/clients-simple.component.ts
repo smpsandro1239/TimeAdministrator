@@ -147,11 +147,11 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     </app-layout>
   `,
   styles: [`
-    .container { padding: 24px; max-width: 1200px; margin: 0 auto; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+    .container { padding: 16px; max-width: 1200px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; gap: 16px; }
     h1 { margin: 0 0 8px 0; color: #1976d2; font-size: 28px; }
     p { margin: 0; color: #666; }
-    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 16px; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 8px; flex-wrap: wrap; }
     .search-bar mat-form-field { width: 300px; }
     .filters { display: flex; gap: 16px; }
     .filters mat-form-field { width: 150px; }
@@ -173,6 +173,29 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .notification-icon.enabled { color: #1976d2; }
     .clickable-row { cursor: pointer; }
     .clickable-row:hover { background: #f5f5f5; }
+    
+    @media (max-width: 768px) {
+      .container { padding: 8px; }
+      .header { flex-direction: column; align-items: stretch; gap: 12px; }
+      .header button { width: 100%; }
+      .toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+      .search-bar mat-form-field { width: 100%; }
+      .filters { flex-wrap: wrap; justify-content: space-between; }
+      .filters mat-form-field { width: calc(50% - 8px); min-width: 120px; }
+      .filters button { flex: 1; min-width: 80px; }
+      .clients-table { font-size: 14px; }
+      .notification-icons { flex-direction: column; gap: 2px; }
+      .notification-icon { font-size: 14px; width: 14px; height: 14px; }
+    }
+    
+    @media (max-width: 480px) {
+      .filters mat-form-field { width: 100%; }
+      .filters { flex-direction: column; }
+      .filters button { width: 100%; margin-bottom: 8px; }
+      .clients-table { font-size: 12px; }
+      .days-left { font-size: 11px; padding: 2px 4px; }
+      .status { font-size: 10px; padding: 2px 6px; }
+    }
   `]
 })
 export class ClientsSimpleComponent implements OnInit {
@@ -212,7 +235,8 @@ export class ClientsSimpleComponent implements OnInit {
   addClient(): void {
     import('./add-client-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.AddClientDialogComponent, {
-        width: '500px',
+        width: '90vw',
+        maxWidth: '500px',
         disableClose: true
       });
       
@@ -233,7 +257,8 @@ export class ClientsSimpleComponent implements OnInit {
   viewClient(client: any): void {
     import('./view-client-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ViewClientDialogComponent, {
-        width: '600px',
+        width: '90vw',
+        maxWidth: '600px',
         data: { client }
       });
       
@@ -252,7 +277,8 @@ export class ClientsSimpleComponent implements OnInit {
   editClient(client: any): void {
     import('./edit-client-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.EditClientDialogComponent, {
-        width: '500px',
+        width: '90vw',
+        maxWidth: '500px',
         data: { client }
       });
       

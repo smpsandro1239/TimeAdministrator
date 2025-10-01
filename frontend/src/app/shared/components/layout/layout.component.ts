@@ -35,11 +35,26 @@ import { MobileNavComponent } from '../mobile-nav/mobile-nav.component';
     .main-content {
       flex: 1;
       overflow-y: auto;
+      overflow-x: hidden;
       background: #f5f5f5;
+      min-width: 0;
     }
 
     .main-content.mobile {
       padding-bottom: 80px;
+      width: 100vw;
+    }
+    
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+      
+      .main-content {
+        height: calc(100vh - 80px);
+        width: 100%;
+        padding: 0;
+      }
     }
   `]
 })

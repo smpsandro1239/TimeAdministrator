@@ -289,6 +289,43 @@ import { User, UserRole } from '../../../models/user.model';
     .logout-btn mat-icon {
       margin-right: 8px;
     }
+    
+    @media (max-width: 768px) {
+      .modern-sidebar {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        z-index: 1000;
+        transition: left 0.3s ease;
+      }
+      
+      .modern-sidebar.open {
+        left: 0;
+      }
+      
+      .brand {
+        padding: 20px 16px;
+      }
+      
+      .brand-text h1 {
+        font-size: 18px;
+      }
+      
+      .nav-menu {
+        padding: 0 12px;
+      }
+      
+      .menu-item {
+        padding: 12px 14px;
+        font-size: 16px;
+      }
+      
+      .sidebar-footer {
+        padding: 16px;
+      }
+    }
   `]
 })
 export class SidebarComponent implements OnInit {

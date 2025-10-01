@@ -91,7 +91,7 @@ import { FormsModule } from '@angular/forms';
     .dialog-header h2 { display: flex; align-items: center; gap: 12px; margin: 0; }
     .title-icon { font-size: 28px; }
     
-    .form-container { display: flex; flex-direction: column; gap: 24px; min-width: 500px; }
+    .form-container { display: flex; flex-direction: column; gap: 24px; width: 100%; max-width: 500px; min-width: 0; }
     .form-section { background: #f8f9fa; padding: 20px; border-radius: 8px; }
     .form-section h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 16px 0; color: #1976d2; font-size: 16px; }
     .section-description { margin: 0 0 16px 0; color: #666; font-size: 14px; }
@@ -104,6 +104,16 @@ import { FormsModule } from '@angular/forms';
     .notification-checkbox mat-icon { font-size: 18px; color: #1976d2; }
     
     .dialog-actions { padding: 16px 24px; }
+    
+    @media (max-width: 768px) {
+      .form-container { max-width: 100%; }
+      .dialog-header { margin: -24px -16px 16px -16px; padding: 16px; }
+      .dialog-actions { padding: 16px; flex-direction: column; gap: 8px; }
+      .dialog-actions button { width: 100%; }
+      .form-section { padding: 16px; }
+      .checkbox-group { gap: 8px; }
+      .notification-checkbox { padding: 12px 8px; }
+    }
   `]
 })
 export class AddClientDialogComponent {
