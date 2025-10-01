@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
 import { Chart, registerables } from 'chart.js';
@@ -27,7 +28,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
     CommonModule, MatCardModule, MatButtonModule, MatIconModule, 
     MatTableModule, MatSelectModule, MatFormFieldModule, MatDatepickerModule, 
     MatNativeDateModule, MatInputModule, MatDialogModule, MatProgressSpinnerModule, 
-    FormsModule, LayoutComponent
+    MatTooltipModule, FormsModule, LayoutComponent
   ],
   template: `
     <app-layout>
@@ -134,7 +135,10 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
         </div>
         
         <div class="metrics-grid" *ngIf="!loading">
-          <mat-card class="metric-card revenue" (click)="showMetricDetails('revenue')">
+          <mat-card class="metric-card revenue" 
+                   (click)="showMetricDetails('revenue')"
+                   matTooltip="{{ getMetricTooltip('revenue') }}"
+                   matTooltipPosition="above">
             <mat-card-content>
               <div class="metric-header">
                 <mat-icon>euro</mat-icon>
@@ -145,7 +149,10 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-content>
           </mat-card>
           
-          <mat-card class="metric-card subscriptions" (click)="showMetricDetails('subscriptions')">
+          <mat-card class="metric-card subscriptions" 
+                   (click)="showMetricDetails('subscriptions')"
+                   matTooltip="{{ getMetricTooltip('subscriptions') }}"
+                   matTooltipPosition="above">
             <mat-card-content>
               <div class="metric-header">
                 <mat-icon>people</mat-icon>
@@ -156,7 +163,10 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-content>
           </mat-card>
           
-          <mat-card class="metric-card expiring" (click)="showMetricDetails('expiring')">
+          <mat-card class="metric-card expiring" 
+                   (click)="showMetricDetails('expiring')"
+                   matTooltip="{{ getMetricTooltip('expiring') }}"
+                   matTooltipPosition="above">
             <mat-card-content>
               <div class="metric-header">
                 <mat-icon>warning</mat-icon>
@@ -167,7 +177,10 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-content>
           </mat-card>
           
-          <mat-card class="metric-card conversion" (click)="showMetricDetails('conversion')">
+          <mat-card class="metric-card conversion" 
+                   (click)="showMetricDetails('conversion')"
+                   matTooltip="{{ getMetricTooltip('conversion') }}"
+                   matTooltipPosition="above">
             <mat-card-content>
               <div class="metric-header">
                 <mat-icon>trending_up</mat-icon>
@@ -270,7 +283,10 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-header>
             <mat-card-content>
               <div class="kpis-grid">
-                <div class="kpi-item">
+                <div class="kpi-item" 
+                     matTooltip="{{ getKpiTooltip('mrr') }}"
+                     matTooltipPosition="above"
+                     matTooltipClass="kpi-tooltip">
                   <div class="kpi-icon">
                     <mat-icon>attach_money</mat-icon>
                   </div>
@@ -281,7 +297,10 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                   </div>
                 </div>
                 
-                <div class="kpi-item">
+                <div class="kpi-item"
+                     matTooltip="{{ getKpiTooltip('churn') }}"
+                     matTooltipPosition="above"
+                     matTooltipClass="kpi-tooltip">
                   <div class="kpi-icon">
                     <mat-icon>trending_down</mat-icon>
                   </div>
@@ -294,7 +313,10 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                   </div>
                 </div>
                 
-                <div class="kpi-item">
+                <div class="kpi-item"
+                     matTooltip="{{ getKpiTooltip('ltv') }}"
+                     matTooltipPosition="above"
+                     matTooltipClass="kpi-tooltip">
                   <div class="kpi-icon">
                     <mat-icon>schedule</mat-icon>
                   </div>
@@ -558,6 +580,18 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
     .kpi-status.good { color: #4caf50; font-weight: 600; }
     .kpi-status.acceptable { color: #ff9800; font-weight: 600; }
     .kpi-status.critical { color: #f44336; font-weight: 600; }
+    
+    /* Tooltip personalizado */
+    ::ng-deep .kpi-tooltip {
+      background: #333 !important;
+      color: white !important;
+      font-size: 12px !important;
+      max-width: 300px !important;
+      white-space: pre-line !important;
+      line-height: 1.4 !important;
+      padding: 12px !important;
+      border-radius: 8px !important;
+    }
     @media (max-width: 768px) {
       .container { padding: 16px; }
       .header { flex-direction: column; align-items: flex-start; gap: 16px; }
@@ -566,10 +600,12 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
       .reports-grid { grid-template-columns: 1fr; }
       .trends-grid { grid-template-columns: 1fr 1fr; }
       .actions-grid { grid-template-columns: 1fr; }
+      .kpis-grid { grid-template-columns: 1fr; }
     }
   `]
 })
-export class ReportsSimpleComponent implements OnInit, AfterViewInit {
+export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy {
+  private realtimeInterval?: any;
   @ViewChild('revenueChart') revenueChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('monthlyChart') monthlyChartRef!: ElementRef<HTMLCanvasElement>;
   
@@ -652,6 +688,8 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit {
     this.loadMockData();
     // Tentar carregar dados reais
     this.updateData();
+    // Iniciar actualizações em tempo real dos KPIs
+    this.startRealtimeUpdates();
   }
   
   ngAfterViewInit() {
@@ -829,17 +867,31 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit {
   }
   
   updateCharts(data: ReportData) {
-    if (this.revenueChart && data.revenueByPlan) {
-      this.revenueChart.data.labels = data.revenueByPlan.map(item => item.plan);
-      this.revenueChart.data.datasets[0].data = data.revenueByPlan.map(item => item.revenue);
-      this.revenueChart.update();
+    // Destruir gráficos existentes antes de actualizar
+    if (this.revenueChart) {
+      this.revenueChart.destroy();
+    }
+    if (this.monthlyChart) {
+      this.monthlyChart.destroy();
     }
     
-    if (this.monthlyChart && data.monthlyRevenue) {
-      this.monthlyChart.data.labels = data.monthlyRevenue.map(item => item.month);
-      this.monthlyChart.data.datasets[0].data = data.monthlyRevenue.map(item => item.revenue);
-      this.monthlyChart.update();
-    }
+    // Recriar gráficos com novos dados
+    setTimeout(() => {
+      this.createRevenueChart();
+      this.createMonthlyChart();
+      
+      if (this.revenueChart && data.revenueByPlan) {
+        this.revenueChart.data.labels = data.revenueByPlan.map(item => item.plan);
+        this.revenueChart.data.datasets[0].data = data.revenueByPlan.map(item => item.revenue);
+        this.revenueChart.update();
+      }
+      
+      if (this.monthlyChart && data.monthlyRevenue) {
+        this.monthlyChart.data.labels = data.monthlyRevenue.map(item => item.month);
+        this.monthlyChart.data.datasets[0].data = data.monthlyRevenue.map(item => item.revenue);
+        this.monthlyChart.update();
+      }
+    }, 100);
   }
   
   toggleChartType(chartType: 'revenue' | 'monthly') {
@@ -1102,5 +1154,59 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit {
         console.error('Erro ao exportar relatório:', error);
       }
     });
+  }
+  
+  getMetricTooltip(metric: string): string {
+    const tooltips: { [key: string]: string } = {
+      'revenue': `Receita Total: ${this.totalRevenue}€\n\nEsta métrica representa o valor total de receitas geradas no período seleccionado.\n\nPara melhorar:\n• Aumentar preços dos planos\n• Promover planos de maior valor\n• Reduzir cancelamentos\n• Implementar upselling`,
+      'subscriptions': `Subscrições Activas: ${this.activeSubscriptions}\n\nNúmero total de clientes com subscrições activas.\n\nPara melhorar:\n• Campanhas de marketing digital\n• Programa de referenciação\n• Melhorar onboarding\n• Oferecer períodos de teste`,
+      'expiring': `A Expirar: ${this.expiringSubscriptions}\n\nSubscrições que expiram nos próximos 30 dias.\n\nPara melhorar:\n• Enviar lembretes antecipados\n• Oferecer descontos de renovação\n• Contacto personalizado\n• Automatizar renovações`,
+      'conversion': `Taxa de Conversão: ${this.conversionRate}%\n\nPercentagem de visitantes que se tornam clientes pagantes.\n\nPara melhorar:\n• Optimizar landing pages\n• Simplificar processo de registo\n• Oferecer garantia de devolução\n• Melhorar proposta de valor`
+    };
+    return tooltips[metric] || 'Informação não disponível';
+  }
+  
+  getKpiTooltip(kpi: string): string {
+    const tooltips: { [key: string]: string } = {
+      'mrr': `MRR (Monthly Recurring Revenue): ${this.realtimeKpis.mrr}€\n\nReceita recorrente mensal - valor previsível de receita que a empresa recebe mensalmente.\n\nPara melhorar:\n• Aumentar preços dos planos\n• Fazer upselling para planos superiores\n• Reduzir churn rate\n• Adquirir novos clientes`,
+      'churn': `Taxa de Churn: ${this.realtimeKpis.churnRate}%\n\nPercentagem de clientes que cancelam as suas subscrições mensalmente.\n\nPara melhorar:\n• Melhorar experiência do cliente\n• Implementar programa de fidelização\n• Contacto proactivo com clientes\n• Resolver problemas rapidamente`,
+      'ltv': `LTV (Lifetime Value): ${this.realtimeKpis.ltv}€\n\nValor total que um cliente gera durante toda a sua relação com a empresa.\n\nPara melhorar:\n• Aumentar tempo de vida do cliente\n• Fazer cross-selling e upselling\n• Melhorar retenção\n• Optimizar onboarding`
+    };
+    return tooltips[kpi] || 'Informação não disponível';
+  }
+  
+  startRealtimeUpdates() {
+    // Actualizar KPIs a cada 30 segundos para simular tempo real
+    this.realtimeInterval = setInterval(() => {
+      this.lastUpdate = new Date();
+      
+      // Simular pequenas variações nos KPIs
+      const mrrVariation = (Math.random() - 0.5) * 100;
+      const churnVariation = (Math.random() - 0.5) * 0.2;
+      const ltvVariation = (Math.random() - 0.5) * 20;
+      
+      this.realtimeKpis.mrr = Math.max(10000, this.realtimeKpis.mrr + mrrVariation);
+      this.realtimeKpis.churnRate = Math.max(1, Math.min(10, this.realtimeKpis.churnRate + churnVariation));
+      this.realtimeKpis.ltv = Math.max(500, this.realtimeKpis.ltv + ltvVariation);
+      
+      // Arredondar valores
+      this.realtimeKpis.mrr = Math.round(this.realtimeKpis.mrr);
+      this.realtimeKpis.churnRate = Math.round(this.realtimeKpis.churnRate * 10) / 10;
+      this.realtimeKpis.ltv = Math.round(this.realtimeKpis.ltv);
+    }, 30000);
+  }
+  
+  ngOnDestroy() {
+    if (this.realtimeInterval) {
+      clearInterval(this.realtimeInterval);
+    }
+    
+    // Destruir gráficos
+    if (this.revenueChart) {
+      this.revenueChart.destroy();
+    }
+    if (this.monthlyChart) {
+      this.monthlyChart.destroy();
+    }
   }
 }
