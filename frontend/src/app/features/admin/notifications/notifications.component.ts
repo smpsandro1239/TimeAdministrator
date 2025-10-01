@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
-import { MatChipsModule } from '@angular/material/chips';
+
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -29,7 +29,7 @@ import {
   standalone: true,
   imports: [
     CommonModule, FormsModule, MatCardModule, MatButtonModule, MatIconModule, 
-    MatTabsModule, MatTableModule, MatChipsModule, MatFormFieldModule, 
+    MatTabsModule, MatTableModule, MatFormFieldModule, 
     MatInputModule, MatSelectModule, MatSlideToggleModule, MatDialogModule,
     MatSnackBarModule, MatProgressSpinnerModule, MatTooltipModule, LayoutComponent
   ],
@@ -138,9 +138,9 @@ import {
                           <div class="notification-time">{{ notification.sentAt | date:'dd/MM/yyyy HH:mm' }}</div>
                         </div>
                         <div class="notification-status">
-                          <mat-chip [ngClass]="notification.status">
+                          <span class="status-chip" [ngClass]="notification.status">
                             {{ getStatusText(notification.status) }}
-                          </mat-chip>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -166,7 +166,7 @@ import {
                         <div class="schedule-info">
                           <div class="schedule-name">{{ schedule.name }}</div>
                           <div class="schedule-details">
-                            <mat-chip class="frequency">{{ getFrequencyText(schedule.frequency) }}</mat-chip>
+                            <span class="frequency-chip">{{ getFrequencyText(schedule.frequency) }}</span>
                             <span class="time">{{ schedule.time }}</span>
                           </div>
                           <div class="schedule-next">
@@ -242,11 +242,11 @@ import {
                     </div>
                     <div class="template-variables" *ngIf="template.variables.length > 0">
                       <strong>Variáveis:</strong>
-                      <mat-chip-listbox>
-                        <mat-chip *ngFor="let variable of template.variables">
+                      <div class="variables-list">
+                        <span class="variable-chip" *ngFor="let variable of template.variables">
                           {{ '{{' + variable + '}}' }}
-                        </mat-chip>
-                      </mat-chip-listbox>
+                        </span>
+                      </div>
                     </div>
                   </mat-card-content>
                   <mat-card-actions>
@@ -326,9 +326,9 @@ import {
                   <ng-container matColumnDef="status">
                     <th mat-header-cell *matHeaderCellDef>Estado</th>
                     <td mat-cell *matCellDef="let notification">
-                      <mat-chip [ngClass]="notification.status">
+                      <span class="status-chip" [ngClass]="notification.status">
                         {{ getStatusText(notification.status) }}
-                      </mat-chip>
+                      </span>
                     </td>
                   </ng-container>
 
@@ -598,7 +598,8 @@ import {
     .template-subject { margin-bottom: 8px; font-size: 14px; }
     .template-content { color: #666; margin-bottom: 12px; line-height: 1.4; }
     .template-variables { font-size: 14px; }
-    .template-variables mat-chip-listbox { margin-top: 4px; }
+    .variables-list { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px; }
+    .variable-chip { background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 12px; }
     
     /* History */
     .history-filters { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; }
@@ -638,10 +639,13 @@ import {
     .setting-description { color: #666; font-size: 14px; }
     
     /* Status Chips */
-    mat-chip.delivered { background: #e8f5e8; color: #2e7d32; }
-    mat-chip.failed { background: #ffebee; color: #c62828; }
-    mat-chip.pending { background: #fff3e0; color: #f57c00; }
-    mat-chip.sent { background: #e3f2fd; color: #1976d2; }
+    .status-chip { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+    .status-chip.delivered { background: #e8f5e8; color: #2e7d32; }
+    .status-chip.failed { background: #ffebee; color: #c62828; }
+    .status-chip.pending { background: #fff3e0; color: #f57c00; }
+    .status-chip.sent { background: #e3f2fd; color: #1976d2; }
+    
+    .frequency-chip { background: #f5f5f5; color: #666; padding: 4px 8px; border-radius: 12px; font-size: 12px; }
     
     /* Empty States */
     .empty-state { text-align: center; padding: 48px 24px; color: #666; }
