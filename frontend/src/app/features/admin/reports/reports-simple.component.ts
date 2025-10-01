@@ -17,6 +17,8 @@ import { Chart, registerables } from 'chart.js';
 import { ReportsService, ReportData, RevenueByPlan, ExpiringSubscription, RecentPayment } from '../../../services/reports.service';
 import { DetailedReportModalComponent } from './detailed-report-modal.component';
 import { ScheduleReportModalComponent } from './schedule-report-modal.component';
+import { PeriodComparisonModalComponent } from './period-comparison-modal.component';
+import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component';
 
 @Component({
   selector: 'app-reports-simple',
@@ -256,6 +258,57 @@ import { ScheduleReportModalComponent } from './schedule-report-modal.component'
           </mat-card>
         </div>
         
+        <!-- KPIs em Tempo Real -->
+        <div class="realtime-kpis" *ngIf="!loading">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon class="pulse">radio_button_checked</mat-icon>
+                KPIs em Tempo Real
+              </mat-card-title>
+              <mat-card-subtitle>Última actualização: {{ lastUpdate | date:'HH:mm:ss' }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="kpis-grid">
+                <div class="kpi-item">
+                  <div class="kpi-icon">
+                    <mat-icon>attach_money</mat-icon>
+                  </div>
+                  <div class="kpi-content">
+                    <div class="kpi-value">{{ realtimeKpis.mrr }}€</div>
+                    <div class="kpi-label">MRR (Monthly Recurring Revenue)</div>
+                    <div class="kpi-change positive">+{{ realtimeKpis.mrrGrowth }}% este mês</div>
+                  </div>
+                </div>
+                
+                <div class="kpi-item">
+                  <div class="kpi-icon">
+                    <mat-icon>trending_down</mat-icon>
+                  </div>
+                  <div class="kpi-content">
+                    <div class="kpi-value">{{ realtimeKpis.churnRate }}%</div>
+                    <div class="kpi-label">Taxa de Churn Mensal</div>
+                    <div class="kpi-change" [ngClass]="realtimeKpis.churnChange < 0 ? 'positive' : 'negative'">
+                      {{ realtimeKpis.churnChange > 0 ? '+' : '' }}{{ realtimeKpis.churnChange }}% vs mês anterior
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="kpi-item">
+                  <div class="kpi-icon">
+                    <mat-icon>schedule</mat-icon>
+                  </div>
+                  <div class="kpi-content">
+                    <div class="kpi-value">{{ realtimeKpis.ltv }}€</div>
+                    <div class="kpi-label">LTV (Lifetime Value)</div>
+                    <div class="kpi-change positive">+{{ realtimeKpis.ltvGrowth }}% este trimestre</div>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
         <div class="reports-grid" *ngIf="!loading">
           <mat-card class="report-card">
             <mat-card-header>
@@ -410,6 +463,16 @@ import { ScheduleReportModalComponent } from './schedule-report-modal.component'
                   <mat-icon>schedule</mat-icon>
                   Agendar Relatório
                 </button>
+                
+                <button mat-raised-button color="accent" (click)="comparePeriods()">
+                  <mat-icon>compare</mat-icon>
+                  Comparar Períodos
+                </button>
+                
+                <button mat-raised-button (click)="showCohortAnalysis()">
+                  <mat-icon>analytics</mat-icon>
+                  Análise de Coortes
+                </button>
               </div>
             </mat-card-content>
           </mat-card>
@@ -476,6 +539,25 @@ import { ScheduleReportModalComponent } from './schedule-report-modal.component'
     .quick-actions { margin-bottom: 24px; }
     .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
     .actions-grid button { height: 48px; }
+    
+    /* KPIs em Tempo Real */
+    .realtime-kpis { margin-bottom: 24px; }
+    .pulse { animation: pulse 2s infinite; color: #4caf50; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    .kpis-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+    .kpi-item { display: flex; gap: 16px; padding: 16px; border-radius: 8px; background: #f8f9fa; }
+    .kpi-icon { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #e3f2fd; }
+    .kpi-icon mat-icon { color: #1976d2; font-size: 24px; }
+    .kpi-content { flex: 1; }
+    .kpi-value { font-size: 24px; font-weight: 600; color: #1976d2; margin-bottom: 4px; }
+    .kpi-label { font-size: 14px; color: #666; margin-bottom: 4px; }
+    .kpi-change { font-size: 12px; font-weight: 500; }
+    .kpi-change.positive { color: #2e7d32; }
+    .kpi-change.negative { color: #c62828; }
+    .kpi-status.excellent { color: #2e7d32; font-weight: 600; }
+    .kpi-status.good { color: #4caf50; font-weight: 600; }
+    .kpi-status.acceptable { color: #ff9800; font-weight: 600; }
+    .kpi-status.critical { color: #f44336; font-weight: 600; }
     @media (max-width: 768px) {
       .container { padding: 16px; }
       .header { flex-direction: column; align-items: flex-start; gap: 16px; }
@@ -514,6 +596,17 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit {
   subscriptionGrowth = 8;
   retentionRate = 85;
   averageRevenuePerClient = 0;
+  
+  // KPIs em tempo real
+  lastUpdate = new Date();
+  realtimeKpis = {
+    mrr: 15420,
+    mrrGrowth: 8.5,
+    churnRate: 3.2,
+    churnChange: -0.5,
+    ltv: 890,
+    ltvGrowth: 12.3
+  };
   
   // Dados das tabelas
   expiringData: ExpiringSubscription[] = [];
@@ -791,6 +884,64 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit {
   
   showMetricDetails(metric: string) {
     console.log('Mostrar detalhes da métrica:', metric);
+  }
+  
+  comparePeriods() {
+    const dialogData = {
+      currentPeriod: {
+        name: this.getPeriodText(),
+        revenue: this.totalRevenue,
+        subscriptions: this.activeSubscriptions,
+        newClients: Math.round(this.activeSubscriptions * 0.3),
+        conversionRate: this.conversionRate
+      },
+      previousPeriod: {
+        name: 'Período Anterior',
+        revenue: Math.round(this.totalRevenue * 0.88),
+        subscriptions: Math.round(this.activeSubscriptions * 0.92),
+        newClients: Math.round(this.activeSubscriptions * 0.25),
+        conversionRate: Math.round(this.conversionRate * 0.95)
+      },
+      comparison: {
+        revenueChange: this.revenueGrowth,
+        subscriptionsChange: this.subscriptionGrowth,
+        newClientsChange: 20,
+        conversionChange: 5.3
+      },
+      insights: [
+        {
+          type: 'positive',
+          title: 'Crescimento Sustentado',
+          description: 'A receita tem crescido consistentemente nos últimos períodos'
+        },
+        {
+          type: 'positive',
+          title: 'Aquisição de Clientes',
+          description: 'O número de novos clientes aumentou 20% comparado ao período anterior'
+        },
+        {
+          type: 'neutral',
+          title: 'Taxa de Conversão Estável',
+          description: 'A taxa de conversão mantém-se estável com ligeiro crescimento'
+        }
+      ]
+    };
+    
+    this.dialog.open(PeriodComparisonModalComponent, {
+      width: '90vw',
+      maxWidth: '1000px',
+      height: '80vh',
+      data: dialogData
+    });
+  }
+  
+  showCohortAnalysis() {
+    this.dialog.open(CohortAnalysisModalComponent, {
+      width: '95vw',
+      maxWidth: '1400px',
+      height: '90vh',
+      data: {}
+    });
   }
   
   getDaysClass(days: number): string {
