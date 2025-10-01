@@ -39,10 +39,10 @@ import { MatIconModule } from '@angular/material/icon';
         <mat-form-field appearance="outline">
           <mat-label>Novo plano</mat-label>
           <mat-select formControlName="plan" (selectionChange)="updatePrice()">
-            <mat-option value="monthly">Mensal - €29.99</mat-option>
-            <mat-option value="quarterly">Trimestral - €79.99</mat-option>
-            <mat-option value="biannual">Semestral - €149.99</mat-option>
-            <mat-option value="annual">Anual - €279.99</mat-option>
+            <mat-option value="monthly">1 Mês - €10.00</mat-option>
+            <mat-option value="quarterly">3 Meses - €30.00</mat-option>
+            <mat-option value="biannual">6 Meses - €60.00</mat-option>
+            <mat-option value="annual">12 Meses - €100.00</mat-option>
           </mat-select>
         </mat-form-field>
 
@@ -111,7 +111,7 @@ export class RenewSubscriptionDialogComponent {
     const today = new Date();
     this.renewForm = this.fb.group({
       plan: ['monthly', Validators.required],
-      price: [29.99],
+      price: [10.00],
       startDate: [today, Validators.required],
       paymentStatus: ['pending', Validators.required],
       paymentMethod: ['stripe']
@@ -121,10 +121,10 @@ export class RenewSubscriptionDialogComponent {
   updatePrice(): void {
     const plan = this.renewForm.get('plan')?.value;
     const prices: { [key: string]: number } = {
-      'monthly': 29.99,
-      'quarterly': 79.99,
-      'biannual': 149.99,
-      'annual': 279.99
+      'monthly': 10.00,
+      'quarterly': 30.00,
+      'biannual': 60.00,
+      'annual': 100.00
     };
     
     if (prices[plan]) {

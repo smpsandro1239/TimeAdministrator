@@ -179,14 +179,14 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
 export class SubscriptionsSimpleComponent implements OnInit {
   displayedColumns: string[] = ['client', 'plan', 'startDate', 'endDate', 'daysLeft', 'status', 'value', 'actions'];
   subscriptions = [
-    { id: 1, clientName: 'João Silva', plan: 'annual', startDate: new Date('2024-01-15'), endDate: new Date('2025-01-15'), status: 'active', value: 279.99 },
-    { id: 2, clientName: 'Maria Santos', plan: 'monthly', startDate: new Date('2024-09-01'), endDate: new Date('2024-10-01'), status: 'expired', value: 29.99 },
-    { id: 3, clientName: 'Pedro Costa', plan: 'quarterly', startDate: new Date('2024-07-01'), endDate: new Date('2024-10-01'), status: 'expired', value: 79.99 },
-    { id: 4, clientName: 'Ana Ferreira', plan: 'biannual', startDate: new Date('2024-05-01'), endDate: new Date('2024-11-01'), status: 'active', value: 149.99 },
-    { id: 5, clientName: 'Carlos Oliveira', plan: 'monthly', startDate: new Date('2024-09-15'), endDate: new Date('2024-10-15'), status: 'active', value: 29.99 },
-    { id: 6, clientName: 'Luísa Pereira', plan: 'annual', startDate: new Date('2024-03-01'), endDate: new Date('2025-03-01'), status: 'active', value: 279.99 },
-    { id: 7, clientName: 'Rui Martins', plan: 'quarterly', startDate: new Date('2024-08-01'), endDate: new Date('2024-11-01'), status: 'cancelled', value: 79.99 },
-    { id: 8, clientName: 'Sofia Rodrigues', plan: 'monthly', startDate: new Date('2024-09-20'), endDate: new Date('2024-10-20'), status: 'active', value: 29.99 }
+    { id: 1, clientName: 'João Silva', plan: 'annual', startDate: new Date('2024-01-15'), endDate: new Date('2025-01-15'), status: 'active', value: 100.00 },
+    { id: 2, clientName: 'Maria Santos', plan: 'monthly', startDate: new Date('2024-09-01'), endDate: new Date('2024-10-01'), status: 'expired', value: 10.00 },
+    { id: 3, clientName: 'Pedro Costa', plan: 'quarterly', startDate: new Date('2024-07-01'), endDate: new Date('2024-10-01'), status: 'expired', value: 30.00 },
+    { id: 4, clientName: 'Ana Ferreira', plan: 'biannual', startDate: new Date('2024-05-01'), endDate: new Date('2024-11-01'), status: 'active', value: 60.00 },
+    { id: 5, clientName: 'Carlos Oliveira', plan: 'monthly', startDate: new Date('2024-09-15'), endDate: new Date('2024-10-15'), status: 'active', value: 10.00 },
+    { id: 6, clientName: 'Luísa Pereira', plan: 'annual', startDate: new Date('2024-03-01'), endDate: new Date('2025-03-01'), status: 'active', value: 100.00 },
+    { id: 7, clientName: 'Rui Martins', plan: 'quarterly', startDate: new Date('2024-08-01'), endDate: new Date('2024-11-01'), status: 'cancelled', value: 30.00 },
+    { id: 8, clientName: 'Sofia Rodrigues', plan: 'monthly', startDate: new Date('2024-09-20'), endDate: new Date('2024-10-20'), status: 'active', value: 10.00 }
   ];
   filteredSubscriptions = [...this.subscriptions];
   searchTerm = '';
@@ -234,10 +234,20 @@ export class SubscriptionsSimpleComponent implements OnInit {
   getPlanText(plan: string): string {
     switch(plan) {
       case 'monthly': return 'Mensal';
-      case 'quarterly': return 'Trimestral';
-      case 'biannual': return 'Semestral';
-      case 'annual': return 'Anual';
+      case 'quarterly': return '3 Meses';
+      case 'biannual': return '6 Meses';
+      case 'annual': return '12 Meses';
       default: return plan;
+    }
+  }
+  
+  getDefaultPrice(plan: string): number {
+    switch(plan) {
+      case 'monthly': return 10.00;
+      case 'quarterly': return 30.00;
+      case 'biannual': return 60.00;
+      case 'annual': return 100.00;
+      default: return 0;
     }
   }
   
