@@ -4,75 +4,188 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-view-client-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatCardModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatCardModule, MatDividerModule, MatChipsModule],
   template: `
-    <h2 mat-dialog-title>
-      <mat-icon>person</mat-icon>
-      Detalhes do Cliente
-    </h2>
+    <div class="dialog-header">
+      <h2 mat-dialog-title>
+        <div class="title-content">
+          <mat-icon class="title-icon">person</mat-icon>
+          <div>
+            <div class="title-text">{{ data.client.name }}</div>
+            <div class="subtitle-text">Detalhes do Cliente</div>
+          </div>
+        </div>
+        <span class="status-chip" [ngClass]="data.client.status">{{ getStatusText(data.client.status) }}</span>
+      </h2>
+    </div>
+    
     <mat-dialog-content>
       <div class="client-details">
-        <mat-card>
+        <!-- Informações Pessoais -->
+        <mat-card class="info-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>contact_mail</mat-icon>
+              Informações Pessoais
+            </mat-card-title>
+          </mat-card-header>
           <mat-card-content>
-            <div class="detail-row">
-              <strong>Nome:</strong>
-              <span>{{ data.client.name }}</span>
-            </div>
-            <div class="detail-row">
-              <strong>Email:</strong>
-              <span>{{ data.client.email }}</span>
-            </div>
-            <div class="detail-row">
-              <strong>Telefone:</strong>
-              <span>{{ data.client.phone || 'Não informado' }}</span>
-            </div>
-            <div class="detail-row">
-              <strong>Estado:</strong>
-              <span class="status" [ngClass]="data.client.status">{{ getStatusText(data.client.status) }}</span>
-            </div>
-            <div class="detail-row">
-              <strong>ID:</strong>
-              <span>#{{ data.client.id }}</span>
+            <div class="info-grid">
+              <div class="info-item">
+                <mat-icon class="info-icon">person</mat-icon>
+                <div class="info-content">
+                  <div class="info-label">Nome Completo</div>
+                  <div class="info-value">{{ data.client.name }}</div>
+                </div>
+              </div>
+              
+              <div class="info-item">
+                <mat-icon class="info-icon">email</mat-icon>
+                <div class="info-content">
+                  <div class="info-label">Email</div>
+                  <div class="info-value">{{ data.client.email }}</div>
+                </div>
+              </div>
+              
+              <div class="info-item">
+                <mat-icon class="info-icon">phone</mat-icon>
+                <div class="info-content">
+                  <div class="info-label">Telefone</div>
+                  <div class="info-value">{{ data.client.phone || 'Não informado' }}</div>
+                </div>
+              </div>
+              
+              <div class="info-item">
+                <mat-icon class="info-icon">tag</mat-icon>
+                <div class="info-content">
+                  <div class="info-label">ID do Cliente</div>
+                  <div class="info-value">#{{ data.client.id }}</div>
+                </div>
+              </div>
             </div>
           </mat-card-content>
         </mat-card>
         
-        <div class="actions-section">
-          <h3>Ações Disponíveis</h3>
-          <button mat-stroked-button (click)="editClient()">
-            <mat-icon>edit</mat-icon>
-            Editar Cliente
-          </button>
-          <button mat-stroked-button (click)="manageSubscription()">
-            <mat-icon>subscriptions</mat-icon>
-            Gerir Subscrição
-          </button>
-          <button mat-stroked-button (click)="viewPayments()">
-            <mat-icon>payment</mat-icon>
-            Ver Pagamentos
-          </button>
-        </div>
+        <!-- Preferências de Notificação -->
+        <mat-card class="info-card" *ngIf="data.client.notificationPreferences">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>notifications</mat-icon>
+              Preferências de Notificação
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-chip-set>
+              <mat-chip [class.enabled]="data.client.notificationPreferences.email">
+                <mat-icon>email</mat-icon>
+                Email
+              </mat-chip>
+              <mat-chip [class.enabled]="data.client.notificationPreferences.whatsapp">
+                <mat-icon>chat</mat-icon>
+                WhatsApp
+              </mat-chip>
+              <mat-chip [class.enabled]="data.client.notificationPreferences.telegram">
+                <mat-icon>send</mat-icon>
+                Telegram
+              </mat-chip>
+            </mat-chip-set>
+          </mat-card-content>
+        </mat-card>
+        
+        <!-- Subscrição -->
+        <mat-card class="info-card" *ngIf="data.client.subscriptionEnd">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>schedule</mat-icon>
+              Subscrição
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="subscription-info">
+              <div class="subscription-item">
+                <span class="label">Expira em:</span>
+                <span class="value" [ngClass]="getDaysLeftClass()">{{ getDaysLeftText() }}</span>
+              </div>
+              <div class="subscription-item">
+                <span class="label">Data de Expiração:</span>
+                <span class="value">{{ data.client.subscriptionEnd | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
       </div>
     </mat-dialog-content>
-    <mat-dialog-actions align="end">
+    
+    <mat-divider></mat-divider>
+    
+    <mat-dialog-actions class="dialog-actions">
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" (click)="editClient()">
+          <mat-icon>edit</mat-icon>
+          Editar Cliente
+        </button>
+        <button mat-raised-button (click)="manageSubscription()">
+          <mat-icon>subscriptions</mat-icon>
+          Gerir Subscrição
+        </button>
+        <button mat-raised-button (click)="viewPayments()">
+          <mat-icon>payment</mat-icon>
+          Ver Pagamentos
+        </button>
+      </div>
       <button mat-button (click)="close()">Fechar</button>
     </mat-dialog-actions>
   `,
   styles: [`
-    .client-details { min-width: 500px; }
-    .detail-row { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 0; border-bottom: 1px solid #eee; }
-    .detail-row:last-child { border-bottom: none; }
-    .status { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
-    .status.active { background: #e8f5e8; color: #2e7d32; }
-    .status.inactive { background: #ffebee; color: #c62828; }
-    .status.pending { background: #fff3e0; color: #ef6c00; }
-    .actions-section { margin-top: 24px; }
-    .actions-section h3 { margin-bottom: 16px; color: #333; }
-    .actions-section button { margin-right: 8px; margin-bottom: 8px; }
+    .dialog-header { background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); color: white; margin: -24px -24px 24px -24px; padding: 24px; }
+    .title-content { display: flex; align-items: center; gap: 12px; }
+    .title-icon { font-size: 32px; width: 32px; height: 32px; }
+    .title-text { font-size: 24px; font-weight: 600; margin: 0; }
+    .subtitle-text { font-size: 14px; opacity: 0.9; margin: 0; }
+    .status-chip { padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+    .status-chip.active { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+    .status-chip.inactive { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+    .status-chip.pending { background: rgba(255, 152, 0, 0.2); color: #ff9800; }
+    
+    .client-details { min-width: 600px; display: flex; flex-direction: column; gap: 16px; }
+    .info-card { transition: transform 0.2s; }
+    .info-card:hover { transform: translateY(-2px); }
+    .info-card mat-card-title { display: flex; align-items: center; gap: 8px; color: #1976d2; }
+    
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .info-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8f9fa; border-radius: 8px; }
+    .info-icon { color: #1976d2; font-size: 20px; }
+    .info-content { flex: 1; }
+    .info-label { font-size: 12px; color: #666; font-weight: 500; text-transform: uppercase; }
+    .info-value { font-size: 14px; color: #333; font-weight: 600; margin-top: 2px; }
+    
+    mat-chip-set { display: flex; gap: 8px; }
+    mat-chip { background: #f5f5f5; color: #666; }
+    mat-chip.enabled { background: #e3f2fd; color: #1976d2; }
+    mat-chip mat-icon { font-size: 16px; margin-right: 4px; }
+    
+    .subscription-info { display: flex; flex-direction: column; gap: 12px; }
+    .subscription-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; }
+    .subscription-item .label { font-weight: 500; color: #666; }
+    .subscription-item .value { font-weight: 600; }
+    .subscription-item .value.critical { color: #f44336; }
+    .subscription-item .value.warning { color: #ff9800; }
+    .subscription-item .value.safe { color: #4caf50; }
+    
+    .dialog-actions { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; }
+    .action-buttons { display: flex; gap: 8px; }
+    
+    @media (max-width: 768px) {
+      .client-details { min-width: 400px; }
+      .info-grid { grid-template-columns: 1fr; }
+      .action-buttons { flex-direction: column; }
+    }
   `]
 })
 export class ViewClientDialogComponent {
@@ -104,5 +217,27 @@ export class ViewClientDialogComponent {
 
   close(): void {
     this.dialogRef.close();
+  }
+
+  getDaysLeft(): number {
+    if (!this.data.client.subscriptionEnd) return -999;
+    const today = new Date();
+    const endDate = new Date(this.data.client.subscriptionEnd);
+    const diffTime = endDate.getTime() - today.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  getDaysLeftText(): string {
+    const days = this.getDaysLeft();
+    if (days < -365) return '--';
+    if (days < 0) return 'Expirada';
+    return `${days} dias`;
+  }
+
+  getDaysLeftClass(): string {
+    const days = this.getDaysLeft();
+    if (days < 0) return 'critical';
+    if (days <= 15) return 'warning';
+    return 'safe';
   }
 }
