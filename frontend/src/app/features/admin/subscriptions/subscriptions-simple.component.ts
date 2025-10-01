@@ -48,6 +48,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <mat-select [(value)]="statusFilter" (selectionChange)="applyFilter()">
                     <mat-option value="all">Todos</mat-option>
                     <mat-option value="active">Ativa</mat-option>
+                    <mat-option value="inactive">Inativa</mat-option>
                     <mat-option value="expired">Expirada</mat-option>
                     <mat-option value="cancelled">Cancelada</mat-option>
                   </mat-select>
@@ -130,6 +131,14 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <button mat-icon-button (click)="renewSubscription(sub)" matTooltip="Renovar">
                     <mat-icon>refresh</mat-icon>
                   </button>
+                  <button mat-icon-button *ngIf="getDaysLeft(sub) < 0 && sub.status === 'inactive'" 
+                          (click)="keepActive(sub)" color="primary" matTooltip="Manter ativo +1 mês">
+                    <mat-icon>play_arrow</mat-icon>
+                  </button>
+                  <button mat-icon-button *ngIf="sub.manuallyActive" 
+                          (click)="deactivate(sub)" color="warn" matTooltip="Desativar">
+                    <mat-icon>stop</mat-icon>
+                  </button>
                   <button mat-icon-button (click)="cancelSubscription(sub)" color="warn" matTooltip="Cancelar">
                     <mat-icon>cancel</mat-icon>
                   </button>
@@ -179,14 +188,14 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
 export class SubscriptionsSimpleComponent implements OnInit {
   displayedColumns: string[] = ['client', 'plan', 'startDate', 'endDate', 'daysLeft', 'status', 'value', 'actions'];
   subscriptions = [
-    { id: 1, clientName: 'João Silva', plan: 'annual', startDate: new Date('2024-01-15'), endDate: new Date('2025-01-15'), status: 'active', value: 100.00 },
-    { id: 2, clientName: 'Maria Santos', plan: 'monthly', startDate: new Date('2024-09-01'), endDate: new Date('2024-10-01'), status: 'expired', value: 10.00 },
-    { id: 3, clientName: 'Pedro Costa', plan: 'quarterly', startDate: new Date('2024-07-01'), endDate: new Date('2024-10-01'), status: 'expired', value: 30.00 },
-    { id: 4, clientName: 'Ana Ferreira', plan: 'biannual', startDate: new Date('2024-05-01'), endDate: new Date('2024-11-01'), status: 'active', value: 60.00 },
-    { id: 5, clientName: 'Carlos Oliveira', plan: 'monthly', startDate: new Date('2024-09-15'), endDate: new Date('2024-10-15'), status: 'active', value: 10.00 },
-    { id: 6, clientName: 'Luísa Pereira', plan: 'annual', startDate: new Date('2024-03-01'), endDate: new Date('2025-03-01'), status: 'active', value: 100.00 },
-    { id: 7, clientName: 'Rui Martins', plan: 'quarterly', startDate: new Date('2024-08-01'), endDate: new Date('2024-11-01'), status: 'cancelled', value: 30.00 },
-    { id: 8, clientName: 'Sofia Rodrigues', plan: 'monthly', startDate: new Date('2024-09-20'), endDate: new Date('2024-10-20'), status: 'active', value: 10.00 }
+    { id: 1, clientName: 'João Silva', plan: 'annual', startDate: new Date('2024-01-15'), endDate: new Date('2025-01-15'), status: 'active', value: 100.00, manuallyActive: false },
+    { id: 2, clientName: 'Maria Santos', plan: 'monthly', startDate: new Date('2024-09-01'), endDate: new Date('2024-09-30'), status: 'inactive', value: 10.00, manuallyActive: false },
+    { id: 3, clientName: 'Pedro Costa', plan: 'quarterly', startDate: new Date('2024-07-01'), endDate: new Date('2024-09-25'), status: 'active', value: 30.00, manuallyActive: true },
+    { id: 4, clientName: 'Ana Ferreira', plan: 'biannual', startDate: new Date('2024-05-01'), endDate: new Date('2024-11-01'), status: 'active', value: 60.00, manuallyActive: false },
+    { id: 5, clientName: 'Carlos Oliveira', plan: 'monthly', startDate: new Date('2024-09-15'), endDate: new Date('2024-10-15'), status: 'active', value: 10.00, manuallyActive: false },
+    { id: 6, clientName: 'Luísa Pereira', plan: 'annual', startDate: new Date('2024-03-01'), endDate: new Date('2025-03-01'), status: 'active', value: 100.00, manuallyActive: false },
+    { id: 7, clientName: 'Rui Martins', plan: 'quarterly', startDate: new Date('2024-08-01'), endDate: new Date('2024-09-20'), status: 'active', value: 30.00, manuallyActive: true },
+    { id: 8, clientName: 'Sofia Rodrigues', plan: 'monthly', startDate: new Date('2024-09-20'), endDate: new Date('2024-10-20'), status: 'active', value: 10.00, manuallyActive: false }
   ];
   filteredSubscriptions = [...this.subscriptions];
   searchTerm = '';
@@ -196,6 +205,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
   constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {}
   
   ngOnInit(): void {
+    this.checkExpiredSubscriptions();
     this.applyFilter();
   }
   
@@ -254,9 +264,71 @@ export class SubscriptionsSimpleComponent implements OnInit {
   getStatusText(status: string): string {
     switch(status) {
       case 'active': return 'Ativa';
+      case 'inactive': return 'Inativa';
       case 'expired': return 'Expirada';
       case 'cancelled': return 'Cancelada';
       default: return status;
+    }
+  }
+  
+  checkExpiredSubscriptions(): void {
+    this.subscriptions.forEach(sub => {
+      const days = this.getDaysLeft(sub);
+      if (days < 0 && !sub.manuallyActive && sub.status === 'active') {
+        sub.status = 'inactive';
+      }
+    });
+  }
+  
+  keepActive(subscription: any): void {
+    import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
+        width: '400px',
+        data: {
+          title: 'Manter Subscrição Ativa',
+          message: `Deseja manter ${subscription.clientName} ativo mesmo com a subscrição expirada? Será adicionado 1 mês.`,
+          confirmText: 'Manter Ativo',
+          cancelText: 'Cancelar'
+        }
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const index = this.subscriptions.findIndex(s => s.id === subscription.id);
+          if (index !== -1) {
+            const newEndDate = new Date();
+            newEndDate.setDate(newEndDate.getDate() + 30);
+            this.subscriptions[index].status = 'active';
+            this.subscriptions[index].manuallyActive = true;
+            this.subscriptions[index].endDate = newEndDate;
+            this.applyFilter();
+            this.snackBar.open(`${subscription.clientName} mantido ativo por mais 1 mês`, 'Fechar', { duration: 3000 });
+          }
+        }
+      });
+    }).catch(() => {
+      if (confirm(`Deseja manter ${subscription.clientName} ativo mesmo com a subscrição expirada?`)) {
+        const index = this.subscriptions.findIndex(s => s.id === subscription.id);
+        if (index !== -1) {
+          const newEndDate = new Date();
+          newEndDate.setDate(newEndDate.getDate() + 30);
+          this.subscriptions[index].status = 'active';
+          this.subscriptions[index].manuallyActive = true;
+          this.subscriptions[index].endDate = newEndDate;
+          this.applyFilter();
+          this.snackBar.open(`${subscription.clientName} mantido ativo por mais 1 mês`, 'Fechar', { duration: 3000 });
+        }
+      }
+    });
+  }
+  
+  deactivate(subscription: any): void {
+    const index = this.subscriptions.findIndex(s => s.id === subscription.id);
+    if (index !== -1) {
+      this.subscriptions[index].status = 'inactive';
+      this.subscriptions[index].manuallyActive = false;
+      this.applyFilter();
+      this.snackBar.open(`${subscription.clientName} desativado`, 'Fechar', { duration: 2000 });
     }
   }
   
