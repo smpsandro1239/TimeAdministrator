@@ -20,6 +20,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
   },
   {
+    path: 'admin/clients',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/clients/clients-simple.component').then(m => m.ClientsSimpleComponent)
+  },
+  {
     path: '',
     component: LayoutComponent,
     canActivate: [AuthGuard],
@@ -28,10 +33,6 @@ export const routes: Routes = [
         path: 'admin',
         canActivate: [AdminGuard],
         children: [
-          {
-            path: 'clients',
-            loadComponent: () => import('./features/admin/clients/clients.component').then(m => m.ClientsComponent)
-          },
           {
             path: 'payments',
             loadComponent: () => import('./features/admin/payments/payments.component').then(m => m.PaymentsComponent)

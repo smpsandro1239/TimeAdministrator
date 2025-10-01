@@ -57,7 +57,7 @@ import { User, UserRole } from '../../../models/user.model';
           <div class="menu-section">
             <span class="section-title">FINANCEIRO</span>
             <a routerLink="/admin/payments" routerLinkActive="active" class="menu-item">
-              <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small">payment</mat-icon>
+              <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small" aria-hidden="false">payment</mat-icon>
               <span>Pagamentos</span>
             </a>
             <a routerLink="/admin/reports" routerLinkActive="active" class="menu-item">

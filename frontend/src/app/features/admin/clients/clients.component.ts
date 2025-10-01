@@ -17,8 +17,7 @@ import { PaginatedResponse, PaginationParams } from '../../../models/common.mode
 import { AddClientDialogComponent } from './add-client-dialog/add-client-dialog.component';
 import { EditClientDialogComponent } from './edit-client-dialog/edit-client-dialog.component';
 import { ViewClientDialogComponent } from './view-client-dialog/view-client-dialog.component';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ClientActionsMenuComponent } from '../../../shared/components/client-actions-menu/client-actions-menu.component';
+import { LayoutComponent } from '../../../shared/components/layout/layout.component';
 
 import * as XLSX from 'xlsx';
 
@@ -37,11 +36,42 @@ import * as XLSX from 'xlsx';
     MatSnackBarModule,
     MatInputModule,
     MatFormFieldModule,
-    ConfirmDialogComponent,
-    ClientActionsMenuComponent
+    LayoutComponent
   ],
-  templateUrl: './clients.component.html',
-  styleUrl: './clients.component.scss'
+  template: `
+    <app-layout>
+    <div class="page-container">
+      <div class="header">
+        <h1>Gestão de Clientes</h1>
+        <p>Gerir todos os clientes do sistema</p>
+        <button mat-raised-button color="primary" (click)="addClient()">
+          <mat-icon>add</mat-icon>
+          Novo Cliente
+        </button>
+      </div>
+      
+      <mat-card>
+        <mat-card-content>
+          <div class="empty-state">
+            <mat-icon>people</mat-icon>
+            <h2>Lista de Clientes</h2>
+            <p>Funcionalidade em desenvolvimento</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    </app-layout>
+  `,
+  styles: [`
+    .page-container { padding: 24px; max-width: 1200px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .header h1 { margin: 0; color: #333; }
+    .header p { margin: 8px 0 0 0; color: #666; }
+    .empty-state { text-align: center; padding: 48px; }
+    .empty-state mat-icon { font-size: 64px; width: 64px; height: 64px; color: #666; margin-bottom: 16px; }
+    .empty-state h2 { margin: 0 0 8px 0; color: #333; }
+    .empty-state p { margin: 0; color: #666; }
+  `]
 })
 export class ClientsComponent implements OnInit {
   displayedColumns: string[] = ['name', 'email', 'phone', 'subscriptionStatus', 'daysRemaining', 'actions'];
@@ -97,68 +127,19 @@ export class ClientsComponent implements OnInit {
   }
 
   addClient(): void {
-    const dialogRef = this.dialog.open(AddClientDialogComponent, {
-      width: '600px',
-      disableClose: true,
-      data: {}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadClients(); // Reload the list after adding a client
-      }
-    });
+    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 3000 });
   }
 
   editClient(client: Client): void {
-    const dialogRef = this.dialog.open(EditClientDialogComponent, {
-      width: '600px',
-      disableClose: true,
-      data: { client }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadClients(); // Reload the list after editing a client
-      }
-    });
+    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 3000 });
   }
 
   deleteClient(client: Client): void {
-    // Sanitizar nome do cliente para prevenir XSS
-    const sanitizedName = this.sanitizeText(client.name);
-    
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      data: {
-        title: 'Confirmar Exclusão',
-        message: `Tem certeza que deseja excluir o cliente ${sanitizedName}?`,
-        confirmText: 'Excluir',
-        cancelText: 'Cancelar'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.clientService.deleteClient(client.id).subscribe({
-          next: () => {
-            this.snackBar.open('Cliente excluído com sucesso', 'Fechar', { duration: 3000 });
-            this.loadClients();
-          },
-          error: (error) => {
-            console.error('Erro ao excluir cliente:', error);
-            this.snackBar.open('Erro ao excluir cliente', 'Fechar', { duration: 3000 });
-          }
-        });
-      }
-    });
+    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 3000 });
   }
 
   viewClient(client: Client): void {
-    const dialogRef = this.dialog.open(ViewClientDialogComponent, {
-      width: '700px',
-      data: { client }
-    });
+    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 3000 });
   }
 
   getDaysRemaining(client: Client): number {
@@ -287,22 +268,7 @@ export class ClientsComponent implements OnInit {
       return;
     }
 
-    // Confirmar importação usando dialog
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      data: {
-        title: 'Confirmar Importação',
-        message: `Deseja importar ${clientsToCreate.length} cliente(s)?`,
-        confirmText: 'Importar',
-        cancelText: 'Cancelar'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.importClients(clientsToCreate);
-      }
-    });
+    this.snackBar.open('Funcionalidade em desenvolvimento', 'Fechar', { duration: 3000 });
   }
 
   private getCellValue(row: any[], index: number): string {
