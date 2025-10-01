@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,13 +9,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
+import { Chart, ChartConfiguration, ChartType, registerables } from 'chart.js';
 
 @Component({
   selector: 'app-reports-simple',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatTableModule, MatSelectModule, MatFormFieldModule, MatDatepickerModule, MatNativeDateModule, MatInputModule, FormsModule, LayoutComponent],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatTableModule, MatSelectModule, MatFormFieldModule, MatDatepickerModule, MatNativeDateModule, MatInputModule, MatDialogModule, FormsModule, LayoutComponent],
   template: `
     <app-layout>
       <div class="container">
@@ -64,7 +66,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
         </div>
         
         <div class="metrics-grid">
-          <mat-card class="metric-card revenue">
+          <mat-card class="metric-card revenue clickable" (click)="showRevenueDetails()">
             <mat-card-content>
               <div class="metric-header">
                 <mat-icon>euro</mat-icon>
@@ -75,7 +77,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             </mat-card-content>
           </mat-card>
           
-          <mat-card class="metric-card subscriptions">
+          <mat-card class="metric-card subscriptions clickable" (click)="showSubscriptionsDetails()">
             <mat-card-content>
               <div class="metric-header">
                 <mat-icon>people</mat-icon>
@@ -86,7 +88,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             </mat-card-content>
           </mat-card>
           
-          <mat-card class="metric-card expiring">
+          <mat-card class="metric-card expiring clickable" (click)="showExpiringDetails()">
             <mat-card-content>
               <div class="metric-header">
                 <mat-icon>warning</mat-icon>
@@ -97,7 +99,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             </mat-card-content>
           </mat-card>
           
-          <mat-card class="metric-card conversion">
+          <mat-card class="metric-card conversion clickable" (click)="showConversionDetails()">
             <mat-card-content>
               <div class="metric-header">
                 <mat-icon>trending_up</mat-icon>
@@ -105,6 +107,26 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
               </div>
               <h3>{{ conversionRate }}%</h3>
               <p>Taxa de Conversão</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <div class="charts-section">
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title>Receitas por Plano</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <canvas #revenueChart></canvas>
+            </mat-card-content>
+          </mat-card>
+          
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title>Evolução Mensal</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <canvas #monthlyChart></canvas>
             </mat-card-content>
           </mat-card>
         </div>
@@ -235,6 +257,8 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .metric-card.subscriptions { border-left: 4px solid #2196F3; }
     .metric-card.expiring { border-left: 4px solid #FF9800; }
     .metric-card.conversion { border-left: 4px solid #9C27B0; }
+    .metric-card.clickable { cursor: pointer; transition: transform 0.2s; }
+    .metric-card.clickable:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     .metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .metric-header mat-icon { font-size: 24px; color: #666; }
     .trend { font-size: 12px; font-weight: 500; padding: 2px 6px; border-radius: 8px; }
@@ -242,6 +266,9 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .trend.negative { background: #ffebee; color: #c62828; }
     .metric-card h3 { margin: 8px 0 4px 0; font-size: 24px; font-weight: 600; }
     .metric-card p { margin: 0; color: #666; font-size: 14px; }
+    .charts-section { margin-bottom: 24px; }
+    .charts-section { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .chart-card canvas { max-height: 300px; }
     .reports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
     .report-table { width: 100%; }
     .revenue-cell, .amount-cell { text-align: right; font-weight: 500; }
@@ -253,15 +280,22 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .status.pending { background: #fff3e0; color: #ef6c00; }
     .status.rejected { background: #ffebee; color: #c62828; }
     @media (max-width: 768px) {
+      .charts-section { grid-template-columns: 1fr; }
       .reports-grid { grid-template-columns: 1fr; }
       .filters { flex-direction: column; align-items: stretch; }
     }
   `]
 })
-export class ReportsSimpleComponent implements OnInit {
+export class ReportsSimpleComponent implements OnInit, AfterViewInit {
+  @ViewChild('revenueChart') revenueChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('monthlyChart') monthlyChartRef!: ElementRef<HTMLCanvasElement>;
+  
   selectedPeriod = '30days';
   startDate: Date | null = null;
   endDate: Date | null = null;
+  
+  revenueChart: Chart | null = null;
+  monthlyChart: Chart | null = null;
   
   totalRevenue = 320;
   activeSubscriptions = 24;
@@ -295,8 +329,16 @@ export class ReportsSimpleComponent implements OnInit {
     { date: new Date('2024-09-29'), clientName: 'Luísa Pereira', amount: 30, method: 'stripe', status: 'approved' }
   ];
   
+  constructor(private dialog: MatDialog) {
+    Chart.register(...registerables);
+  }
+  
   ngOnInit(): void {
     this.updateData();
+  }
+  
+  ngAfterViewInit(): void {
+    this.createCharts();
   }
   
   updateData(): void {
@@ -341,6 +383,146 @@ export class ReportsSimpleComponent implements OnInit {
       case 'rejected': return 'Rejeitado';
       default: return status;
     }
+  }
+  
+  createCharts(): void {
+    this.createRevenueChart();
+    this.createMonthlyChart();
+  }
+  
+  createRevenueChart(): void {
+    const ctx = this.revenueChartRef.nativeElement.getContext('2d');
+    if (ctx) {
+      this.revenueChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['1 Mês', '3 Meses', '6 Meses', '12 Meses'],
+          datasets: [{
+            data: [80, 180, 120, 100],
+            backgroundColor: ['#2196F3', '#9C27B0', '#FF9800', '#4CAF50'],
+            borderWidth: 2,
+            borderColor: '#fff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+  }
+  
+  createMonthlyChart(): void {
+    const ctx = this.monthlyChartRef.nativeElement.getContext('2d');
+    if (ctx) {
+      this.monthlyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'],
+          datasets: [{
+            label: 'Receita (€)',
+            data: [120, 150, 180, 200, 250, 280, 300, 320, 350, 320],
+            borderColor: '#4CAF50',
+            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+  }
+  
+  showRevenueDetails(): void {
+    import('./metric-details-dialog.component').then(m => {
+      this.dialog.open(m.MetricDetailsDialogComponent, {
+        width: '600px',
+        data: {
+          title: 'Detalhes da Receita Total',
+          metric: 'revenue',
+          value: this.totalRevenue,
+          trend: '+12%',
+          details: this.revenueByPlan,
+          period: this.getPeriodText()
+        }
+      });
+    });
+  }
+  
+  showSubscriptionsDetails(): void {
+    import('./metric-details-dialog.component').then(m => {
+      this.dialog.open(m.MetricDetailsDialogComponent, {
+        width: '600px',
+        data: {
+          title: 'Detalhes das Subscrições Ativas',
+          metric: 'subscriptions',
+          value: this.activeSubscriptions,
+          trend: '+8%',
+          details: [
+            { plan: '1 Mês', count: 8, status: 'active' },
+            { plan: '3 Meses', count: 6, status: 'active' },
+            { plan: '6 Meses', count: 2, status: 'active' },
+            { plan: '12 Meses', count: 1, status: 'active' }
+          ],
+          period: this.getPeriodText()
+        }
+      });
+    });
+  }
+  
+  showExpiringDetails(): void {
+    import('./metric-details-dialog.component').then(m => {
+      this.dialog.open(m.MetricDetailsDialogComponent, {
+        width: '700px',
+        data: {
+          title: 'Subscrições a Expirar',
+          metric: 'expiring',
+          value: this.expiringSubscriptions,
+          trend: '-3%',
+          details: this.expiringData,
+          period: 'Próximos 30 dias'
+        }
+      });
+    });
+  }
+  
+  showConversionDetails(): void {
+    import('./metric-details-dialog.component').then(m => {
+      this.dialog.open(m.MetricDetailsDialogComponent, {
+        width: '600px',
+        data: {
+          title: 'Taxa de Conversão',
+          metric: 'conversion',
+          value: this.conversionRate,
+          trend: '+5%',
+          details: [
+            { metric: 'Visitantes', value: 1250 },
+            { metric: 'Leads', value: 320 },
+            { metric: 'Conversões', value: 250 },
+            { metric: 'Taxa', value: '78%' }
+          ],
+          period: this.getPeriodText()
+        }
+      });
+    });
   }
   
   exportReport(): void {
