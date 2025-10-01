@@ -1,5 +1,5 @@
 # Dockerfile para desenvolvimento do Frontend
-FROM node:18-alpine
+FROM node:24.8.0-alpine
 
 # Definir diretório de trabalho
 WORKDIR /app

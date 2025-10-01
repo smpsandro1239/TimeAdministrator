@@ -13,6 +13,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { PaymentsModule } from './payments/payments.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { ReportsModule } from './reports/reports.module';
 import { CommonModule } from './common/common.module';
 
 // Configuração
@@ -55,6 +56,7 @@ import { jwtConfig } from './config/jwt.config';
     PaymentsModule,
     NotificationsModule,
     DashboardModule,
+    ReportsModule,
   ],
 })
 export class AppModule {}

@@ -10,6 +10,9 @@
     "lint": "ng lint"
   },
   "private": true,
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "dependencies": {
     "@angular/animations": "^18.2.0",
     "@angular/cdk": "^18.2.0",
@@ -22,15 +25,17 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@stripe/stripe-js": "^4.4.0",
+    "chart.js": "^4.5.0",
+    "ng2-charts": "^8.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.6.0",
-    "xlsx": "^0.19.3",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.3.3",
-    "@angular/cli": "^20.3.3",
-    "@angular/compiler-cli": "^18.2.0",
+    "@angular-devkit/build-angular": "^18.2.21",
+    "@angular/cli": "^18.2.21",
+    "@angular/compiler-cli": "^18.2.14",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.0.0",
     "@types/xlsx": "^0.0.35",

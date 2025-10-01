@@ -20,10 +20,11 @@ export class WhatsAppService {
     const authToken = this.configService.get<string>('TWILIO_AUTH_TOKEN');
     this.whatsappFrom = this.configService.get<string>('TWILIO_WHATSAPP_FROM');
 
-    if (accountSid && authToken) {
+    if (accountSid && authToken && accountSid.startsWith('AC') && authToken.length > 10) {
       this.twilioClient = new Twilio(accountSid, authToken);
+      this.logger.log('Twilio inicializado com sucesso', 'WhatsAppService');
     } else {
-      this.logger.warn('Credenciais do Twilio não configuradas', 'WhatsAppService');
+      this.logger.warn('Credenciais do Twilio não configuradas ou inválidas - modo desenvolvimento', 'WhatsAppService');
     }
   }
 
