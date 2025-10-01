@@ -30,6 +30,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/subscriptions/subscriptions-simple.component').then(m => m.SubscriptionsSimpleComponent)
   },
   {
+    path: 'admin/payments',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/payments/payments-simple.component').then(m => m.PaymentsSimpleComponent)
+  },
+  {
     path: '',
     component: LayoutComponent,
     canActivate: [AuthGuard],
