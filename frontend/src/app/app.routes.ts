@@ -25,6 +25,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/clients/clients-simple.component').then(m => m.ClientsSimpleComponent)
   },
   {
+    path: 'admin/subscriptions',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/subscriptions/subscriptions-simple.component').then(m => m.SubscriptionsSimpleComponent)
+  },
+  {
     path: '',
     component: LayoutComponent,
     canActivate: [AuthGuard],
@@ -39,7 +44,7 @@ export const routes: Routes = [
           },
           {
             path: 'subscriptions',
-            loadComponent: () => import('./features/admin/subscriptions/subscriptions.component').then(m => m.SubscriptionsComponent)
+            loadComponent: () => import('./features/admin/subscriptions/subscriptions-simple.component').then(m => m.SubscriptionsSimpleComponent)
           },
           {
             path: 'notifications',
