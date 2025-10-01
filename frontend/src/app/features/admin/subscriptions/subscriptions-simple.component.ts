@@ -9,13 +9,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
 
 @Component({
   selector: 'app-subscriptions-simple',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule, MatSnackBarModule, MatSelectModule, MatTooltipModule, FormsModule, LayoutComponent],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule, MatSnackBarModule, MatSelectModule, MatTooltipModule, MatDialogModule, FormsModule, LayoutComponent],
   template: `
     <app-layout>
       <div class="container">
@@ -192,7 +193,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
   statusFilter = 'all';
   planFilter = 'all';
   
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {}
   
   ngOnInit(): void {
     this.applyFilter();
@@ -254,15 +255,124 @@ export class SubscriptionsSimpleComponent implements OnInit {
   }
   
   viewSubscription(subscription: any): void {
-    this.snackBar.open(`Ver detalhes: ${subscription.clientName}`, 'Fechar', { duration: 2000 });
+    import('./view-subscription-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.ViewSubscriptionDialogComponent, {
+        width: '600px',
+        data: {
+          ...subscription,
+          clientEmail: `${subscription.clientName.toLowerCase().replace(' ', '.')}@email.com`,
+          clientPhone: '912345678',
+          price: subscription.value,
+          paymentStatus: 'paid',
+          paymentMethod: 'stripe',
+          paymentDate: subscription.startDate
+        }
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result?.action === 'edit') {
+          this.editSubscription(result.subscription);
+        } else if (result?.action === 'renew') {
+          this.renewSubscription(result.subscription);
+        } else if (result?.action === 'cancel') {
+          this.confirmCancelSubscription(result.subscription);
+        }
+      });
+    });
+  }
+  
+  editSubscription(subscription: any): void {
+    import('./edit-subscription-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.EditSubscriptionDialogComponent, {
+        width: '500px',
+        data: {
+          ...subscription,
+          price: subscription.value,
+          paymentStatus: 'paid',
+          paymentMethod: 'stripe'
+        }
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const index = this.subscriptions.findIndex(s => s.id === subscription.id);
+          if (index !== -1) {
+            this.subscriptions[index] = { ...this.subscriptions[index], ...result, value: result.price };
+            this.applyFilter();
+            this.snackBar.open('Subscrição atualizada com sucesso', 'Fechar', { duration: 2000 });
+          }
+        }
+      });
+    });
   }
   
   renewSubscription(subscription: any): void {
-    this.snackBar.open(`Renovar subscrição: ${subscription.clientName}`, 'Fechar', { duration: 2000 });
+    import('./renew-subscription-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.RenewSubscriptionDialogComponent, {
+        width: '500px',
+        data: {
+          ...subscription,
+          clientEmail: `${subscription.clientName.toLowerCase().replace(' ', '.')}@email.com`
+        }
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const index = this.subscriptions.findIndex(s => s.id === subscription.id);
+          if (index !== -1) {
+            this.subscriptions[index] = { 
+              ...this.subscriptions[index], 
+              ...result, 
+              value: result.price,
+              startDate: result.startDate,
+              endDate: result.endDate,
+              status: result.status
+            };
+            this.applyFilter();
+            this.snackBar.open(`Subscrição de ${subscription.clientName} renovada`, 'Fechar', { duration: 3000 });
+          }
+        }
+      });
+    });
   }
   
   cancelSubscription(subscription: any): void {
-    this.snackBar.open(`Cancelar subscrição: ${subscription.clientName}`, 'Fechar', { duration: 2000 });
+    this.confirmCancelSubscription(subscription);
+  }
+  
+  confirmCancelSubscription(subscription: any): void {
+    import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
+        width: '400px',
+        data: {
+          title: 'Cancelar Subscrição',
+          message: `Tem a certeza que deseja cancelar a subscrição de ${subscription.clientName}?`,
+          confirmText: 'Cancelar Subscrição',
+          cancelText: 'Manter Ativa'
+        }
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const index = this.subscriptions.findIndex(s => s.id === subscription.id);
+          if (index !== -1) {
+            this.subscriptions[index].status = 'cancelled';
+            this.applyFilter();
+            this.snackBar.open(`Subscrição de ${subscription.clientName} cancelada`, 'Fechar', { duration: 2000 });
+          }
+        }
+      });
+    }).catch(() => {
+      // Fallback se o componente não existir
+      if (confirm(`Tem a certeza que deseja cancelar a subscrição de ${subscription.clientName}?`)) {
+        const index = this.subscriptions.findIndex(s => s.id === subscription.id);
+        if (index !== -1) {
+          this.subscriptions[index].status = 'cancelled';
+          this.applyFilter();
+          this.snackBar.open(`Subscrição de ${subscription.clientName} cancelada`, 'Fechar', { duration: 2000 });
+        }
+      }
+    });
   }
   
   exportData(): void {
