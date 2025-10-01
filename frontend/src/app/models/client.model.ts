@@ -9,6 +9,11 @@ export interface Client {
   nextRenewalDate?: Date;
   isActive: boolean;
   userId?: string;
+  notificationPreferences: {
+    email: boolean;
+    whatsapp: boolean;
+    telegram: boolean;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,6 +28,11 @@ export interface CreateClientRequest {
   nextRenewalDate?: string;
   isActive?: boolean;
   userId?: string;
+  notificationPreferences?: {
+    email: boolean;
+    whatsapp: boolean;
+    telegram: boolean;
+  };
 }
 
 export interface UpdateClientRequest extends Partial<CreateClientRequest> {}

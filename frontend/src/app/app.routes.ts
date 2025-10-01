@@ -17,61 +17,99 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     canActivate: [AuthGuard],
-    component: LayoutComponent,
-    children: [
-      {
-        path: '',
-        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
-      }
-    ]
+    loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
   },
   {
-    path: 'admin',
+    path: 'admin/clients',
     canActivate: [AuthGuard, AdminGuard],
-    component: LayoutComponent,
-    children: [
-      {
-        path: 'clients',
-        loadComponent: () => import('./features/admin/clients/clients.component').then(m => m.ClientsComponent)
-      },
-      {
-        path: 'payments',
-        loadComponent: () => import('./features/admin/payments/payments.component').then(m => m.PaymentsComponent)
-      },
-      {
-        path: 'subscriptions',
-        loadComponent: () => import('./features/admin/subscriptions/subscriptions.component').then(m => m.SubscriptionsComponent)
-      },
-      {
-        path: 'notifications',
-        loadComponent: () => import('./features/admin/notifications/notifications.component').then(m => m.NotificationsComponent)
-      },
-      {
-        path: 'users',
-        loadComponent: () => import('./features/admin/users/users.component').then(m => m.UsersComponent)
-      }
-    ]
+    loadComponent: () => import('./features/admin/clients/clients-simple.component').then(m => m.ClientsSimpleComponent)
   },
   {
-    path: 'client',
-    canActivate: [AuthGuard, ClientGuard],
+    path: 'admin/subscriptions',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/subscriptions/subscriptions-simple.component').then(m => m.SubscriptionsSimpleComponent)
+  },
+  {
+    path: 'admin/payments',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/payments/payments-simple.component').then(m => m.PaymentsSimpleComponent)
+  },
+  {
+    path: 'admin/reports',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/reports/reports-simple.component').then(m => m.ReportsSimpleComponent)
+  },
+  {
+    path: 'admin/notifications',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/notifications/notifications-advanced.component').then(m => m.NotificationsAdvancedComponent)
+  },
+  {
+    path: 'admin/users',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/users/users-advanced.component').then(m => m.UsersAdvancedComponent)
+  },
+  {
+    path: 'admin/settings',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/settings/settings-advanced.component').then(m => m.SettingsAdvancedComponent)
+  },
+  {
+    path: '',
     component: LayoutComponent,
+    canActivate: [AuthGuard],
     children: [
       {
-        path: 'profile',
-        loadComponent: () => import('./features/client/profile/profile.component').then(m => m.ProfileComponent)
+        path: 'admin',
+        canActivate: [AdminGuard],
+        children: [
+          {
+            path: 'payments',
+            loadComponent: () => import('./features/admin/payments/payments.component').then(m => m.PaymentsComponent)
+          },
+          {
+            path: 'subscriptions',
+            loadComponent: () => import('./features/admin/subscriptions/subscriptions-simple.component').then(m => m.SubscriptionsSimpleComponent)
+          },
+          {
+            path: 'notifications',
+            loadComponent: () => import('./features/admin/notifications/notifications-simple.component').then(m => m.NotificationsSimpleComponent)
+          },
+          {
+            path: 'users',
+            loadComponent: () => import('./features/admin/users/users.component').then(m => m.UsersComponent)
+          },
+          {
+            path: 'reports',
+            loadComponent: () => import('./features/admin/reports/reports.component').then(m => m.ReportsComponent)
+          },
+          {
+            path: 'settings',
+            loadComponent: () => import('./features/admin/settings/settings.component').then(m => m.SettingsComponent)
+          }
+        ]
       },
       {
-        path: 'subscription',
-        loadComponent: () => import('./features/client/subscription/subscription.component').then(m => m.SubscriptionComponent)
-      },
-      {
-        path: 'payments',
-        loadComponent: () => import('./features/client/payments/payments.component').then(m => m.PaymentsComponent)
-      },
-      {
-        path: 'new-subscription',
-        loadComponent: () => import('./features/client/new-subscription/new-subscription.component').then(m => m.NewSubscriptionComponent)
+        path: 'client',
+        canActivate: [ClientGuard],
+        children: [
+          {
+            path: 'profile',
+            loadComponent: () => import('./features/client/profile/profile.component').then(m => m.ProfileComponent)
+          },
+          {
+            path: 'subscription',
+            loadComponent: () => import('./features/client/subscription/subscription.component').then(m => m.SubscriptionComponent)
+          },
+          {
+            path: 'payments',
+            loadComponent: () => import('./features/client/payments/payments.component').then(m => m.PaymentsComponent)
+          },
+          {
+            path: 'new-subscription',
+            loadComponent: () => import('./features/client/new-subscription/new-subscription.component').then(m => m.NewSubscriptionComponent)
+          }
+        ]
       }
     ]
   },

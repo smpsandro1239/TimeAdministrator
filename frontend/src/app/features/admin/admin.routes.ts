@@ -20,5 +20,9 @@ export const adminRoutes: Routes = [
   {
     path: 'users',
     loadComponent: () => import('./users/users.component').then(m => m.UsersComponent)
+  },
+  {
+    path: 'reports',
+    loadComponent: () => import('./reports/reports-simple.component').then(m => m.ReportsSimpleComponent)
   }
 ];

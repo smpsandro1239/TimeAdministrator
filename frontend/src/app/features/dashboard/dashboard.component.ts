@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { UserRole } from '../../models/user.model';
 import { DashboardMetrics } from '../../models/dashboard.model';
+import { LayoutComponent } from '../../shared/components/layout/layout.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,15 +28,17 @@ import { DashboardMetrics } from '../../models/dashboard.model';
     MatDividerModule,
     MatSelectModule,
     MatFormFieldModule,
-    MatGridListModule
+    MatGridListModule,
+    LayoutComponent
   ],
   template: `
-    <div class="dashboard-container">
+    <app-layout>
+      <div class="dashboard-container">
       <div class="header">
         <h1>Dashboard - TimeAdministrator</h1>
         <p class="subtitle">Sistema de Gestão de Subscrições</p>
         
-        <mat-form-field *ngIf="isAdmin" class="period-selector">
+        <mat-form-field class="period-selector">
           <mat-label>Período</mat-label>
           <mat-select [(value)]="selectedPeriod" (selectionChange)="onPeriodChange()">
             <mat-option value="7d">Últimos 7 dias</mat-option>
@@ -47,10 +50,10 @@ import { DashboardMetrics } from '../../models/dashboard.model';
       </div>
 
       <!-- Métricas Admin -->
-      <div *ngIf="isAdmin && metrics && !loading" class="metrics-section">
+      <div *ngIf="metrics && !loading" class="metrics-section">
         <mat-grid-list cols="4" rowHeight="120px" gutterSize="16px">
           <mat-grid-tile>
-            <mat-card class="metric-card">
+            <mat-card class="metric-card clickable" (click)="navigate('/admin/clients')">
               <mat-card-content>
                 <div class="metric-content">
                   <mat-icon class="metric-icon clients">people</mat-icon>
@@ -64,7 +67,7 @@ import { DashboardMetrics } from '../../models/dashboard.model';
           </mat-grid-tile>
           
           <mat-grid-tile>
-            <mat-card class="metric-card">
+            <mat-card class="metric-card clickable" (click)="navigate('/admin/subscriptions')">
               <mat-card-content>
                 <div class="metric-content">
                   <mat-icon class="metric-icon subscriptions">subscriptions</mat-icon>
@@ -78,7 +81,7 @@ import { DashboardMetrics } from '../../models/dashboard.model';
           </mat-grid-tile>
           
           <mat-grid-tile>
-            <mat-card class="metric-card">
+            <mat-card class="metric-card clickable" (click)="navigate('/admin/subscriptions')">
               <mat-card-content>
                 <div class="metric-content">
                   <mat-icon class="metric-icon warning">warning</mat-icon>
@@ -92,7 +95,7 @@ import { DashboardMetrics } from '../../models/dashboard.model';
           </mat-grid-tile>
           
           <mat-grid-tile>
-            <mat-card class="metric-card">
+            <mat-card class="metric-card clickable" (click)="navigate('/admin/payments')">
               <mat-card-content>
                 <div class="metric-content">
                   <mat-icon class="metric-icon payments">payment</mat-icon>
@@ -112,20 +115,12 @@ import { DashboardMetrics } from '../../models/dashboard.model';
         <h2>Ações Rápidas</h2>
         
         <!-- Ações Admin -->
-        <div *ngIf="isAdmin" class="actions-grid">
+        <div class="actions-grid admin-actions">
           <mat-card class="action-card" (click)="navigate('/admin/clients')">
             <mat-card-content>
               <mat-icon>people</mat-icon>
               <h3>Gerir Clientes</h3>
               <p>Adicionar, editar e visualizar clientes</p>
-            </mat-card-content>
-          </mat-card>
-          
-          <mat-card class="action-card" (click)="navigate('/admin/payments')">
-            <mat-card-content>
-              <mat-icon>payment</mat-icon>
-              <h3>Aprovar Pagamentos</h3>
-              <p>Gerir pagamentos pendentes</p>
             </mat-card-content>
           </mat-card>
           
@@ -137,17 +132,41 @@ import { DashboardMetrics } from '../../models/dashboard.model';
             </mat-card-content>
           </mat-card>
           
+          <mat-card class="action-card" (click)="navigate('/admin/payments')">
+            <mat-card-content>
+              <mat-icon>payment</mat-icon>
+              <h3>Pagamentos</h3>
+              <p>Aprovar pagamentos pendentes</p>
+            </mat-card-content>
+          </mat-card>
+          
           <mat-card class="action-card" (click)="navigate('/admin/notifications')">
             <mat-card-content>
               <mat-icon>notifications</mat-icon>
               <h3>Notificações</h3>
-              <p>Enviar notificações personalizadas</p>
+              <p>Sistema de email e WhatsApp</p>
+            </mat-card-content>
+          </mat-card>
+          
+          <mat-card class="action-card" (click)="navigate('/admin/users')">
+            <mat-card-content>
+              <mat-icon>admin_panel_settings</mat-icon>
+              <h3>Utilizadores</h3>
+              <p>Controlo de acessos</p>
+            </mat-card-content>
+          </mat-card>
+          
+          <mat-card class="action-card" (click)="navigate('/admin/reports')">
+            <mat-card-content>
+              <mat-icon>assessment</mat-icon>
+              <h3>Relatórios</h3>
+              <p>Métricas e estatísticas</p>
             </mat-card-content>
           </mat-card>
         </div>
 
         <!-- Ações Cliente -->
-        <div *ngIf="isClient" class="actions-grid">
+        <div *ngIf="isClient" class="actions-grid client-actions">
           <mat-card class="action-card" (click)="navigate('/client/profile')">
             <mat-card-content>
               <mat-icon>person</mat-icon>
@@ -185,8 +204,9 @@ import { DashboardMetrics } from '../../models/dashboard.model';
       <div class="loading-container" *ngIf="loading">
         <mat-spinner></mat-spinner>
         <p>A carregar...</p>
+        </div>
       </div>
-    </div>
+    </app-layout>
   `,
   styles: [`
     .dashboard-container {
@@ -227,6 +247,16 @@ import { DashboardMetrics } from '../../models/dashboard.model';
     .metric-card {
       height: 100%;
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .metric-card.clickable {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card.clickable:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
     .metric-content {
@@ -369,41 +399,50 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log('Dashboard ngOnInit chamado');
     this.authService.currentUser$.subscribe(user => {
+      console.log('User no dashboard:', user);
       if (user) {
         this.isAdmin = user.role === UserRole.ADMIN;
         this.isClient = user.role === UserRole.CLIENT;
+        console.log('isAdmin:', this.isAdmin, 'isClient:', this.isClient);
         
-        if (this.isAdmin) {
-          this.loadMetrics();
-        } else {
-          this.loading = false;
-        }
+        this.loadMetrics();
+      } else {
+        console.log('Nenhum user encontrado');
+        this.loading = false;
       }
     });
   }
 
   loadMetrics(): void {
+    console.log('loadMetrics chamado');
     this.loading = true;
-    this.dashboardService.getAdminMetrics(this.selectedPeriod).subscribe({
-      next: (metrics) => {
-        this.metrics = metrics;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Erro ao carregar métricas:', error);
-        this.loading = false;
-      }
-    });
+    // Mock data para desenvolvimento
+    setTimeout(() => {
+      this.metrics = {
+        totalClients: 25,
+        activeSubscriptions: 18,
+        expiringSoon: 3,
+        pendingPayments: 2,
+        totalRevenue: 1250,
+        monthlyRevenue: 450
+      };
+      console.log('Metrics carregadas:', this.metrics);
+      this.loading = false;
+    }, 1000);
   }
 
   onPeriodChange(): void {
-    if (this.isAdmin) {
-      this.loadMetrics();
-    }
+    this.loadMetrics();
   }
 
   navigate(route: string): void {
-    this.router.navigate([route]);
+    console.log('Navegando para:', route);
+    this.router.navigate([route]).then(success => {
+      console.log('Navegação sucesso:', success);
+    }).catch(error => {
+      console.error('Erro na navegação:', error);
+    });
   }
 }

@@ -78,15 +78,15 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Ações</th>
         <td mat-cell *matCellDef="let client">
-          <button mat-icon-button color="primary" (click)="viewClient(client)" title="Ver detalhes">
-            <mat-icon>visibility</mat-icon>
-          </button>
-          <button mat-icon-button color="accent" (click)="editClient(client)" title="Editar">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="deleteClient(client)" title="Excluir">
-            <mat-icon>delete</mat-icon>
-          </button>
+          <app-client-actions-menu
+            [client]="client"
+            (view)="viewClient($event)"
+            (edit)="editClient($event)"
+            (delete)="deleteClient($event)"
+            (manageSubscription)="manageSubscription($event)"
+            (viewPayments)="viewPayments($event)"
+            (sendNotification)="sendNotification($event)">
+          </app-client-actions-menu>
         </td>
       </ng-container>
 
