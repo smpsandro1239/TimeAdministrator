@@ -272,29 +272,105 @@ export class PaymentsSimpleComponent implements OnInit {
   }
   
   addPayment(): void {
-    this.snackBar.open('Adicionar novo pagamento: Em desenvolvimento', 'Fechar', { duration: 2000 });
+    import('./add-payment-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.AddPaymentDialogComponent, {
+        width: '500px',
+        disableClose: true
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.payments.push(result);
+          this.applyFilter();
+          this.snackBar.open(`Pagamento ${result.reference} adicionado`, 'Fechar', { duration: 2000 });
+        }
+      });
+    });
   }
   
   viewPayment(payment: any): void {
-    this.snackBar.open(`Ver detalhes: ${payment.reference}`, 'Fechar', { duration: 2000 });
+    import('./view-payment-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.ViewPaymentDialogComponent, {
+        width: '600px',
+        data: payment
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result?.action === 'approve') {
+          this.approvePayment(result.payment);
+        } else if (result?.action === 'reject') {
+          this.rejectPayment(result.payment);
+        }
+      });
+    });
   }
   
   approvePayment(payment: any): void {
-    const index = this.payments.findIndex(p => p.id === payment.id);
-    if (index !== -1) {
-      this.payments[index].status = 'approved';
-      this.applyFilter();
-      this.snackBar.open(`Pagamento ${payment.reference} aprovado`, 'Fechar', { duration: 2000 });
-    }
+    import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
+        width: '400px',
+        data: {
+          title: 'Aprovar Pagamento',
+          message: `Confirma a aprovação do pagamento ${payment.reference} de ${payment.clientName} no valor de ${payment.amount}€?`,
+          confirmText: 'Aprovar',
+          cancelText: 'Cancelar'
+        }
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const index = this.payments.findIndex(p => p.id === payment.id);
+          if (index !== -1) {
+            this.payments[index].status = 'approved';
+            this.applyFilter();
+            this.snackBar.open(`Pagamento ${payment.reference} aprovado`, 'Fechar', { duration: 2000 });
+          }
+        }
+      });
+    }).catch(() => {
+      if (confirm(`Confirma a aprovação do pagamento ${payment.reference}?`)) {
+        const index = this.payments.findIndex(p => p.id === payment.id);
+        if (index !== -1) {
+          this.payments[index].status = 'approved';
+          this.applyFilter();
+          this.snackBar.open(`Pagamento ${payment.reference} aprovado`, 'Fechar', { duration: 2000 });
+        }
+      }
+    });
   }
   
   rejectPayment(payment: any): void {
-    const index = this.payments.findIndex(p => p.id === payment.id);
-    if (index !== -1) {
-      this.payments[index].status = 'rejected';
-      this.applyFilter();
-      this.snackBar.open(`Pagamento ${payment.reference} rejeitado`, 'Fechar', { duration: 2000 });
-    }
+    import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
+        width: '400px',
+        data: {
+          title: 'Rejeitar Pagamento',
+          message: `Confirma a rejeição do pagamento ${payment.reference} de ${payment.clientName}?`,
+          confirmText: 'Rejeitar',
+          cancelText: 'Cancelar'
+        }
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const index = this.payments.findIndex(p => p.id === payment.id);
+          if (index !== -1) {
+            this.payments[index].status = 'rejected';
+            this.applyFilter();
+            this.snackBar.open(`Pagamento ${payment.reference} rejeitado`, 'Fechar', { duration: 2000 });
+          }
+        }
+      });
+    }).catch(() => {
+      if (confirm(`Confirma a rejeição do pagamento ${payment.reference}?`)) {
+        const index = this.payments.findIndex(p => p.id === payment.id);
+        if (index !== -1) {
+          this.payments[index].status = 'rejected';
+          this.applyFilter();
+          this.snackBar.open(`Pagamento ${payment.reference} rejeitado`, 'Fechar', { duration: 2000 });
+        }
+      }
+    });
   }
   
   exportData(): void {
