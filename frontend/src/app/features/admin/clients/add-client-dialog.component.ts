@@ -5,12 +5,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-add-client-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatCheckboxModule, MatCardModule, FormsModule],
   template: `
     <h2 mat-dialog-title>Adicionar Novo Cliente</h2>
     <mat-dialog-content>
@@ -38,6 +40,26 @@ import { FormsModule } from '@angular/forms';
             <mat-option value="inactive">Inativo</mat-option>
           </mat-select>
         </mat-form-field>
+        
+        <mat-card class="notification-preferences">
+          <mat-card-header>
+            <mat-card-title>Preferências de Notificação</mat-card-title>
+            <mat-card-subtitle>Como o cliente quer receber notificações</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="checkbox-group">
+              <mat-checkbox [(ngModel)]="client.notificationPreferences.email">
+                Email
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="client.notificationPreferences.whatsapp">
+                WhatsApp
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="client.notificationPreferences.telegram">
+                Telegram
+              </mat-checkbox>
+            </div>
+          </mat-card-content>
+        </mat-card>
       </div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
@@ -48,6 +70,8 @@ import { FormsModule } from '@angular/forms';
   styles: [`
     .form-container { display: flex; flex-direction: column; gap: 16px; min-width: 400px; }
     mat-form-field { width: 100%; }
+    .notification-preferences { margin-top: 8px; }
+    .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
   `]
 })
 export class AddClientDialogComponent {
@@ -55,7 +79,12 @@ export class AddClientDialogComponent {
     name: '',
     email: '',
     phone: '',
-    status: 'active'
+    status: 'active',
+    notificationPreferences: {
+      email: true,
+      whatsapp: false,
+      telegram: false
+    }
   };
 
   constructor(private dialogRef: MatDialogRef<AddClientDialogComponent>) {}

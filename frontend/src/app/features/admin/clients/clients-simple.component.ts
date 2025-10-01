@@ -102,6 +102,17 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                 </td>
               </ng-container>
               
+              <ng-container matColumnDef="notifications">
+                <th mat-header-cell *matHeaderCellDef>Notificações</th>
+                <td mat-cell *matCellDef="let client">
+                  <div class="notification-icons">
+                    <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.email}" matTooltip="Email">email</mat-icon>
+                    <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.whatsapp}" matTooltip="WhatsApp">chat</mat-icon>
+                    <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.telegram}" matTooltip="Telegram">send</mat-icon>
+                  </div>
+                </td>
+              </ng-container>
+              
               <ng-container matColumnDef="daysLeft">
                 <th mat-header-cell *matHeaderCellDef>Dias</th>
                 <td mat-cell *matCellDef="let client" class="days-cell">
@@ -157,21 +168,24 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .days-left.caution { background: #fffde7; color: #f57f17; }
     .days-left.safe { background: #e8f5e8; color: #2e7d32; }
     .days-left.expired { background: #f3e5f5; color: #7b1fa2; }
+    .notification-icons { display: flex; gap: 4px; }
+    .notification-icon { font-size: 16px; width: 16px; height: 16px; color: #ccc; }
+    .notification-icon.enabled { color: #1976d2; }
     .clickable-row { cursor: pointer; }
     .clickable-row:hover { background: #f5f5f5; }
   `]
 })
 export class ClientsSimpleComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'email', 'phone', 'status', 'daysLeft', 'actions'];
+  displayedColumns: string[] = ['name', 'email', 'phone', 'status', 'notifications', 'daysLeft', 'actions'];
   clients = [
-    { id: 1, name: 'João Silva', email: 'joao@email.com', phone: '912345678', status: 'active', subscriptionEnd: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000) },
-    { id: 2, name: 'Maria Santos', email: 'maria@email.com', phone: '923456789', status: 'active', subscriptionEnd: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) },
-    { id: 3, name: 'Pedro Costa', email: 'pedro@email.com', phone: null, status: 'inactive', subscriptionEnd: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) },
-    { id: 4, name: 'Ana Ferreira', email: 'ana@email.com', phone: '934567890', status: 'pending', subscriptionEnd: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) },
-    { id: 5, name: 'Carlos Oliveira', email: 'carlos@email.com', phone: '945678901', status: 'active', subscriptionEnd: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000) },
-    { id: 6, name: 'Luísa Pereira', email: 'luisa@email.com', phone: '956789012', status: 'active', subscriptionEnd: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000) },
-    { id: 7, name: 'Rui Martins', email: 'rui@email.com', phone: null, status: 'pending', subscriptionEnd: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000) },
-    { id: 8, name: 'Sofia Rodrigues', email: 'sofia@email.com', phone: '967890123', status: 'inactive', subscriptionEnd: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) }
+    { id: 1, name: 'João Silva', email: 'joao@email.com', phone: '912345678', status: 'active', subscriptionEnd: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: true, telegram: false } },
+    { id: 2, name: 'Maria Santos', email: 'maria@email.com', phone: '923456789', status: 'active', subscriptionEnd: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: false, telegram: true } },
+    { id: 3, name: 'Pedro Costa', email: 'pedro@email.com', phone: null, status: 'inactive', subscriptionEnd: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), notificationPreferences: { email: false, whatsapp: false, telegram: false } },
+    { id: 4, name: 'Ana Ferreira', email: 'ana@email.com', phone: '934567890', status: 'pending', subscriptionEnd: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: true, telegram: true } },
+    { id: 5, name: 'Carlos Oliveira', email: 'carlos@email.com', phone: '945678901', status: 'active', subscriptionEnd: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: false, telegram: false } },
+    { id: 6, name: 'Luísa Pereira', email: 'luisa@email.com', phone: '956789012', status: 'active', subscriptionEnd: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), notificationPreferences: { email: false, whatsapp: true, telegram: true } },
+    { id: 7, name: 'Rui Martins', email: 'rui@email.com', phone: null, status: 'pending', subscriptionEnd: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: false, telegram: false } },
+    { id: 8, name: 'Sofia Rodrigues', email: 'sofia@email.com', phone: '967890123', status: 'inactive', subscriptionEnd: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), notificationPreferences: { email: false, whatsapp: false, telegram: true } }
   ];
   filteredClients = [...this.clients];
   searchTerm = '';
@@ -367,7 +381,8 @@ export class ClientsSimpleComponent implements OnInit {
               email: values[1].trim(),
               phone: values[2]?.trim() || null,
               status: 'pending',
-              subscriptionEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+              subscriptionEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+              notificationPreferences: { email: true, whatsapp: false, telegram: false }
             };
             this.clients.push(newClient);
             imported++;
