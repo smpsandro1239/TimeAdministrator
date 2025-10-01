@@ -40,6 +40,21 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/reports/reports-simple.component').then(m => m.ReportsSimpleComponent)
   },
   {
+    path: 'admin/notifications',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/notifications/notifications-simple.component').then(m => m.NotificationsSimpleComponent)
+  },
+  {
+    path: 'admin/users',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/users/users-simple.component').then(m => m.UsersSimpleComponent)
+  },
+  {
+    path: 'admin/settings',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/settings/settings-simple.component').then(m => m.SettingsSimpleComponent)
+  },
+  {
     path: '',
     component: LayoutComponent,
     canActivate: [AuthGuard],
