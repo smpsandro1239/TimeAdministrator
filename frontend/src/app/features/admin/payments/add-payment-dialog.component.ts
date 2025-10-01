@@ -8,13 +8,16 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-payment-dialog',
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, 
-    MatInputModule, MatSelectModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule
+    MatInputModule, MatSelectModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatAutocompleteModule
   ],
   template: `
     <h2 mat-dialog-title>Adicionar Pagamento</h2>
@@ -23,13 +26,12 @@ import { MatNativeDateModule } from '@angular/material/core';
       <form [formGroup]="paymentForm" class="form">
         <mat-form-field appearance="outline">
           <mat-label>Cliente</mat-label>
-          <mat-select formControlName="clientName">
-            <mat-option value="João Silva">João Silva</mat-option>
-            <mat-option value="Maria Santos">Maria Santos</mat-option>
-            <mat-option value="Pedro Costa">Pedro Costa</mat-option>
-            <mat-option value="Ana Ferreira">Ana Ferreira</mat-option>
-            <mat-option value="Carlos Oliveira">Carlos Oliveira</mat-option>
-          </mat-select>
+          <input matInput formControlName="clientName" [matAutocomplete]="auto" placeholder="Digite para pesquisar...">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let client of filteredClients | async" [value]="client">
+              {{ client }}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -82,6 +84,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 })
 export class AddPaymentDialogComponent {
   paymentForm: FormGroup;
+  clients = ['João Silva', 'Maria Santos', 'Pedro Costa', 'Ana Ferreira', 'Carlos Oliveira', 'Luísa Pereira', 'Rui Martins', 'Sofia Rodrigues'];
+  filteredClients: Observable<string[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -95,6 +99,16 @@ export class AddPaymentDialogComponent {
       status: ['pending', Validators.required],
       notes: ['']
     });
+    
+    this.filteredClients = this.paymentForm.get('clientName')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || ''))
+    );
+  }
+  
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.clients.filter(client => client.toLowerCase().includes(filterValue));
   }
 
   save(): void {

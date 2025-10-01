@@ -32,7 +32,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
         </div>
         
         <div class="stats-grid">
-          <mat-card class="stat-card pending">
+          <mat-card class="stat-card pending clickable" (click)="showStatusDetails('pending')">
             <mat-card-content>
               <mat-icon>pending</mat-icon>
               <h3>{{ getStatusCount('pending') }}</h3>
@@ -40,7 +40,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             </mat-card-content>
           </mat-card>
           
-          <mat-card class="stat-card approved">
+          <mat-card class="stat-card approved clickable" (click)="showStatusDetails('approved')">
             <mat-card-content>
               <mat-icon>check_circle</mat-icon>
               <h3>{{ getStatusCount('approved') }}</h3>
@@ -48,7 +48,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             </mat-card-content>
           </mat-card>
           
-          <mat-card class="stat-card rejected">
+          <mat-card class="stat-card rejected clickable" (click)="showStatusDetails('rejected')">
             <mat-card-content>
               <mat-icon>cancel</mat-icon>
               <h3>{{ getStatusCount('rejected') }}</h3>
@@ -56,7 +56,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             </mat-card-content>
           </mat-card>
           
-          <mat-card class="stat-card total">
+          <mat-card class="stat-card total clickable" (click)="showTotalDetails()">
             <mat-card-content>
               <mat-icon>euro</mat-icon>
               <h3>{{ getTotalAmount() }}€</h3>
@@ -183,6 +183,8 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .stat-card.approved { border-left: 4px solid #4CAF50; }
     .stat-card.rejected { border-left: 4px solid #f44336; }
     .stat-card.total { border-left: 4px solid #2196F3; }
+    .stat-card.clickable { cursor: pointer; transition: transform 0.2s; }
+    .stat-card.clickable:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     .stat-card mat-icon { font-size: 32px; width: 32px; height: 32px; margin-bottom: 8px; }
     .stat-card h3 { margin: 8px 0 4px 0; font-size: 24px; }
     .stat-card p { margin: 0; color: #666; }
@@ -383,5 +385,33 @@ export class PaymentsSimpleComponent implements OnInit {
     this.methodFilter = 'all';
     this.applyFilter();
     this.snackBar.open('Filtros limpos', 'Fechar', { duration: 1500 });
+  }
+  
+  showStatusDetails(status: string): void {
+    const statusPayments = this.payments.filter(p => p.status === status);
+    
+    import('./status-details-dialog.component').then(m => {
+      this.dialog.open(m.StatusDetailsDialogComponent, {
+        width: '700px',
+        data: {
+          status: status,
+          payments: statusPayments
+        }
+      });
+    });
+  }
+  
+  showTotalDetails(): void {
+    const approvedPayments = this.payments.filter(p => p.status === 'approved');
+    
+    import('./status-details-dialog.component').then(m => {
+      this.dialog.open(m.StatusDetailsDialogComponent, {
+        width: '700px',
+        data: {
+          status: 'total',
+          payments: approvedPayments
+        }
+      });
+    });
   }
 }
