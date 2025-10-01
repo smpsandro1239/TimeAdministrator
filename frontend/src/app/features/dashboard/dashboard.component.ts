@@ -53,7 +53,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
       <div *ngIf="metrics && !loading" class="metrics-section">
         <mat-grid-list cols="4" rowHeight="120px" gutterSize="16px">
           <mat-grid-tile>
-            <mat-card class="metric-card">
+            <mat-card class="metric-card clickable" (click)="navigate('/admin/clients')">
               <mat-card-content>
                 <div class="metric-content">
                   <mat-icon class="metric-icon clients">people</mat-icon>
@@ -67,7 +67,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
           </mat-grid-tile>
           
           <mat-grid-tile>
-            <mat-card class="metric-card">
+            <mat-card class="metric-card clickable" (click)="navigate('/admin/subscriptions')">
               <mat-card-content>
                 <div class="metric-content">
                   <mat-icon class="metric-icon subscriptions">subscriptions</mat-icon>
@@ -81,7 +81,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
           </mat-grid-tile>
           
           <mat-grid-tile>
-            <mat-card class="metric-card">
+            <mat-card class="metric-card clickable" (click)="navigate('/admin/subscriptions')">
               <mat-card-content>
                 <div class="metric-content">
                   <mat-icon class="metric-icon warning">warning</mat-icon>
@@ -95,7 +95,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
           </mat-grid-tile>
           
           <mat-grid-tile>
-            <mat-card class="metric-card">
+            <mat-card class="metric-card clickable" (click)="navigate('/admin/payments')">
               <mat-card-content>
                 <div class="metric-content">
                   <mat-icon class="metric-icon payments">payment</mat-icon>
@@ -115,7 +115,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
         <h2>Ações Rápidas</h2>
         
         <!-- Ações Admin -->
-        <div class="actions-grid">
+        <div class="actions-grid admin-actions">
           <mat-card class="action-card" (click)="navigate('/admin/clients')">
             <mat-card-content>
               <mat-icon>people</mat-icon>
@@ -166,7 +166,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
         </div>
 
         <!-- Ações Cliente -->
-        <div *ngIf="isClient" class="actions-grid">
+        <div *ngIf="isClient" class="actions-grid client-actions">
           <mat-card class="action-card" (click)="navigate('/client/profile')">
             <mat-card-content>
               <mat-icon>person</mat-icon>
@@ -247,6 +247,16 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
     .metric-card {
       height: 100%;
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .metric-card.clickable {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card.clickable:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
     .metric-content {
@@ -428,6 +438,11 @@ export class DashboardComponent implements OnInit {
   }
 
   navigate(route: string): void {
-    this.router.navigate([route]);
+    console.log('Navegando para:', route);
+    this.router.navigate([route]).then(success => {
+      console.log('Navegação sucesso:', success);
+    }).catch(error => {
+      console.error('Erro na navegação:', error);
+    });
   }
 }

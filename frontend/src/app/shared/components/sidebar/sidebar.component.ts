@@ -37,7 +37,7 @@ import { User, UserRole } from '../../../models/user.model';
 
       <nav class="nav-menu">
         <!-- Admin Menu -->
-        <div *ngIf="isAdmin">
+        <div>
           <div class="menu-section">
             <span class="section-title">PRINCIPAL</span>
             <a routerLink="/dashboard" routerLinkActive="active" class="menu-item">
@@ -303,9 +303,11 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
+      console.log('Sidebar - User recebido:', user);
       this.currentUser = user;
       this.isAdmin = user?.role === UserRole.ADMIN;
       this.isClient = user?.role === UserRole.CLIENT;
+      console.log('Sidebar - isAdmin:', this.isAdmin, 'isClient:', this.isClient);
     });
   }
 
