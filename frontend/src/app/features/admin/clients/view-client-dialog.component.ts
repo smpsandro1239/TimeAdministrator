@@ -153,7 +153,7 @@ import { MatChipsModule } from '@angular/material/chips';
     .status-chip.inactive { background: rgba(244, 67, 54, 0.2); color: #f44336; }
     .status-chip.pending { background: rgba(255, 152, 0, 0.2); color: #ff9800; }
     
-    .client-details { min-width: 600px; display: flex; flex-direction: column; gap: 16px; }
+    .client-details { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 16px; overflow: visible; }
     .info-card { transition: transform 0.2s; }
     .info-card:hover { transform: translateY(-2px); }
     .info-card mat-card-title { display: flex; align-items: center; gap: 8px; color: #1976d2; }
@@ -182,9 +182,12 @@ import { MatChipsModule } from '@angular/material/chips';
     .action-buttons { display: flex; gap: 8px; }
     
     @media (max-width: 768px) {
-      .client-details { min-width: 400px; }
+      .client-details { max-width: 100%; min-width: 0; }
       .info-grid { grid-template-columns: 1fr; }
-      .action-buttons { flex-direction: column; }
+      .action-buttons { flex-direction: column; gap: 8px; }
+      .dialog-header { margin: -24px -16px 16px -16px; padding: 16px; }
+      .info-item { flex-direction: column; align-items: flex-start; text-align: left; }
+      .info-icon { margin-bottom: 4px; }
     }
   `]
 })
