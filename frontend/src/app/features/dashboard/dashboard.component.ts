@@ -38,7 +38,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
         <h1>Dashboard - TimeAdministrator</h1>
         <p class="subtitle">Sistema de Gestão de Subscrições</p>
         
-        <mat-form-field *ngIf="isAdmin" class="period-selector">
+        <mat-form-field class="period-selector">
           <mat-label>Período</mat-label>
           <mat-select [(value)]="selectedPeriod" (selectionChange)="onPeriodChange()">
             <mat-option value="7d">Últimos 7 dias</mat-option>
@@ -50,7 +50,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
       </div>
 
       <!-- Métricas Admin -->
-      <div *ngIf="isAdmin && metrics && !loading" class="metrics-section">
+      <div *ngIf="metrics && !loading" class="metrics-section">
         <mat-grid-list cols="4" rowHeight="120px" gutterSize="16px">
           <mat-grid-tile>
             <mat-card class="metric-card">
@@ -115,7 +115,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
         <h2>Ações Rápidas</h2>
         
         <!-- Ações Admin -->
-        <div *ngIf="isAdmin" class="actions-grid">
+        <div class="actions-grid">
           <mat-card class="action-card" (click)="navigate('/admin/clients')">
             <mat-card-content>
               <mat-icon>people</mat-icon>
@@ -397,11 +397,7 @@ export class DashboardComponent implements OnInit {
         this.isClient = user.role === UserRole.CLIENT;
         console.log('isAdmin:', this.isAdmin, 'isClient:', this.isClient);
         
-        if (this.isAdmin) {
-          this.loadMetrics();
-        } else {
-          this.loading = false;
-        }
+        this.loadMetrics();
       } else {
         console.log('Nenhum user encontrado');
         this.loading = false;
@@ -428,9 +424,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onPeriodChange(): void {
-    if (this.isAdmin) {
-      this.loadMetrics();
-    }
+    this.loadMetrics();
   }
 
   navigate(route: string): void {
