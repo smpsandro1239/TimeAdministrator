@@ -42,17 +42,17 @@ export const routes: Routes = [
   {
     path: 'admin/notifications',
     canActivate: [AuthGuard, AdminGuard],
-    loadComponent: () => import('./features/admin/notifications/notifications-simple.component').then(m => m.NotificationsSimpleComponent)
+    loadComponent: () => import('./features/admin/notifications/notifications-advanced.component').then(m => m.NotificationsAdvancedComponent)
   },
   {
     path: 'admin/users',
     canActivate: [AuthGuard, AdminGuard],
-    loadComponent: () => import('./features/admin/users/users-simple.component').then(m => m.UsersSimpleComponent)
+    loadComponent: () => import('./features/admin/users/users-advanced.component').then(m => m.UsersAdvancedComponent)
   },
   {
     path: 'admin/settings',
     canActivate: [AuthGuard, AdminGuard],
-    loadComponent: () => import('./features/admin/settings/settings-simple.component').then(m => m.SettingsSimpleComponent)
+    loadComponent: () => import('./features/admin/settings/settings-advanced.component').then(m => m.SettingsAdvancedComponent)
   },
   {
     path: '',

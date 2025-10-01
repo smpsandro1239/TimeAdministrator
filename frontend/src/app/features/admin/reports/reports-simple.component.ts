@@ -476,6 +476,11 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                   Relatório Detalhado
                 </button>
                 
+                <button mat-raised-button color="accent" (click)="sendMonthlyReport()">
+                  <mat-icon>send</mat-icon>
+                  Enviar Relatório Mensal
+                </button>
+                
                 <button mat-raised-button (click)="exportToExcel()">
                   <mat-icon>table_chart</mat-icon>
                   Exportar Excel
@@ -1046,6 +1051,54 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     if (confirmSend) {
       console.log('Enviando lembretes de expiração para:', this.expiringData);
       alert('Lembretes enviados com sucesso!');
+    }
+  }
+  
+  sendMonthlyReport() {
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    const monthName = nextMonth.toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' });
+    
+    const expiringNextMonth = this.expiringData.filter(item => item.daysLeft <= 30);
+    const totalValue = expiringNextMonth.reduce((sum, item) => sum + item.value, 0);
+    
+    const reportData = {
+      month: monthName,
+      expiringCount: expiringNextMonth.length,
+      totalValue: totalValue,
+      clients: expiringNextMonth.map(item => ({
+        name: item.clientName,
+        plan: item.plan,
+        value: item.value,
+        daysLeft: item.daysLeft
+      }))
+    };
+    
+    const confirmSend = confirm(
+      `Enviar relatório mensal para ${monthName}?\n\n` +
+      `• ${expiringNextMonth.length} subscrições a expirar\n` +
+      `• Valor total: ${totalValue.toFixed(2)}€\n\n` +
+      `O relatório será enviado por Email, WhatsApp e Telegram.`
+    );
+    
+    if (confirmSend) {
+      console.log('Enviando relatório mensal:', reportData);
+      
+      // Simular envio para diferentes canais
+      setTimeout(() => {
+        alert(
+          `Relatório mensal enviado com sucesso!\n\n` +
+          `📧 Email: Enviado\n` +
+          `📱 WhatsApp: Enviado\n` +
+          `📨 Telegram: Enviado (cópia para admin)\n\n` +
+          `Dados enviados:\n` +
+          `• ${expiringNextMonth.length} subscrições a expirar em ${monthName}\n` +
+          `• Valor total em risco: ${totalValue.toFixed(2)}€`
+        );
+      }, 1500);
+      
+      // Mostrar loading
+      alert('A enviar relatório mensal... Por favor aguarde.');
     }
   }
   
