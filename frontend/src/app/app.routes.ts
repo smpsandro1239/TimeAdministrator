@@ -35,6 +35,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/payments/payments-simple.component').then(m => m.PaymentsSimpleComponent)
   },
   {
+    path: 'admin/reports',
+    canActivate: [AuthGuard, AdminGuard],
+    loadComponent: () => import('./features/admin/reports/reports-simple.component').then(m => m.ReportsSimpleComponent)
+  },
+  {
     path: '',
     component: LayoutComponent,
     canActivate: [AuthGuard],
