@@ -1,168 +1,246 @@
-# TimeAdministrator - Guia de Instalação Completo
+# 📋 Guia de Instalação - TimeAdministrator
 
-## 🚀 Instalação Rápida (Recomendada)
+## 🎯 Visão Geral
 
-### Pré-requisitos
-1. **Docker Desktop** instalado e em execução
-2. **Node.js 18+** instalado no sistema
-3. **Git** para clonar o repositório
+O TimeAdministrator pode ser executado de duas formas:
+- **Docker** (Recomendado para produção)
+- **Local** (Recomendado para desenvolvimento)
 
-### Passos de Instalação
+## 🔧 Pré-requisitos
 
-1. **Clone o repositório**
+### Obrigatórios
+- **Git** - Para clonar o repositório
+- **Node.js 20+** - Para desenvolvimento local
+
+### Opcionais
+- **Docker Desktop** - Para execução em containers
+
+## 🚀 Instalação Rápida
+
+### 1. Clone o Repositório
 ```bash
 git clone https://github.com/smpsandro1239/TimeAdministrator.git
 cd TimeAdministrator
 ```
 
-2. **Execute o script de instalação**
+### 2. Escolha o Método de Execução
+
+#### Opção A: Docker (Recomendado)
 ```bash
-scripts\start-final.bat
+# Execute o script principal
+start.bat
+
+# Ou diretamente
+scripts\start-docker.bat
 ```
 
-3. **Abra duas janelas de terminal**
-
-**Terminal 1 - Backend:**
+#### Opção B: Desenvolvimento Local
 ```bash
-cd backend
-npm install --legacy-peer-deps
-npm run start:dev
+# Instale dependências
+scripts\install.bat
+
+# Inicie em modo desenvolvimento
+scripts\start-local.bat
 ```
 
-**Terminal 2 - Frontend:**
-```bash
-cd frontend
-npm install --legacy-peer-deps
-ng serve
-```
+## 📱 Acesso à Aplicação
 
-4. **Aceda à aplicação**
+Após a instalação, aceda a:
 - **Frontend**: http://localhost:4200
 - **Backend API**: http://localhost:3000/api/v1
+- **MongoDB**: localhost:27017
 
-5. **Credenciais de teste**
+### 🔑 Credenciais Padrão
 - **Email**: admin@timeadministrator.com
 - **Password**: admin123
 
-## 📋 Verificação da Instalação
+## ⚙️ Configuração Avançada
 
-### ✅ MongoDB
-- Deve estar rodando na porta 27017
-- Verificar com: `docker ps | grep mongo`
+### Variáveis de Ambiente
 
-### ✅ Backend
-- Deve estar rodando na porta 3000
-- Testar: http://localhost:3000/api/v1/auth/profile
-- Deve retornar erro 401 (normal sem autenticação)
+Copie `backend/.env.example` para `backend/.env` e configure:
 
-### ✅ Frontend
-- Deve estar rodando na porta 4200
-- Testar: http://localhost:4200
-- Deve mostrar a página de login
+```env
+# Base de Dados
+MONGODB_URI=mongodb://admin:password123@mongodb:27017/timeadministrator?authSource=admin
 
-## 🔧 Resolução de Problemas
+# JWT
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+JWT_EXPIRES_IN=7d
 
-### Problema: "npm não é reconhecido"
-**Solução**: Instale Node.js 18+ de https://nodejs.org
+# Email (Gmail)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+SMTP_FROM=noreply@timeadministrator.com
 
-### Problema: "Docker não está rodando"
-**Solução**: Inicie o Docker Desktop
+# Twilio WhatsApp
+TWILIO_ACCOUNT_SID=your-twilio-account-sid
+TWILIO_AUTH_TOKEN=your-twilio-auth-token
+TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
 
-### Problema: "Porta já em uso"
-**Solução**: 
-```bash
-# Verificar processos
-netstat -ano | findstr :3000
-netstat -ano | findstr :4200
-
-# Parar processos se necessário
-taskkill /PID <PID> /F
+# Stripe
+STRIPE_PUBLISHABLE_KEY=pk_test_your-stripe-publishable-key
+STRIPE_SECRET_KEY=sk_test_your-stripe-secret-key
+STRIPE_WEBHOOK_SECRET=whsec_your-stripe-webhook-secret
 ```
 
-### Problema: Erros de dependências npm
-**Solução**:
-```bash
-# Limpar cache
-npm cache clean --force
+### Configuração de Email (Gmail)
 
-# Reinstalar
-rm -rf node_modules package-lock.json
-npm install --legacy-peer-deps
+1. Ative a autenticação de 2 fatores na sua conta Google
+2. Vá a **Conta Google** > **Segurança** > **Palavras-passe de aplicação**
+3. Gere uma palavra-passe para "Mail"
+4. Use essa palavra-passe no `SMTP_PASS`
+
+### Configuração do Stripe
+
+1. Crie conta em https://stripe.com
+2. No Dashboard, vá a **Developers** > **API keys**
+3. Copie as chaves para o `.env`
+4. Configure webhook: `http://your-domain.com/api/v1/payments/stripe/webhook`
+
+### Configuração do Twilio
+
+1. Crie conta em https://twilio.com
+2. Configure WhatsApp Business API
+3. Obtenha credenciais no Console
+
+## 🐳 Docker - Comandos Úteis
+
+```bash
+# Ver status dos containers
+docker ps
+
+# Ver logs específicos
+docker-compose logs -f backend
+docker-compose logs -f frontend
+docker-compose logs -f mongodb
+
+# Conectar ao container
+docker exec -it timeadmin-backend /bin/sh
+docker exec -it timeadmin-mongodb mongosh
+
+# Rebuild completo
+docker-compose down && docker-compose up --build
+
+# Reset completo (apaga dados)
+scripts\reset.bat
 ```
 
-## 🎯 Funcionalidades Testadas
+## 💻 Desenvolvimento Local
 
-### ✅ Autenticação
-- Login/Logout funcionando
-- JWT tokens
-- Guards de rota
-
-### ✅ Base de Dados
-- MongoDB conectado
-- Utilizador admin criado
-- Esquemas definidos
-
-### ✅ API Endpoints
-- `/api/v1/auth/login` - Login
-- `/api/v1/auth/register` - Registo
-- `/api/v1/clients` - Gestão de clientes
-- `/api/v1/subscriptions` - Subscrições
-- `/api/v1/payments` - Pagamentos
-
-### ✅ Interface
-- Página de login responsiva
-- Dashboard diferenciado por role
-- Navegação funcional
-
-## 📱 Teste da Aplicação
-
-1. **Aceda a** http://localhost:4200
-2. **Faça login** com admin@timeadministrator.com / admin123
-3. **Explore o dashboard** administrativo
-4. **Teste as funcionalidades** de gestão
-
-## 🔄 Desenvolvimento
-
-Para desenvolvimento contínuo:
-
+### Estrutura de Desenvolvimento
 ```bash
-# Backend (hot-reload)
+# Terminal 1 - MongoDB
+docker-compose -f docker-compose.dev.yml up -d
+
+# Terminal 2 - Backend
 cd backend
 npm run start:dev
 
-# Frontend (hot-reload)
+# Terminal 3 - Frontend
 cd frontend
 ng serve
-
-# MongoDB (sempre rodando)
-docker-compose -f docker-compose.final.yml up mongodb -d
 ```
 
-## 📦 Deploy em Produção
+### Hot Reload
+- **Backend**: Reinicia automaticamente com mudanças
+- **Frontend**: Recompila automaticamente com mudanças
 
-### Opção 1: Docker Completo
+## 🔧 Scripts Disponíveis
+
+| Script | Comando | Descrição |
+|--------|---------|-----------|
+| **Menu Principal** | `start.bat` | Menu interativo |
+| **Docker** | `scripts\start-docker.bat` | Inicia com Docker |
+| **Local** | `scripts\start-local.bat` | Inicia desenvolvimento local |
+| **Instalar** | `scripts\install.bat` | Instala dependências |
+| **Parar** | `scripts\stop.bat` | Para todos os serviços |
+| **Reset** | `scripts\reset.bat` | Reset completo |
+| **Logs** | `scripts\logs.bat` | Visualizar logs |
+
+## 🚨 Resolução de Problemas
+
+### Erro: "Docker não encontrado"
 ```bash
-docker-compose up --build -d
+# Instale Docker Desktop
+# https://www.docker.com/products/docker-desktop
 ```
 
-### Opção 2: Serviços Cloud
-- **Frontend**: Vercel/Netlify
-- **Backend**: Railway/Render
-- **Base de Dados**: MongoDB Atlas
+### Erro: "Node.js não encontrado"
+```bash
+# Instale Node.js 20+
+# https://nodejs.org
+```
 
-## 🎉 Aplicação Completa!
+### Erro: "Porta já em uso"
+```bash
+# Pare processos existentes
+scripts\stop.bat
 
-A aplicação **TimeAdministrator** está agora **100% funcional** com:
+# Ou mate processos manualmente
+taskkill /f /im node.exe
+```
 
-- ✅ Backend NestJS completo
-- ✅ Frontend Angular responsivo
-- ✅ MongoDB configurado
-- ✅ Autenticação JWT
-- ✅ Sistema de roles
-- ✅ Interface administrativa
-- ✅ Portal do cliente
-- ✅ Gestão de subscrições
-- ✅ Sistema de pagamentos
-- ✅ Notificações (estrutura pronta)
+### Erro: "MongoDB connection failed"
+```bash
+# Verifique se MongoDB está rodando
+docker ps
 
-**Pronto para uso e desenvolvimento!** 🚀
+# Reinicie MongoDB
+docker-compose -f docker-compose.dev.yml restart mongodb
+```
+
+### Erro: "npm install failed"
+```bash
+# Limpe cache e reinstale
+npm cache clean --force
+scripts\install.bat
+```
+
+## 📊 Verificação da Instalação
+
+### Checklist Pós-Instalação
+- [ ] Frontend carrega em http://localhost:4200
+- [ ] Backend responde em http://localhost:3000/api/v1
+- [ ] Login funciona com credenciais padrão
+- [ ] Dashboard mostra dados
+- [ ] MongoDB conecta corretamente
+
+### Testes Rápidos
+```bash
+# Teste backend
+curl http://localhost:3000/api/v1/auth/profile
+
+# Teste frontend
+# Abra http://localhost:4200 no browser
+```
+
+## 🔄 Atualizações
+
+### Atualizar Código
+```bash
+git pull origin main
+scripts\stop.bat
+scripts\install.bat
+scripts\start-docker.bat  # ou start-local.bat
+```
+
+### Atualizar Dependências
+```bash
+cd backend && npm update
+cd ../frontend && npm update
+```
+
+## 📞 Suporte
+
+Se encontrar problemas:
+1. Verifique este guia de instalação
+2. Consulte os logs: `scripts\logs.bat`
+3. Abra issue no GitHub
+4. Email: suporte@timeadministrator.com
+
+---
+
+**TimeAdministrator** - Instalação simplificada! 🚀

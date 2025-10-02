@@ -4,13 +4,16 @@
   "description": "Sistema de gestão de subscrições de clientes",
   "scripts": {
     "install:all": "npm run install:backend && npm run install:frontend",
-    "install:backend": "cd backend && npm install",
-    "install:frontend": "cd frontend && npm install",
-    "dev": "docker-compose -f docker-compose.dev.yml up",
+    "install:backend": "cd backend && npm install --legacy-peer-deps",
+    "install:frontend": "cd frontend && npm install --legacy-peer-deps",
+    "start:docker": "docker-compose up --build -d",
+    "start:local": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm run start:dev",
+    "start:frontend": "cd frontend && ng serve",
     "build": "docker-compose build",
-    "start": "docker-compose up",
     "stop": "docker-compose down",
-    "clean": "docker-compose down -v --rmi all"
+    "reset": "docker-compose down -v --rmi all",
+    "logs": "docker-compose logs -f"
   },
   "keywords": [
     "angular",

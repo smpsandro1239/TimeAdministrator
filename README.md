@@ -60,85 +60,88 @@ Sistema profissional de gestão de subscrições de clientes com interface moder
 ## 📁 Estrutura do Projeto
 ```
 TimeAdministrator/
-├── frontend/                 # Aplicação Angular
+├── frontend/                    # Aplicação Angular 18+
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── features/    # Módulos por funcionalidade
-│   │   │   ├── shared/      # Componentes partilhados
-│   │   │   ├── services/    # Serviços da aplicação
-│   │   │   ├── models/      # Interfaces e modelos
-│   │   │   └── guards/      # Guards de rota
-│   │   └── environments/    # Configurações de ambiente
+│   │   │   ├── features/       # Módulos por funcionalidade
+│   │   │   ├── shared/         # Componentes partilhados
+│   │   │   ├── services/       # Serviços da aplicação
+│   │   │   ├── models/         # Interfaces e modelos
+│   │   │   └── guards/         # Guards de rota
+│   │   └── environments/       # Configurações de ambiente
 │   ├── Dockerfile
 │   └── nginx.conf
-├── backend/                  # API NestJS
+├── backend/                     # API NestJS
 │   ├── src/
-│   │   ├── auth/           # Módulo de autenticação
-│   │   ├── users/          # Gestão de utilizadores
-│   │   ├── clients/        # Gestão de clientes
-│   │   ├── subscriptions/  # Gestão de subscrições
-│   │   ├── payments/       # Gestão de pagamentos
-│   │   ├── notifications/  # Sistema de notificações
-│   │   └── common/         # Utilitários partilhados
+│   │   ├── auth/              # Autenticação JWT
+│   │   ├── users/             # Gestão de utilizadores
+│   │   ├── clients/           # Gestão de clientes
+│   │   ├── subscriptions/     # Gestão de subscrições
+│   │   ├── payments/          # Sistema de pagamentos
+│   │   ├── notifications/     # Notificações multi-canal
+│   │   ├── reports/           # Relatórios e analytics
+│   │   ├── dashboard/         # Métricas e KPIs
+│   │   └── common/            # Utilitários partilhados
 │   ├── Dockerfile
 │   └── .env.example
-├── scripts/                 # Scripts de automação
-│   ├── start.bat           # Iniciar aplicação
-│   ├── start-dev.bat       # Iniciar em desenvolvimento
-│   ├── stop.bat            # Parar aplicação
-│   ├── logs.bat            # Ver logs
-│   └── connect-backend.bat # Conectar ao container
-├── docker-compose.yml       # Produção
-├── docker-compose.dev.yml   # Desenvolvimento
-└── README.md
+├── screenshots/                # Capturas de ecrã
+│   ├── dashboard/
+│   ├── clients/
+│   ├── payments/
+│   ├── notifications/
+│   ├── mobile/
+│   └── README.md
+├── scripts/                    # Scripts de automação
+│   ├── start-docker.bat       # Iniciar com Docker
+│   ├── start-local.bat        # Desenvolvimento local
+│   ├── install.bat            # Instalar dependências
+│   ├── stop.bat               # Parar serviços
+│   ├── reset.bat              # Reset completo
+│   └── logs.bat               # Ver logs
+├── start.bat                   # Menu principal
+├── docker-compose.yml          # Produção
+├── docker-compose.dev.yml      # Desenvolvimento
+├── INSTALACAO.md               # Guia de instalação
+└── README.md                   # Documentação principal
 ```
 
 ## ⚡ Instalação e Configuração
 
 ### Pré-requisitos
-- **Docker Desktop** (obrigatório)
-- **Node.js 18+** (obrigatório)
+- **Docker Desktop** (recomendado para produção)
+- **Node.js 20+** (obrigatório para desenvolvimento)
 - **Git** para clonar o repositório
 
 ### 🚀 Início Rápido
 
-1. **Clone o repositório**
+#### Opção 1: Docker (Recomendado)
 ```bash
+# Clone o repositório
 git clone https://github.com/smpsandro1239/TimeAdministrator.git
 cd TimeAdministrator
+
+# Inicie com Docker
+scripts\start-docker.bat
 ```
 
-2. **Execute o script de instalação**
+#### Opção 2: Desenvolvimento Local
 ```bash
-scripts\start-final.bat
+# Clone o repositório
+git clone https://github.com/smpsandro1239/TimeAdministrator.git
+cd TimeAdministrator
+
+# Instale dependências e inicie
+scripts\start-local.bat
 ```
 
-3. **Abra duas janelas de terminal**
-
-**Terminal 1 - Backend:**
-```bash
-cd backend
-npm install --legacy-peer-deps
-npm run start:dev
-```
-
-**Terminal 2 - Frontend:**
-```bash
-cd frontend
-npm install --legacy-peer-deps
-ng serve
-```
-
-4. **Aceda à aplicação**
+### 📱 Acesso à Aplicação
 - **Frontend**: http://localhost:4200
 - **Backend API**: http://localhost:3000/api/v1
 - **MongoDB**: localhost:27017
 
-5. **Credenciais padrão**
+### 🔑 Credenciais Padrão
 - **Email**: admin@timeadministrator.com
 - **Password**: admin123
-
-📋 **Guia completo**: Ver [INSTALACAO.md](INSTALACAO.md)
 
 ### 🔧 Desenvolvimento
 
@@ -155,12 +158,12 @@ scripts\start-dev.bat
 
 | Script | Descrição |
 |--------|-----------|
-| `start.bat` | Inicia aplicação em produção |
-| `start-dev.bat` | Inicia em modo desenvolvimento |
-| `stop.bat` | Para a aplicação |
+| `start-docker.bat` | Inicia aplicação com Docker (produção) |
+| `start-local.bat` | Inicia desenvolvimento local |
+| `stop.bat` | Para todos os serviços |
 | `logs.bat` | Mostra logs em tempo real |
-| `connect-backend.bat` | Conecta ao container do backend |
-| `reset-database.bat` | Reset completo da base de dados |
+| `reset.bat` | Reset completo (base de dados + containers) |
+| `install.bat` | Instala todas as dependências |
 
 ## ⚙️ Configuração
 
