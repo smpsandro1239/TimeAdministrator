@@ -1,6 +1,6 @@
 <div class="new-subscription-container">
   <div class="header">
-    <h1>{{ selectedPlan ? 'Finalize o seu Pagamento' : 'Escolha o seu Plano' }}</h1>
+    <h1 class="page-title">{{ selectedPlan ? 'Finalize o seu Pagamento' : 'Escolha o seu Plano' }}</h1>
     <p *ngIf="!selectedPlan">Selecione o plano que melhor se adapta às suas necessidades.</p>
     <p *ngIf="selectedPlan">Está a um passo de ativar a sua subscrição <strong>{{ selectedPlan.name }}</strong>.</p>
   </div>
