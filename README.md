@@ -145,14 +145,64 @@ scripts\start-local.bat
 
 ### 🔧 Desenvolvimento
 
-Para desenvolvimento com hot-reload:
+#### 🚀 Modo Produção (Docker)
+Para usar o sistema completo em produção:
 ```bash
-# Windows
-scripts\start-dev.bat
+# Iniciar sistema completo
+start-system.bat
 
-# Linux/Mac
-./scripts/start-dev.sh
+# Parar sistema
+stop-system.bat
+
+# Reset completo
+reset-system.bat
 ```
+
+#### 💻 Modo Desenvolvimento (Hot-Reload)
+Para desenvolvimento ativo com recarga automática:
+
+**Opção 1: Script Automático (Recomendado)**
+1. **Terminal 1** - Backend:
+   ```bash
+   cd backend
+   npm run start:mock
+   ```
+
+2. **Terminal 2** - Frontend:
+   ```bash
+   start-dev.bat
+   ```
+
+**Opção 2: Manual**
+1. **Parar Docker** (se estiver rodando):
+   ```bash
+   docker-compose down
+   ```
+
+2. **Iniciar Backend em modo mock**:
+   ```bash
+   cd backend
+   npm run start:mock
+   ```
+
+3. **Iniciar Frontend** (nova janela de terminal):
+   ```bash
+   cd frontend
+   ng serve --port 4200
+   ```
+
+4. **Aceder**: http://localhost:4200
+
+#### 🔥 Vantagens do Modo Desenvolvimento:
+- ✅ **Hot-reload**: Mudanças aparecem automaticamente
+- ✅ **Desenvolvimento rápido**: Sem rebuild do Docker
+- ✅ **Debug fácil**: Logs diretos no terminal
+- ✅ **Edição em tempo real**: Ideal para desenvolvimento ativo
+
+#### 🐳 Quando usar Docker:
+- ✅ **Demonstrações**: Sistema completo funcionando
+- ✅ **Testes**: Ambiente idêntico à produção
+- ✅ **Deploy**: Pronto para produção
 
 ### 📋 Scripts Disponíveis
 

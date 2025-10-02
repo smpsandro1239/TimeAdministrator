@@ -175,7 +175,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
   styles: [`
     .container { padding: 24px; max-width: 1400px; margin: 0 auto; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
-    h1 { margin: 0 0 8px 0; color: #333; font-size: 28px; }
+    h1 { margin: 0 0 8px 0; color: #2196F3; font-size: 28px; }
     p { margin: 0; color: #666; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .stat-card { text-align: center; }

@@ -156,7 +156,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
   styles: [`
     .container { padding: 24px; max-width: 1400px; margin: 0 auto; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
-    h1 { margin: 0 0 8px 0; color: #333; font-size: 28px; }
+    h1 { margin: 0 0 8px 0; color: #2196F3; font-size: 28px; }
     p { margin: 0; color: #666; }
     .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 16px; }
     .search-bar mat-form-field { width: 300px; }
