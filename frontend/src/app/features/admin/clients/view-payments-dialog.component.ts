@@ -69,58 +69,108 @@ import { MatDividerModule } from '@angular/material/divider';
             </mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <table mat-table [dataSource]="payments" class="payments-table">
-              <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef>Data</th>
-                <td mat-cell *matCellDef="let payment">{{ payment.date | date:'dd/MM/yyyy' }}</td>
-              </ng-container>
+            <!-- Desktop Table -->
+            <div class="desktop-table">
+              <table mat-table [dataSource]="payments" class="payments-table">
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Data</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.date | date:'dd/MM/yyyy' }}</td>
+                </ng-container>
 
-              <ng-container matColumnDef="reference">
-                <th mat-header-cell *matHeaderCellDef>Referência</th>
-                <td mat-cell *matCellDef="let payment">{{ payment.reference }}</td>
-              </ng-container>
+                <ng-container matColumnDef="reference">
+                  <th mat-header-cell *matHeaderCellDef>Referência</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.reference }}</td>
+                </ng-container>
 
-              <ng-container matColumnDef="amount">
-                <th mat-header-cell *matHeaderCellDef>Valor</th>
-                <td mat-cell *matCellDef="let payment" class="amount-cell">{{ payment.amount }}€</td>
-              </ng-container>
+                <ng-container matColumnDef="amount">
+                  <th mat-header-cell *matHeaderCellDef>Valor</th>
+                  <td mat-cell *matCellDef="let payment" class="amount-cell">{{ payment.amount }}€</td>
+                </ng-container>
 
-              <ng-container matColumnDef="method">
-                <th mat-header-cell *matHeaderCellDef>Método</th>
-                <td mat-cell *matCellDef="let payment">
-                  <mat-chip [ngClass]="payment.method">
-                    <mat-icon>{{ getMethodIcon(payment.method) }}</mat-icon>
-                    {{ getMethodText(payment.method) }}
-                  </mat-chip>
-                </td>
-              </ng-container>
+                <ng-container matColumnDef="method">
+                  <th mat-header-cell *matHeaderCellDef>Método</th>
+                  <td mat-cell *matCellDef="let payment">
+                    <mat-chip [ngClass]="payment.method">
+                      <mat-icon>{{ getMethodIcon(payment.method) }}</mat-icon>
+                      {{ getMethodText(payment.method) }}
+                    </mat-chip>
+                  </td>
+                </ng-container>
 
-              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>Estado</th>
-                <td mat-cell *matCellDef="let payment">
-                  <mat-chip [ngClass]="payment.status">
-                    <mat-icon>{{ getStatusIcon(payment.status) }}</mat-icon>
-                    {{ getStatusText(payment.status) }}
-                  </mat-chip>
-                </td>
-              </ng-container>
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Estado</th>
+                  <td mat-cell *matCellDef="let payment">
+                    <mat-chip [ngClass]="payment.status">
+                      <mat-icon>{{ getStatusIcon(payment.status) }}</mat-icon>
+                      {{ getStatusText(payment.status) }}
+                    </mat-chip>
+                  </td>
+                </ng-container>
 
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Acções</th>
-                <td mat-cell *matCellDef="let payment">
-                  <button mat-icon-button (click)="viewPaymentDetails(payment)" matTooltip="Ver detalhes">
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Acções</th>
+                  <td mat-cell *matCellDef="let payment">
+                    <button mat-icon-button (click)="viewPaymentDetails(payment)" matTooltip="Ver detalhes">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button mat-icon-button *ngIf="payment.status === 'pending'" 
+                            (click)="approvePayment(payment)" color="primary" matTooltip="Aprovar">
+                      <mat-icon>check</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-cards">
+              <div class="payment-card" *ngFor="let payment of payments">
+                <div class="payment-card-header">
+                  <div class="payment-card-title">{{ payment.reference }}</div>
+                  <div class="payment-card-amount">{{ payment.amount }}€</div>
+                </div>
+                
+                <div class="payment-card-details">
+                  <div class="payment-card-detail">
+                    <div class="payment-card-label">Data</div>
+                    <div class="payment-card-value">{{ payment.date | date:'dd/MM/yyyy' }}</div>
+                  </div>
+                  <div class="payment-card-detail">
+                    <div class="payment-card-label">Método</div>
+                    <div class="payment-card-value">
+                      <mat-chip [ngClass]="payment.method">
+                        <mat-icon>{{ getMethodIcon(payment.method) }}</mat-icon>
+                        {{ getMethodText(payment.method) }}
+                      </mat-chip>
+                    </div>
+                  </div>
+                  <div class="payment-card-detail">
+                    <div class="payment-card-label">Estado</div>
+                    <div class="payment-card-value">
+                      <mat-chip [ngClass]="payment.status">
+                        <mat-icon>{{ getStatusIcon(payment.status) }}</mat-icon>
+                        {{ getStatusText(payment.status) }}
+                      </mat-chip>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="payment-card-actions">
+                  <button mat-stroked-button (click)="viewPaymentDetails(payment)">
                     <mat-icon>visibility</mat-icon>
+                    Ver
                   </button>
-                  <button mat-icon-button *ngIf="payment.status === 'pending'" 
-                          (click)="approvePayment(payment)" color="primary" matTooltip="Aprovar">
+                  <button mat-raised-button color="primary" *ngIf="payment.status === 'pending'" 
+                          (click)="approvePayment(payment)">
                     <mat-icon>check</mat-icon>
+                    Aprovar
                   </button>
-                </td>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
+                </div>
+              </div>
+            </div>
 
             <div class="no-payments" *ngIf="payments.length === 0">
               <mat-icon>receipt_long</mat-icon>
@@ -161,6 +211,9 @@ import { MatDividerModule } from '@angular/material/divider';
       max-width: 800px; 
       min-width: 600px; 
     }
+    
+    .mobile-cards { display: none; }
+    .desktop-table { display: block; }
     
     .summary-card mat-card-title,
     .payments-history mat-card-title { 
@@ -234,6 +287,56 @@ import { MatDividerModule } from '@angular/material/divider';
       padding: 16px 24px; 
     }
     
+    .payment-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .payment-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .payment-card-title {
+      font-weight: 600;
+      color: #333;
+      font-size: 16px;
+    }
+    .payment-card-amount {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1976d2;
+    }
+    .payment-card-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .payment-card-detail {
+      display: flex;
+      flex-direction: column;
+    }
+    .payment-card-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .payment-card-value {
+      font-size: 14px;
+      color: #333;
+    }
+    .payment-card-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    
     @media (max-width: 768px) {
       .payments-container { 
         max-width: 100%; 
@@ -242,9 +345,8 @@ import { MatDividerModule } from '@angular/material/divider';
       .summary-grid { 
         grid-template-columns: 1fr; 
       }
-      .payments-table { 
-        font-size: 14px; 
-      }
+      .desktop-table { display: none; }
+      .mobile-cards { display: block; }
       .dialog-actions { 
         flex-direction: column; 
         gap: 12px; 
@@ -255,6 +357,9 @@ import { MatDividerModule } from '@angular/material/divider';
       .dialog-header { 
         margin: -24px -16px 16px -16px; 
         padding: 16px; 
+      }
+      .payment-card-details {
+        grid-template-columns: 1fr;
       }
     }
   `]

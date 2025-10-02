@@ -79,50 +79,105 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
               </button>
             </div>
             
-            <table mat-table [dataSource]="filteredClients" class="clients-table">
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Nome</th>
-                <td mat-cell *matCellDef="let client">{{ client.name }}</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="email">
-                <th mat-header-cell *matHeaderCellDef>Email</th>
-                <td mat-cell *matCellDef="let client">{{ client.email }}</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="phone">
-                <th mat-header-cell *matHeaderCellDef>Telefone</th>
-                <td mat-cell *matCellDef="let client">{{ client.phone || 'N/A' }}</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>Estado</th>
-                <td mat-cell *matCellDef="let client">
-                  <span class="status" [ngClass]="client.status">{{ getStatusText(client.status) }}</span>
-                </td>
-              </ng-container>
-              
-              <ng-container matColumnDef="notifications">
-                <th mat-header-cell *matHeaderCellDef>Notificações</th>
-                <td mat-cell *matCellDef="let client">
-                  <div class="notification-icons">
-                    <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.email}" matTooltip="Email">email</mat-icon>
-                    <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.whatsapp}" matTooltip="WhatsApp">chat</mat-icon>
-                    <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.telegram}" matTooltip="Telegram">send</mat-icon>
+            <!-- Desktop Table -->
+            <div class="desktop-table">
+              <table mat-table [dataSource]="filteredClients" class="clients-table">
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Nome</th>
+                  <td mat-cell *matCellDef="let client">{{ client.name }}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="email">
+                  <th mat-header-cell *matHeaderCellDef>Email</th>
+                  <td mat-cell *matCellDef="let client">{{ client.email }}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="phone">
+                  <th mat-header-cell *matHeaderCellDef>Telefone</th>
+                  <td mat-cell *matCellDef="let client">{{ client.phone || 'N/A' }}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Estado</th>
+                  <td mat-cell *matCellDef="let client">
+                    <span class="status" [ngClass]="client.status">{{ getStatusText(client.status) }}</span>
+                  </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="notifications">
+                  <th mat-header-cell *matHeaderCellDef>Notificações</th>
+                  <td mat-cell *matCellDef="let client">
+                    <div class="notification-icons">
+                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.email}" matTooltip="Email">email</mat-icon>
+                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.whatsapp}" matTooltip="WhatsApp">chat</mat-icon>
+                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.telegram}" matTooltip="Telegram">send</mat-icon>
+                    </div>
+                  </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="daysLeft">
+                  <th mat-header-cell *matHeaderCellDef>Dias</th>
+                  <td mat-cell *matCellDef="let client" class="days-cell">
+                    <span class="days-left" [ngClass]="getDaysLeftClass(client)">{{ getDaysLeftText(client) }}</span>
+                  </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Ações</th>
+                  <td mat-cell *matCellDef="let client">
+                    <button mat-icon-button (click)="viewClient(client)" matTooltip="Ver detalhes">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="editClient(client)" matTooltip="Editar">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="toggleStatus(client)" [matTooltip]="client.status === 'active' ? 'Desativar' : 'Ativar'">
+                      <mat-icon>{{ client.status === 'active' ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="deleteClient(client)" color="warn" matTooltip="Eliminar">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+                
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewClient(row)" class="clickable-row"></tr>
+              </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-cards">
+              <div class="client-card" *ngFor="let client of filteredClients" (click)="viewClient(client)">
+                <div class="card-header">
+                  <div class="client-info">
+                    <h3>{{ client.name }}</h3>
+                    <p>{{ client.email }}</p>
                   </div>
-                </td>
-              </ng-container>
-              
-              <ng-container matColumnDef="daysLeft">
-                <th mat-header-cell *matHeaderCellDef>Dias</th>
-                <td mat-cell *matCellDef="let client" class="days-cell">
-                  <span class="days-left" [ngClass]="getDaysLeftClass(client)">{{ getDaysLeftText(client) }}</span>
-                </td>
-              </ng-container>
-              
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Ações</th>
-                <td mat-cell *matCellDef="let client">
+                  <span class="status" [ngClass]="client.status">{{ getStatusText(client.status) }}</span>
+                </div>
+                
+                <div class="card-content">
+                  <div class="info-row">
+                    <mat-icon>phone</mat-icon>
+                    <span>{{ client.phone || 'N/A' }}</span>
+                  </div>
+                  
+                  <div class="info-row">
+                    <mat-icon>schedule</mat-icon>
+                    <span class="days-left" [ngClass]="getDaysLeftClass(client)">{{ getDaysLeftText(client) }} dias</span>
+                  </div>
+                  
+                  <div class="info-row">
+                    <mat-icon>notifications</mat-icon>
+                    <div class="notification-icons">
+                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.email}">email</mat-icon>
+                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.whatsapp}">chat</mat-icon>
+                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.telegram}">send</mat-icon>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="card-actions" (click)="$event.stopPropagation()">
                   <button mat-icon-button (click)="viewClient(client)" matTooltip="Ver detalhes">
                     <mat-icon>visibility</mat-icon>
                   </button>
@@ -135,12 +190,9 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <button mat-icon-button (click)="deleteClient(client)" color="warn" matTooltip="Eliminar">
                     <mat-icon>delete</mat-icon>
                   </button>
-                </td>
-              </ng-container>
-              
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewClient(row)" class="clickable-row"></tr>
-            </table>
+                </div>
+              </div>
+            </div>
           </mat-card-content>
         </mat-card>
       </div>
@@ -174,6 +226,73 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .clickable-row { cursor: pointer; }
     .clickable-row:hover { background: #f5f5f5; }
     
+    /* Mobile Cards Layout */
+    .desktop-table { display: block; }
+    .mobile-cards { display: none; }
+    
+    .client-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .client-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .client-info h3 {
+      margin: 0 0 4px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .client-info p {
+      margin: 0;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .card-content {
+      margin-bottom: 12px;
+    }
+    
+    .info-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .info-row mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: #1976d2;
+    }
+    
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 4px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
+    
     @media (max-width: 768px) {
       .container { padding: 8px; }
       .header { flex-direction: column; align-items: stretch; gap: 12px; }
@@ -183,16 +302,44 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       .filters { flex-wrap: wrap; justify-content: space-between; }
       .filters mat-form-field { width: calc(50% - 8px); min-width: 120px; }
       .filters button { flex: 1; min-width: 80px; }
-      .clients-table { font-size: 14px; }
-      .notification-icons { flex-direction: column; gap: 2px; }
-      .notification-icon { font-size: 14px; width: 14px; height: 14px; }
+      
+      /* Switch to mobile layout */
+      .desktop-table { display: none; }
+      .mobile-cards { display: block; }
+      
+      .notification-icons { gap: 4px; }
+      .notification-icon { font-size: 16px; width: 16px; height: 16px; }
     }
     
     @media (max-width: 480px) {
       .filters mat-form-field { width: 100%; }
       .filters { flex-direction: column; }
       .filters button { width: 100%; margin-bottom: 8px; }
-      .clients-table { font-size: 12px; }
+      
+      .client-card {
+        padding: 12px;
+        margin-bottom: 8px;
+      }
+      
+      .client-info h3 {
+        font-size: 15px;
+      }
+      
+      .client-info p {
+        font-size: 13px;
+      }
+      
+      .info-row {
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+      
+      .info-row mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+      
       .days-left { font-size: 11px; padding: 2px 4px; }
       .status { font-size: 10px; padding: 2px 6px; }
     }

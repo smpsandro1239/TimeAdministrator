@@ -298,65 +298,111 @@ import {
               </div>
 
               <mat-card class="history-table">
-                <table mat-table [dataSource]="filteredHistory" class="notification-history-table">
-                  <ng-container matColumnDef="type">
-                    <th mat-header-cell *matHeaderCellDef>Tipo</th>
-                    <td mat-cell *matCellDef="let notification">
-                      <mat-icon [ngClass]="notification.type">
-                        {{ notification.type === 'email' ? 'email' : 'chat' }}
-                      </mat-icon>
-                    </td>
-                  </ng-container>
+                <!-- Desktop Table -->
+                <div class="desktop-table">
+                  <table mat-table [dataSource]="filteredHistory" class="notification-history-table">
+                    <ng-container matColumnDef="type">
+                      <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                      <td mat-cell *matCellDef="let notification">
+                        <mat-icon [ngClass]="notification.type">
+                          {{ notification.type === 'email' ? 'email' : 'chat' }}
+                        </mat-icon>
+                      </td>
+                    </ng-container>
 
-                  <ng-container matColumnDef="template">
-                    <th mat-header-cell *matHeaderCellDef>Template</th>
-                    <td mat-cell *matCellDef="let notification">{{ notification.templateName }}</td>
-                  </ng-container>
+                    <ng-container matColumnDef="template">
+                      <th mat-header-cell *matHeaderCellDef>Template</th>
+                      <td mat-cell *matCellDef="let notification">{{ notification.templateName }}</td>
+                    </ng-container>
 
-                  <ng-container matColumnDef="recipient">
-                    <th mat-header-cell *matHeaderCellDef>Destinatário</th>
-                    <td mat-cell *matCellDef="let notification">
-                      <div class="recipient-info">
-                        <div class="recipient-name">{{ notification.recipientName }}</div>
-                        <div class="recipient-contact">{{ notification.recipient }}</div>
+                    <ng-container matColumnDef="recipient">
+                      <th mat-header-cell *matHeaderCellDef>Destinatário</th>
+                      <td mat-cell *matCellDef="let notification">
+                        <div class="recipient-info">
+                          <div class="recipient-name">{{ notification.recipientName }}</div>
+                          <div class="recipient-contact">{{ notification.recipient }}</div>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                      <th mat-header-cell *matHeaderCellDef>Estado</th>
+                      <td mat-cell *matCellDef="let notification">
+                        <span class="status-chip" [ngClass]="notification.status">
+                          {{ getStatusText(notification.status) }}
+                        </span>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="sentAt">
+                      <th mat-header-cell *matHeaderCellDef>Enviado</th>
+                      <td mat-cell *matCellDef="let notification">
+                        {{ notification.sentAt | date:'dd/MM/yyyy HH:mm' }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                      <th mat-header-cell *matHeaderCellDef>Acções</th>
+                      <td mat-cell *matCellDef="let notification">
+                        <button mat-icon-button (click)="viewNotificationDetails(notification)" matTooltip="Ver detalhes">
+                          <mat-icon>visibility</mat-icon>
+                        </button>
+                        <button mat-icon-button 
+                                *ngIf="notification.status === 'failed'" 
+                                (click)="resendNotification(notification)"
+                                matTooltip="Reenviar">
+                          <mat-icon>refresh</mat-icon>
+                        </button>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="historyColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: historyColumns;"></tr>
+                  </table>
+                </div>
+
+                <!-- Mobile Cards -->
+                <div class="mobile-cards">
+                  <div class="notification-card" *ngFor="let notification of filteredHistory">
+                    <div class="notification-card-header">
+                      <div class="notification-card-type">
+                        <mat-icon [ngClass]="notification.type">
+                          {{ notification.type === 'email' ? 'email' : 'chat' }}
+                        </mat-icon>
+                        <span>{{ notification.templateName }}</span>
                       </div>
-                    </td>
-                  </ng-container>
-
-                  <ng-container matColumnDef="status">
-                    <th mat-header-cell *matHeaderCellDef>Estado</th>
-                    <td mat-cell *matCellDef="let notification">
                       <span class="status-chip" [ngClass]="notification.status">
                         {{ getStatusText(notification.status) }}
                       </span>
-                    </td>
-                  </ng-container>
-
-                  <ng-container matColumnDef="sentAt">
-                    <th mat-header-cell *matHeaderCellDef>Enviado</th>
-                    <td mat-cell *matCellDef="let notification">
-                      {{ notification.sentAt | date:'dd/MM/yyyy HH:mm' }}
-                    </td>
-                  </ng-container>
-
-                  <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>Acções</th>
-                    <td mat-cell *matCellDef="let notification">
-                      <button mat-icon-button (click)="viewNotificationDetails(notification)" matTooltip="Ver detalhes">
+                    </div>
+                    
+                    <div class="notification-card-details">
+                      <div class="notification-card-detail">
+                        <div class="notification-card-label">Destinatário</div>
+                        <div class="notification-card-value">
+                          <div class="recipient-name">{{ notification.recipientName }}</div>
+                          <div class="recipient-contact">{{ notification.recipient }}</div>
+                        </div>
+                      </div>
+                      <div class="notification-card-detail">
+                        <div class="notification-card-label">Enviado</div>
+                        <div class="notification-card-value">{{ notification.sentAt | date:'dd/MM/yyyy HH:mm' }}</div>
+                      </div>
+                    </div>
+                    
+                    <div class="notification-card-actions">
+                      <button mat-stroked-button (click)="viewNotificationDetails(notification)">
                         <mat-icon>visibility</mat-icon>
+                        Ver
                       </button>
-                      <button mat-icon-button 
-                              *ngIf="notification.status === 'failed'" 
-                              (click)="resendNotification(notification)"
-                              matTooltip="Reenviar">
+                      <button mat-stroked-button color="primary" *ngIf="notification.status === 'failed'" 
+                              (click)="resendNotification(notification)">
                         <mat-icon>refresh</mat-icon>
+                        Reenviar
                       </button>
-                    </td>
-                  </ng-container>
-
-                  <tr mat-header-row *matHeaderRowDef="historyColumns"></tr>
-                  <tr mat-row *matRowDef="let row; columns: historyColumns;"></tr>
-                </table>
+                    </div>
+                  </div>
+                </div>
               </mat-card>
             </div>
           </mat-tab>
@@ -651,6 +697,67 @@ import {
     .empty-state { text-align: center; padding: 48px 24px; color: #666; }
     .empty-state mat-icon { font-size: 48px; width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5; }
     
+    /* Mobile Cards */
+    .mobile-cards { display: none; }
+    .desktop-table { display: block; }
+    
+    .notification-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .notification-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .notification-card-type {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .notification-card-type mat-icon.email { color: #1976d2; }
+    .notification-card-type mat-icon.whatsapp { color: #25d366; }
+    
+    .notification-card-details {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .notification-card-detail {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .notification-card-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    
+    .notification-card-value {
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .notification-card-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    
     /* Responsive */
     @media (max-width: 768px) {
       .container { padding: 16px; }
@@ -660,6 +767,17 @@ import {
       .schedules-grid { grid-template-columns: 1fr; }
       .config-grid { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: 1fr; }
+      .desktop-table { display: none; }
+      .mobile-cards { display: block; }
+      .notification-card-actions { justify-content: stretch; }
+      .notification-card-actions button { flex: 1; }
+    }
+    
+    @media (max-width: 480px) {
+      .notification-card-actions {
+        flex-direction: column;
+        gap: 8px;
+      }
     }
   `]
 })

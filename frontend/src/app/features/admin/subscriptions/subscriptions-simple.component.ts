@@ -80,74 +80,125 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
               </button>
             </div>
             
-            <table mat-table [dataSource]="filteredSubscriptions" class="subscriptions-table">
-              <ng-container matColumnDef="client">
-                <th mat-header-cell *matHeaderCellDef>Cliente</th>
-                <td mat-cell *matCellDef="let sub">{{ sub.clientName }}</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="plan">
-                <th mat-header-cell *matHeaderCellDef>Plano</th>
-                <td mat-cell *matCellDef="let sub">
-                  <span class="plan-badge" [ngClass]="sub.plan">{{ getPlanText(sub.plan) }}</span>
-                </td>
-              </ng-container>
-              
-              <ng-container matColumnDef="startDate">
-                <th mat-header-cell *matHeaderCellDef>Início</th>
-                <td mat-cell *matCellDef="let sub">{{ formatDate(sub.startDate) }}</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="endDate">
-                <th mat-header-cell *matHeaderCellDef>Fim</th>
-                <td mat-cell *matCellDef="let sub">{{ formatDate(sub.endDate) }}</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="daysLeft">
-                <th mat-header-cell *matHeaderCellDef>Dias</th>
-                <td mat-cell *matCellDef="let sub" class="days-cell">
-                  <span class="days-left" [ngClass]="getDaysLeftClass(sub)">{{ getDaysLeft(sub) }}</span>
-                </td>
-              </ng-container>
-              
-              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>Estado</th>
-                <td mat-cell *matCellDef="let sub">
+            <!-- Desktop Table -->
+            <div class="desktop-table">
+              <table mat-table [dataSource]="filteredSubscriptions" class="subscriptions-table">
+                <ng-container matColumnDef="client">
+                  <th mat-header-cell *matHeaderCellDef>Cliente</th>
+                  <td mat-cell *matCellDef="let sub">{{ sub.clientName }}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="plan">
+                  <th mat-header-cell *matHeaderCellDef>Plano</th>
+                  <td mat-cell *matCellDef="let sub">
+                    <span class="plan-badge" [ngClass]="sub.plan">{{ getPlanText(sub.plan) }}</span>
+                  </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="startDate">
+                  <th mat-header-cell *matHeaderCellDef>Início</th>
+                  <td mat-cell *matCellDef="let sub">{{ formatDate(sub.startDate) }}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="endDate">
+                  <th mat-header-cell *matHeaderCellDef>Fim</th>
+                  <td mat-cell *matCellDef="let sub">{{ formatDate(sub.endDate) }}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="daysLeft">
+                  <th mat-header-cell *matHeaderCellDef>Dias</th>
+                  <td mat-cell *matCellDef="let sub" class="days-cell">
+                    <span class="days-left" [ngClass]="getDaysLeftClass(sub)">{{ getDaysLeft(sub) }}</span>
+                  </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Estado</th>
+                  <td mat-cell *matCellDef="let sub">
+                    <span class="status" [ngClass]="sub.status">{{ getStatusText(sub.status) }}</span>
+                  </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="value">
+                  <th mat-header-cell *matHeaderCellDef>Valor</th>
+                  <td mat-cell *matCellDef="let sub" class="value-cell">{{ sub.value }}€</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Ações</th>
+                  <td mat-cell *matCellDef="let sub" (click)="$event.stopPropagation()">
+                    <button mat-icon-button (click)="viewSubscription(sub)" matTooltip="Ver detalhes">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="renewSubscription(sub)" matTooltip="Renovar">
+                      <mat-icon>refresh</mat-icon>
+                    </button>
+                    <button mat-icon-button *ngIf="getDaysLeft(sub) < 0 && sub.status === 'inactive'" 
+                            (click)="keepActive(sub)" color="primary" matTooltip="Manter ativo +1 mês">
+                      <mat-icon>play_arrow</mat-icon>
+                    </button>
+                    <button mat-icon-button *ngIf="sub.manuallyActive" 
+                            (click)="deactivate(sub)" color="warn" matTooltip="Desativar">
+                      <mat-icon>stop</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="cancelSubscription(sub)" color="warn" matTooltip="Cancelar">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+                
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewSubscription(row)" class="clickable-row"></tr>
+              </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-cards">
+              <div class="subscription-card" *ngFor="let sub of filteredSubscriptions" (click)="viewSubscription(sub)">
+                <div class="subscription-card-header">
+                  <div class="subscription-card-title">{{ sub.clientName }}</div>
                   <span class="status" [ngClass]="sub.status">{{ getStatusText(sub.status) }}</span>
-                </td>
-              </ng-container>
-              
-              <ng-container matColumnDef="value">
-                <th mat-header-cell *matHeaderCellDef>Valor</th>
-                <td mat-cell *matCellDef="let sub" class="value-cell">{{ sub.value }}€</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Ações</th>
-                <td mat-cell *matCellDef="let sub" (click)="$event.stopPropagation()">
-                  <button mat-icon-button (click)="viewSubscription(sub)" matTooltip="Ver detalhes">
+                </div>
+                
+                <div class="subscription-card-details">
+                  <div class="subscription-card-detail">
+                    <div class="subscription-card-label">Plano</div>
+                    <div class="subscription-card-value">
+                      <span class="plan-badge" [ngClass]="sub.plan">{{ getPlanText(sub.plan) }}</span>
+                    </div>
+                  </div>
+                  <div class="subscription-card-detail">
+                    <div class="subscription-card-label">Valor</div>
+                    <div class="subscription-card-value subscription-price">{{ sub.value }}€</div>
+                  </div>
+                  <div class="subscription-card-detail">
+                    <div class="subscription-card-label">Dias Restantes</div>
+                    <div class="subscription-card-value">
+                      <span class="days-left" [ngClass]="getDaysLeftClass(sub)">{{ getDaysLeft(sub) }}</span>
+                    </div>
+                  </div>
+                  <div class="subscription-card-detail">
+                    <div class="subscription-card-label">Data Fim</div>
+                    <div class="subscription-card-value">{{ formatDate(sub.endDate) }}</div>
+                  </div>
+                </div>
+                
+                <div class="subscription-card-actions" (click)="$event.stopPropagation()">
+                  <button mat-stroked-button (click)="viewSubscription(sub)">
                     <mat-icon>visibility</mat-icon>
+                    Ver
                   </button>
-                  <button mat-icon-button (click)="renewSubscription(sub)" matTooltip="Renovar">
+                  <button mat-stroked-button color="primary" (click)="renewSubscription(sub)">
                     <mat-icon>refresh</mat-icon>
+                    Renovar
                   </button>
-                  <button mat-icon-button *ngIf="getDaysLeft(sub) < 0 && sub.status === 'inactive'" 
-                          (click)="keepActive(sub)" color="primary" matTooltip="Manter ativo +1 mês">
-                    <mat-icon>play_arrow</mat-icon>
-                  </button>
-                  <button mat-icon-button *ngIf="sub.manuallyActive" 
-                          (click)="deactivate(sub)" color="warn" matTooltip="Desativar">
-                    <mat-icon>stop</mat-icon>
-                  </button>
-                  <button mat-icon-button (click)="cancelSubscription(sub)" color="warn" matTooltip="Cancelar">
+                  <button mat-stroked-button color="warn" (click)="cancelSubscription(sub)">
                     <mat-icon>cancel</mat-icon>
+                    Cancelar
                   </button>
-                </td>
-              </ng-container>
-              
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewSubscription(row)" class="clickable-row"></tr>
-            </table>
+                </div>
+              </div>
+            </div>
           </mat-card-content>
         </mat-card>
       </div>
@@ -183,6 +234,95 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .value-cell { text-align: right; font-weight: 500; }
     .clickable-row { cursor: pointer; }
     .clickable-row:hover { background: #f5f5f5; }
+    
+    .mobile-cards { display: none; }
+    .desktop-table { display: block; }
+    
+    .subscription-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .subscription-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .subscription-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .subscription-card-title {
+      font-weight: 600;
+      color: #333;
+      font-size: 16px;
+    }
+    
+    .subscription-card-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .subscription-card-detail {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .subscription-card-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    
+    .subscription-card-value {
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .subscription-price {
+      font-weight: 600;
+      color: #2196F3;
+      font-size: 16px;
+    }
+    
+    .subscription-card-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .toolbar { flex-direction: column; align-items: stretch; gap: 16px; }
+      .search-bar mat-form-field { width: 100%; }
+      .filters { flex-wrap: wrap; }
+      .filters mat-form-field { width: 120px; }
+      .desktop-table { display: none; }
+      .mobile-cards { display: block; }
+      .subscription-card-details { grid-template-columns: 1fr; }
+      .subscription-card-actions { justify-content: stretch; }
+      .subscription-card-actions button { flex: 1; }
+    }
+    
+    @media (max-width: 480px) {
+      .subscription-card-actions {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
   `]
 })
 export class SubscriptionsSimpleComponent implements OnInit {
