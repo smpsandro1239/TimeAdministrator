@@ -293,10 +293,10 @@ export class ClientsSimpleComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         if (result?.action === 'edit') {
           this.editClient(result.client);
-        } else if (result?.action === 'subscription') {
-          this.snackBar.open('Gerir subscrição: Em desenvolvimento', 'Fechar', { duration: 2000 });
-        } else if (result?.action === 'payments') {
-          this.snackBar.open('Ver pagamentos: Em desenvolvimento', 'Fechar', { duration: 2000 });
+        } else if (result?.action === 'manageSubscription') {
+          this.manageSubscription(result.client);
+        } else if (result?.action === 'viewPayments') {
+          this.viewPayments(result.client);
         }
       });
     });
@@ -457,6 +457,49 @@ export class ClientsSimpleComponent implements OnInit {
     event.target.value = '';
   }
   
+  manageSubscription(client: any): void {
+    import('./manage-subscription-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.ManageSubscriptionDialogComponent, {
+        width: '95vw',
+        maxWidth: '700px',
+        maxHeight: '90vh',
+        data: { client },
+        panelClass: 'responsive-dialog'
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result?.action === 'extended') {
+          this.snackBar.open(`Subscrição de ${client.name} estendida: ${result.planText}`, 'Fechar', { duration: 3000 });
+          this.applyFilter();
+        } else if (result?.action === 'payments') {
+          this.viewPayments(result.client);
+        } else if (result?.action === 'create') {
+          this.snackBar.open(`Nova subscrição criada para ${client.name}`, 'Fechar', { duration: 3000 });
+        }
+      });
+    });
+  }
+  
+  viewPayments(client: any): void {
+    import('./view-payments-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.ViewPaymentsDialogComponent, {
+        width: '95vw',
+        maxWidth: '900px',
+        maxHeight: '90vh',
+        data: { client },
+        panelClass: 'responsive-dialog'
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result?.action === 'approved') {
+          this.snackBar.open('Pagamento aprovado com sucesso', 'Fechar', { duration: 2000 });
+        } else if (result?.action === 'add') {
+          this.snackBar.open('Adicionar pagamento: Em desenvolvimento', 'Fechar', { duration: 2000 });
+        }
+      });
+    });
+  }
+
   getStatusText(status: string): string {
     switch(status) {
       case 'active': return 'Ativo';

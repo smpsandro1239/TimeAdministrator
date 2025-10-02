@@ -213,7 +213,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
   `,
   styles: [`
     .dashboard-container {
-      max-width: 1400px;
+      max-width: 95vw;
       margin: 0 auto;
       padding: 20px;
     }
@@ -386,25 +386,51 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
         font-size: 24px;
       }
 
+      .period-selector {
+        width: 100%;
+        min-width: auto;
+      }
+
+      .metrics-section {
+        margin-bottom: 30px;
+      }
+
       .actions-grid {
         grid-template-columns: 1fr;
         gap: 16px;
       }
 
+      .metric-card {
+        width: 100% !important;
+      }
+      
       .metric-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 8px;
+        flex-direction: row;
+        text-align: left;
+        gap: 12px;
+        padding: 16px;
+        width: 100%;
       }
 
       .metric-icon {
-        font-size: 28px;
-        width: 28px;
-        height: 28px;
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+      }
+
+      .metric-info {
+        flex: 1;
       }
 
       .metric-info h3 {
-        font-size: 20px;
+        font-size: 18px;
+        margin-bottom: 2px;
+      }
+
+      .metric-info p {
+        font-size: 12px;
+        line-height: 1.2;
       }
 
       .action-card mat-icon {
@@ -425,6 +451,25 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
 
       .subtitle {
         font-size: 14px;
+      }
+
+      .metric-content {
+        padding: 12px;
+        gap: 10px;
+      }
+
+      .metric-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+
+      .metric-info h3 {
+        font-size: 16px;
+      }
+
+      .metric-info p {
+        font-size: 11px;
       }
 
       .action-card mat-card-content {
@@ -462,10 +507,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // Observar mudanças de breakpoint
     this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large
+      '(max-width: 480px)',
+      '(max-width: 768px)',
+      '(max-width: 1024px)',
+      '(min-width: 1025px)'
     ]).pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.updateGridCols();
     });
@@ -522,11 +567,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   updateGridCols(): void {
-    if (this.breakpointObserver.isMatched(Breakpoints.XSmall)) {
+    if (this.breakpointObserver.isMatched('(max-width: 480px)')) {
       this.gridCols = 1;
-    } else if (this.breakpointObserver.isMatched(Breakpoints.Small)) {
+    } else if (this.breakpointObserver.isMatched('(max-width: 768px)')) {
       this.gridCols = 2;
-    } else if (this.breakpointObserver.isMatched(Breakpoints.Medium)) {
+    } else if (this.breakpointObserver.isMatched('(max-width: 1024px)')) {
       this.gridCols = 3;
     } else {
       this.gridCols = 4;
