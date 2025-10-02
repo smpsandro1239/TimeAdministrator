@@ -1,24 +1,27 @@
 version: '3.8'
 
 services:
+  # Base de dados MongoDB para desenvolvimento
   mongodb:
     image: mongo:7.0
     container_name: timeadmin-mongodb-dev
     restart: unless-stopped
-    ports:
-      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password123
       MONGO_INITDB_DATABASE: timeadministrator
+    ports:
+      - "27017:27017"
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_dev_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
-      - timeadmin-network
-
-networks:
-  timeadmin-network:
-    driver: bridge
+      - timeadmin-dev-network
 
 volumes:
-  mongodb_data:
+  mongodb_dev_data:
+    driver: local
+
+networks:
+  timeadmin-dev-network:
+    driver: bridge
