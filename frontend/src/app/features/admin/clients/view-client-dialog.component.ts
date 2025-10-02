@@ -218,11 +218,11 @@ export class ViewClientDialogComponent {
   }
 
   manageSubscription(): void {
-    this.dialogRef.close({ action: 'subscription', client: this.data.client });
+    this.dialogRef.close({ action: 'manageSubscription', client: this.data.client });
   }
 
   viewPayments(): void {
-    this.dialogRef.close({ action: 'payments', client: this.data.client });
+    this.dialogRef.close({ action: 'viewPayments', client: this.data.client });
   }
 
   close(): void {
