@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
@@ -20,106 +21,379 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule
   ],
   template: `
-    <h2 mat-dialog-title>Editar Subscrição - {{ data.clientName }}</h2>
+    <div class="dialog-header">
+      <div class="header-content">
+        <mat-icon class="title-icon">edit</mat-icon>
+        <div class="title-section">
+          <h2 mat-dialog-title>{{ data.clientName }}</h2>
+          <p class="subtitle">Editar Subscrição</p>
+        </div>
+      </div>
+      <button mat-icon-button mat-dialog-close class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
     
     <mat-dialog-content>
       <div class="current-info">
-        <p><strong>Subscrição atual:</strong> {{ getPlanText(data.plan) }} - {{ data.price }}€</p>
-        <p><strong>Expira em:</strong> {{ formatDate(data.endDate) }}</p>
+        <div class="info-header">
+          <mat-icon>info</mat-icon>
+          <span>Subscrição Atual</span>
+        </div>
+        <div class="info-content">
+          <div class="info-item">
+            <span class="label">Plano:</span>
+            <span class="value">{{ getPlanText(data.plan) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Valor:</span>
+            <span class="value price">{{ data.price }}€</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Expira em:</span>
+            <span class="value">{{ formatDate(data.endDate) }}</span>
+          </div>
+        </div>
       </div>
       
       <form [formGroup]="subscriptionForm" class="form">
-        <mat-form-field appearance="outline">
-          <mat-label>Plano</mat-label>
-          <mat-select formControlName="plan" (selectionChange)="updatePrice()">
-            <mat-option value="monthly">1 Mês - €10.00 (padrão)</mat-option>
-            <mat-option value="quarterly">3 Meses - €30.00 (padrão)</mat-option>
-            <mat-option value="biannual">6 Meses - €60.00 (padrão)</mat-option>
-            <mat-option value="annual">12 Meses - €100.00 (padrão)</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <!-- Plano e Preço -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>card_membership</mat-icon>
+            Plano e Preço
+          </h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Plano</mat-label>
+              <mat-select formControlName="plan" (selectionChange)="updatePrice()">
+                <mat-option value="monthly">1 Mês - €10.00</mat-option>
+                <mat-option value="quarterly">3 Meses - €30.00</mat-option>
+                <mat-option value="biannual">6 Meses - €60.00</mat-option>
+                <mat-option value="annual">12 Meses - €100.00</mat-option>
+              </mat-select>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Preço personalizado (€)</mat-label>
-          <input matInput type="number" formControlName="price" step="0.01" (input)="onPriceChange()">
-          <mat-hint>Preço padrão: {{ getDefaultPrice() }}€</mat-hint>
-        </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Preço (€)</mat-label>
+              <input matInput type="number" formControlName="price" step="0.01" (input)="onPriceChange()">
+              <mat-hint>Padrão: {{ getDefaultPrice() }}€</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
         
-        <div class="extend-section">
-          <h3>Ou estender subscrição atual:</h3>
+        <!-- Extensão Rápida -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>add_circle</mat-icon>
+            Extensão Rápida
+          </h3>
           <div class="extend-buttons">
-            <button type="button" mat-stroked-button (click)="extendSubscription(1)">+1 Mês</button>
-            <button type="button" mat-stroked-button (click)="extendSubscription(3)">+3 Meses</button>
-            <button type="button" mat-stroked-button (click)="extendSubscription(6)">+6 Meses</button>
-            <button type="button" mat-stroked-button (click)="extendSubscription(12)">+12 Meses</button>
+            <button type="button" mat-stroked-button (click)="extendSubscription(1)">
+              <mat-icon>add</mat-icon>
+              1 Mês
+            </button>
+            <button type="button" mat-stroked-button (click)="extendSubscription(3)">
+              <mat-icon>add</mat-icon>
+              3 Meses
+            </button>
+            <button type="button" mat-stroked-button (click)="extendSubscription(6)">
+              <mat-icon>add</mat-icon>
+              6 Meses
+            </button>
+            <button type="button" mat-stroked-button (click)="extendSubscription(12)">
+              <mat-icon>add</mat-icon>
+              1 Ano
+            </button>
           </div>
         </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Estado</mat-label>
-          <mat-select formControlName="status">
-            <mat-option value="active">Ativa</mat-option>
-            <mat-option value="expired">Expirada</mat-option>
-            <mat-option value="cancelled">Cancelada</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <!-- Datas -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>date_range</mat-icon>
+            Período
+          </h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Data de início</mat-label>
+              <input matInput [matDatepicker]="startPicker" formControlName="startDate" (dateChange)="updateEndDate()">
+              <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Data de início</mat-label>
-          <input matInput [matDatepicker]="startPicker" formControlName="startDate" (dateChange)="updateEndDate()">
-          <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
-          <mat-datepicker #startPicker></mat-datepicker>
-        </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Data de fim</mat-label>
+              <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+              <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+              <mat-hint>Calculada automaticamente</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Data de fim (calculada automaticamente)</mat-label>
-          <input matInput [matDatepicker]="endPicker" formControlName="endDate">
-          <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
-          <mat-datepicker #endPicker></mat-datepicker>
-          <mat-hint>Calculada com base no plano selecionado</mat-hint>
-        </mat-form-field>
+        <!-- Estado e Pagamento -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>payment</mat-icon>
+            Estado e Pagamento
+          </h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Estado da Subscrição</mat-label>
+              <mat-select formControlName="status">
+                <mat-option value="active">Ativa</mat-option>
+                <mat-option value="inactive">Inativa</mat-option>
+                <mat-option value="expired">Expirada</mat-option>
+                <mat-option value="cancelled">Cancelada</mat-option>
+              </mat-select>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Estado do pagamento</mat-label>
-          <mat-select formControlName="paymentStatus">
-            <mat-option value="paid">Pago</mat-option>
-            <mat-option value="pending">Pendente</mat-option>
-            <mat-option value="failed">Falhado</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Método de pagamento</mat-label>
-          <mat-select formControlName="paymentMethod">
-            <mat-option value="stripe">Cartão (Stripe)</mat-option>
-            <mat-option value="transfer">Transferência</mat-option>
-            <mat-option value="cash">Dinheiro</mat-option>
-            <mat-option value="other">Outro</mat-option>
-          </mat-select>
-        </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Estado do Pagamento</mat-label>
+              <mat-select formControlName="paymentStatus">
+                <mat-option value="paid">Pago</mat-option>
+                <mat-option value="pending">Pendente</mat-option>
+                <mat-option value="failed">Falhado</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Método de Pagamento</mat-label>
+            <mat-select formControlName="paymentMethod">
+              <mat-option value="stripe">Cartão de Crédito (Stripe)</mat-option>
+              <mat-option value="transfer">Transferência Bancária</mat-option>
+              <mat-option value="mbway">MBWay</mat-option>
+              <mat-option value="cash">Dinheiro</mat-option>
+              <mat-option value="other">Outro</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </form>
     </mat-dialog-content>
     
-    <mat-dialog-actions>
-      <button mat-button mat-dialog-close>Cancelar</button>
+    <mat-dialog-actions class="dialog-actions">
+      <button mat-stroked-button mat-dialog-close>Cancelar</button>
       <button mat-raised-button color="primary" (click)="save()" [disabled]="subscriptionForm.invalid">
-        Guardar
+        <mat-icon>save</mat-icon>
+        Guardar Alterações
       </button>
     </mat-dialog-actions>
   `,
   styles: [`
-    .current-info { background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
-    .current-info p { margin: 4px 0; }
-    .form { display: flex; flex-direction: column; gap: 16px; min-width: 500px; }
-    .extend-section { margin: 16px 0; padding: 16px; border: 1px solid #ddd; border-radius: 8px; }
-    .extend-section h3 { margin: 0 0 12px 0; font-size: 14px; color: #666; }
-    .extend-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-    .extend-buttons button { flex: 1; min-width: 80px; }
-    mat-form-field { width: 100%; }
+    .dialog-header {
+      background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+      color: white;
+      margin: -24px -24px 24px -24px;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .title-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+    
+    .title-section h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+    
+    .subtitle {
+      margin: 4px 0 0 0;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    
+    .close-button {
+      color: white;
+    }
+    
+    .current-info {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border-left: 4px solid #2196F3;
+    }
+    
+    .info-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      color: #1976D2;
+    }
+    
+    .info-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    
+    .value {
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .price {
+      color: #4CAF50;
+      font-size: 16px;
+    }
+    
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 600px;
+      min-width: 500px;
+    }
+    
+    .form-section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: 1px solid #e0e0e0;
+    }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 16px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .section-title mat-icon {
+      color: #4CAF50;
+      font-size: 20px;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    
+    .extend-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+    }
+    
+    .extend-buttons button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    
+    .extend-buttons button:hover {
+      background: #f5f5f5;
+      transform: translateY(-1px);
+    }
+    
+    mat-form-field {
+      width: 100%;
+    }
+    
+    .dialog-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      padding: 16px 24px;
+      border-top: 1px solid #e0e0e0;
+      margin: 24px -24px -24px -24px;
+    }
+    
+    @media (max-width: 768px) {
+      .form {
+        min-width: 0;
+        max-width: 100%;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .info-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .extend-buttons {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .dialog-header {
+        margin: -24px -16px 16px -16px;
+        padding: 16px;
+      }
+      
+      .header-content {
+        gap: 12px;
+      }
+      
+      .title-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+      
+      .title-section h2 {
+        font-size: 20px;
+      }
+      
+      .dialog-actions {
+        flex-direction: column;
+        margin: 16px -16px -24px -16px;
+      }
+      
+      .dialog-actions button {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .extend-buttons {
+        grid-template-columns: 1fr;
+      }
+    }
   `]
 })
 export class EditSubscriptionDialogComponent {

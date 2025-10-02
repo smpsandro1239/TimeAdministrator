@@ -112,44 +112,94 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
               </button>
             </div>
             
-            <table mat-table [dataSource]="filteredPayments" class="payments-table">
-              <ng-container matColumnDef="client">
-                <th mat-header-cell *matHeaderCellDef>Cliente</th>
-                <td mat-cell *matCellDef="let payment">{{ payment.clientName }}</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="reference">
-                <th mat-header-cell *matHeaderCellDef>Referência</th>
-                <td mat-cell *matCellDef="let payment">{{ payment.reference }}</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="amount">
-                <th mat-header-cell *matHeaderCellDef>Valor</th>
-                <td mat-cell *matCellDef="let payment" class="amount-cell">{{ payment.amount }}€</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="method">
-                <th mat-header-cell *matHeaderCellDef>Método</th>
-                <td mat-cell *matCellDef="let payment">
-                  <span class="method-badge" [ngClass]="payment.method">{{ getMethodText(payment.method) }}</span>
-                </td>
-              </ng-container>
-              
-              <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef>Data</th>
-                <td mat-cell *matCellDef="let payment">{{ formatDate(payment.date) }}</td>
-              </ng-container>
-              
-              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>Estado</th>
-                <td mat-cell *matCellDef="let payment">
-                  <span class="status" [ngClass]="payment.status">{{ getStatusText(payment.status) }}</span>
-                </td>
-              </ng-container>
-              
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Ações</th>
-                <td mat-cell *matCellDef="let payment" (click)="$event.stopPropagation()">
+            <!-- Desktop Table -->
+            <div class="desktop-table">
+              <table mat-table [dataSource]="filteredPayments" class="payments-table">
+                <ng-container matColumnDef="client">
+                  <th mat-header-cell *matHeaderCellDef>Cliente</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.clientName }}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="reference">
+                  <th mat-header-cell *matHeaderCellDef>Referência</th>
+                  <td mat-cell *matCellDef="let payment">{{ payment.reference }}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="amount">
+                  <th mat-header-cell *matHeaderCellDef>Valor</th>
+                  <td mat-cell *matCellDef="let payment" class="amount-cell">{{ payment.amount }}€</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="method">
+                  <th mat-header-cell *matHeaderCellDef>Método</th>
+                  <td mat-cell *matCellDef="let payment">
+                    <span class="method-badge" [ngClass]="payment.method">{{ getMethodText(payment.method) }}</span>
+                  </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Data</th>
+                  <td mat-cell *matCellDef="let payment">{{ formatDate(payment.date) }}</td>
+                </ng-container>
+                
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Estado</th>
+                  <td mat-cell *matCellDef="let payment">
+                    <span class="status" [ngClass]="payment.status">{{ getStatusText(payment.status) }}</span>
+                  </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Ações</th>
+                  <td mat-cell *matCellDef="let payment" (click)="$event.stopPropagation()">
+                    <button mat-icon-button (click)="viewPayment(payment)" matTooltip="Ver detalhes">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button mat-icon-button *ngIf="payment.status === 'pending'" 
+                            (click)="approvePayment(payment)" color="primary" matTooltip="Aprovar">
+                      <mat-icon>check</mat-icon>
+                    </button>
+                    <button mat-icon-button *ngIf="payment.status === 'pending'" 
+                            (click)="rejectPayment(payment)" color="warn" matTooltip="Rejeitar">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+                
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewPayment(row)" class="clickable-row"></tr>
+              </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-cards">
+              <div class="payment-card" *ngFor="let payment of filteredPayments" (click)="viewPayment(payment)">
+                <div class="card-header">
+                  <div class="payment-info">
+                    <h3>{{ payment.clientName }}</h3>
+                    <p class="reference">{{ payment.reference }}</p>
+                  </div>
+                  <div class="amount">{{ payment.amount }}€</div>
+                </div>
+                
+                <div class="card-content">
+                  <div class="info-row">
+                    <mat-icon>payment</mat-icon>
+                    <span class="method-badge" [ngClass]="payment.method">{{ getMethodText(payment.method) }}</span>
+                  </div>
+                  
+                  <div class="info-row">
+                    <mat-icon>schedule</mat-icon>
+                    <span>{{ formatDate(payment.date) }}</span>
+                  </div>
+                  
+                  <div class="info-row">
+                    <mat-icon>info</mat-icon>
+                    <span class="status" [ngClass]="payment.status">{{ getStatusText(payment.status) }}</span>
+                  </div>
+                </div>
+                
+                <div class="card-actions" (click)="$event.stopPropagation()">
                   <button mat-icon-button (click)="viewPayment(payment)" matTooltip="Ver detalhes">
                     <mat-icon>visibility</mat-icon>
                   </button>
@@ -161,12 +211,9 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                           (click)="rejectPayment(payment)" color="warn" matTooltip="Rejeitar">
                     <mat-icon>close</mat-icon>
                   </button>
-                </td>
-              </ng-container>
-              
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewPayment(row)" class="clickable-row"></tr>
-            </table>
+                </div>
+              </div>
+            </div>
           </mat-card-content>
         </mat-card>
       </div>
@@ -205,6 +252,133 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .amount-cell { text-align: right; font-weight: 500; }
     .clickable-row { cursor: pointer; }
     .clickable-row:hover { background: #f5f5f5; }
+    
+    /* Mobile Cards Layout */
+    .desktop-table { display: block; }
+    .mobile-cards { display: none; }
+    
+    .payment-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-left: 4px solid #2196F3;
+    }
+    
+    .payment-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .payment-info h3 {
+      margin: 0 0 4px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .reference {
+      margin: 0;
+      font-size: 12px;
+      color: #666;
+      font-family: monospace;
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    
+    .amount {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2196F3;
+    }
+    
+    .card-content {
+      margin-bottom: 12px;
+    }
+    
+    .info-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .info-row mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: #1976d2;
+    }
+    
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 4px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
+    
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .header { flex-direction: column; align-items: stretch; gap: 12px; }
+      .header button { width: 100%; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+      .search-bar mat-form-field { width: 100%; }
+      .filters { flex-wrap: wrap; justify-content: space-between; }
+      .filters mat-form-field { width: calc(50% - 8px); min-width: 120px; }
+      .filters button { flex: 1; min-width: 80px; }
+      
+      /* Switch to mobile layout */
+      .desktop-table { display: none; }
+      .mobile-cards { display: block; }
+    }
+    
+    @media (max-width: 480px) {
+      .container { padding: 12px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .filters mat-form-field { width: 100%; }
+      .filters { flex-direction: column; }
+      .filters button { width: 100%; margin-bottom: 8px; }
+      
+      .payment-card {
+        padding: 12px;
+        margin-bottom: 8px;
+      }
+      
+      .payment-info h3 {
+        font-size: 15px;
+      }
+      
+      .amount {
+        font-size: 16px;
+      }
+      
+      .info-row {
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+      
+      .info-row mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+    }
   `]
 })
 export class PaymentsSimpleComponent implements OnInit {

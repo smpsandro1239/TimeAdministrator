@@ -23,64 +23,109 @@
   </div>
 
   <div class="table-container" *ngIf="!loading">
-    <table mat-table [dataSource]="subscriptions" class="subscriptions-table">
+    <!-- Desktop Table -->
+    <div class="desktop-table">
+      <table mat-table [dataSource]="subscriptions" class="subscriptions-table">
 
-      <!-- Client Name Column -->
-      <ng-container matColumnDef="clientName">
-        <th mat-header-cell *matHeaderCellDef>Cliente</th>
-        <td mat-cell *matCellDef="let subscription">{{ getClientName(subscription.clientId) }}</td>
-      </ng-container>
+        <!-- Client Name Column -->
+        <ng-container matColumnDef="clientName">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let subscription">{{ getClientName(subscription.clientId) }}</td>
+        </ng-container>
 
-      <!-- Period Column -->
-      <ng-container matColumnDef="period">
-        <th mat-header-cell *matHeaderCellDef>Período</th>
-        <td mat-cell *matCellDef="let subscription">{{ getPeriodText(subscription.period) }}</td>
-      </ng-container>
+        <!-- Period Column -->
+        <ng-container matColumnDef="period">
+          <th mat-header-cell *matHeaderCellDef>Período</th>
+          <td mat-cell *matCellDef="let subscription">{{ getPeriodText(subscription.period) }}</td>
+        </ng-container>
 
-      <!-- Status Column -->
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let subscription">
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let subscription">
+            <mat-chip [color]="getStatusColor(subscription.status)" selected>
+              {{ subscription.status }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Start Date Column -->
+        <ng-container matColumnDef="startDate">
+          <th mat-header-cell *matHeaderCellDef>Data Início</th>
+          <td mat-cell *matCellDef="let subscription">{{ subscription.startDate | date:'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <!-- End Date Column -->
+        <ng-container matColumnDef="endDate">
+          <th mat-header-cell *matHeaderCellDef>Data Fim</th>
+          <td mat-cell *matCellDef="let subscription">{{ subscription.endDate | date:'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <!-- Price Column -->
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Preço</th>
+          <td mat-cell *matCellDef="let subscription">€{{ subscription.price.toFixed(2) }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let subscription">
+            <button mat-icon-button color="primary" (click)="editSubscription(subscription)" title="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="cancelSubscription(subscription)" title="Cancelar">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+    <!-- Mobile Cards -->
+    <div class="mobile-cards">
+      <div class="subscription-card" *ngFor="let subscription of subscriptions">
+        <div class="subscription-card-header">
+          <div class="subscription-card-title">{{ getClientName(subscription.clientId) }}</div>
           <mat-chip [color]="getStatusColor(subscription.status)" selected>
             {{ subscription.status }}
           </mat-chip>
-        </td>
-      </ng-container>
-
-      <!-- Start Date Column -->
-      <ng-container matColumnDef="startDate">
-        <th mat-header-cell *matHeaderCellDef>Data Início</th>
-        <td mat-cell *matCellDef="let subscription">{{ subscription.startDate | date:'dd/MM/yyyy' }}</td>
-      </ng-container>
-
-      <!-- End Date Column -->
-      <ng-container matColumnDef="endDate">
-        <th mat-header-cell *matHeaderCellDef>Data Fim</th>
-        <td mat-cell *matCellDef="let subscription">{{ subscription.endDate | date:'dd/MM/yyyy' }}</td>
-      </ng-container>
-
-      <!-- Price Column -->
-      <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef>Preço</th>
-        <td mat-cell *matCellDef="let subscription">€{{ subscription.price.toFixed(2) }}</td>
-      </ng-container>
-
-      <!-- Actions Column -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Ações</th>
-        <td mat-cell *matCellDef="let subscription">
-          <button mat-icon-button color="primary" (click)="editSubscription(subscription)" title="Editar">
+        </div>
+        
+        <div class="subscription-card-details">
+          <div class="subscription-card-detail">
+            <div class="subscription-card-label">Período</div>
+            <div class="subscription-card-value">{{ getPeriodText(subscription.period) }}</div>
+          </div>
+          <div class="subscription-card-detail">
+            <div class="subscription-card-label">Preço</div>
+            <div class="subscription-card-value subscription-price">€{{ subscription.price.toFixed(2) }}</div>
+          </div>
+          <div class="subscription-card-detail">
+            <div class="subscription-card-label">Data Início</div>
+            <div class="subscription-card-value">{{ subscription.startDate | date:'dd/MM/yyyy' }}</div>
+          </div>
+          <div class="subscription-card-detail">
+            <div class="subscription-card-label">Data Fim</div>
+            <div class="subscription-card-value">{{ subscription.endDate | date:'dd/MM/yyyy' }}</div>
+          </div>
+        </div>
+        
+        <div class="subscription-card-actions">
+          <button mat-stroked-button color="primary" (click)="editSubscription(subscription)">
             <mat-icon>edit</mat-icon>
+            Editar
           </button>
-          <button mat-icon-button color="warn" (click)="cancelSubscription(subscription)" title="Cancelar">
+          <button mat-stroked-button color="warn" (click)="cancelSubscription(subscription)">
             <mat-icon>cancel</mat-icon>
+            Cancelar
           </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+        </div>
+      </div>
+    </div>
 
     <mat-paginator
       [length]="totalSubscriptions"
