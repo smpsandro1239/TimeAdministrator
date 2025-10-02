@@ -196,6 +196,30 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       .days-left { font-size: 11px; padding: 2px 4px; }
       .status { font-size: 10px; padding: 2px 6px; }
     }
+    
+    /* Estilos globais para diálogos responsivos */
+    :host ::ng-deep .responsive-dialog {
+      width: 95vw !important;
+      max-height: 90vh !important;
+    }
+    
+    :host ::ng-deep .responsive-dialog .mat-mdc-dialog-container {
+      padding: 16px !important;
+    }
+    
+    @media (max-width: 768px) {
+      :host ::ng-deep .responsive-dialog {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: none !important;
+        max-height: none !important;
+      }
+      
+      :host ::ng-deep .responsive-dialog .mat-mdc-dialog-container {
+        padding: 8px !important;
+        border-radius: 0 !important;
+      }
+    }
   `]
 })
 export class ClientsSimpleComponent implements OnInit {
@@ -235,9 +259,11 @@ export class ClientsSimpleComponent implements OnInit {
   addClient(): void {
     import('./add-client-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.AddClientDialogComponent, {
-        width: '90vw',
-        maxWidth: '500px',
-        disableClose: true
+        width: '95vw',
+        maxWidth: '600px',
+        maxHeight: '90vh',
+        disableClose: true,
+        panelClass: 'responsive-dialog'
       });
       
       dialogRef.afterClosed().subscribe(result => {
@@ -257,9 +283,11 @@ export class ClientsSimpleComponent implements OnInit {
   viewClient(client: any): void {
     import('./view-client-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ViewClientDialogComponent, {
-        width: '90vw',
-        maxWidth: '600px',
-        data: { client }
+        width: '95vw',
+        maxWidth: '700px',
+        maxHeight: '90vh',
+        data: { client },
+        panelClass: 'responsive-dialog'
       });
       
       dialogRef.afterClosed().subscribe(result => {
@@ -277,9 +305,11 @@ export class ClientsSimpleComponent implements OnInit {
   editClient(client: any): void {
     import('./edit-client-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.EditClientDialogComponent, {
-        width: '90vw',
-        maxWidth: '500px',
-        data: { client }
+        width: '95vw',
+        maxWidth: '600px',
+        maxHeight: '90vh',
+        data: { client },
+        panelClass: 'responsive-dialog'
       });
       
       dialogRef.afterClosed().subscribe(result => {
@@ -305,8 +335,10 @@ export class ClientsSimpleComponent implements OnInit {
   deleteClient(client: any): void {
     import('./confirm-delete-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ConfirmDeleteDialogComponent, {
-        width: '400px',
-        data: { client }
+        width: '95vw',
+        maxWidth: '450px',
+        data: { client },
+        panelClass: 'responsive-dialog'
       });
       
       dialogRef.afterClosed().subscribe(confirmed => {

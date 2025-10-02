@@ -184,10 +184,17 @@ import { MatChipsModule } from '@angular/material/chips';
     @media (max-width: 768px) {
       .client-details { max-width: 100%; min-width: 0; }
       .info-grid { grid-template-columns: 1fr; }
-      .action-buttons { flex-direction: column; gap: 8px; }
+      .action-buttons { flex-direction: column; gap: 8px; width: 100%; }
+      .action-buttons button { width: 100%; }
+      .dialog-actions { flex-direction: column; gap: 12px; }
+      .dialog-actions > button { width: 100%; }
       .dialog-header { margin: -24px -16px 16px -16px; padding: 16px; }
       .info-item { flex-direction: column; align-items: flex-start; text-align: left; }
       .info-icon { margin-bottom: 4px; }
+      .title-content { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .title-icon { font-size: 24px; width: 24px; height: 24px; }
+      .title-text { font-size: 20px; }
+      mat-chip-set { flex-wrap: wrap; }
     }
   `]
 })
