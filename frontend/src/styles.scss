@@ -20,6 +20,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .text-right { text-align: right; }
 .text-left { text-align: left; }
 
+/* Títulos de página */
+.page-title {
+  color: #333 !important;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #333;
+}
+
 .mt-1 { margin-top: 8px; }
 .mt-2 { margin-top: 16px; }
 .mt-3 { margin-top: 24px; }

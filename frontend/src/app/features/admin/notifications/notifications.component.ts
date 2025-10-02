@@ -536,7 +536,7 @@ import {
   styles: [`
     .container { padding: 24px; max-width: 1400px; margin: 0 auto; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .header h1 { margin: 0; color: #1976d2; font-size: 28px; }
+    .header h1 { margin: 0; color: #333; font-size: 28px; }
     .header p { margin: 4px 0 0 0; color: #666; }
     .header-actions { display: flex; gap: 12px; }
     .tab-content { padding: 24px 0; }
