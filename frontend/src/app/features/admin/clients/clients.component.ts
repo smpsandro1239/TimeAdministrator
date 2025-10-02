@@ -42,11 +42,13 @@ import * as XLSX from 'xlsx';
     <app-layout>
     <div class="page-container">
       <div class="header">
-        <h1>Gestão de Clientes</h1>
-        <p>Gerir todos os clientes do sistema</p>
+        <div class="header-content">
+          <h1>Gestão de Clientes</h1>
+          <p>Gerir todos os clientes do sistema</p>
+        </div>
         <button mat-raised-button color="primary" (click)="addClient()">
           <mat-icon>add</mat-icon>
-          Novo Cliente
+          <span class="button-text">Novo Cliente</span>
         </button>
       </div>
       
@@ -63,14 +65,113 @@ import * as XLSX from 'xlsx';
     </app-layout>
   `,
   styles: [`
-    .page-container { padding: 24px; max-width: 1200px; margin: 0 auto; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .header h1 { margin: 0; color: #333; }
-    .header p { margin: 8px 0 0 0; color: #666; }
-    .empty-state { text-align: center; padding: 48px; }
-    .empty-state mat-icon { font-size: 64px; width: 64px; height: 64px; color: #666; margin-bottom: 16px; }
-    .empty-state h2 { margin: 0 0 8px 0; color: #333; }
-    .empty-state p { margin: 0; color: #666; }
+    .page-container { 
+      padding: 24px; 
+      max-width: 1200px; 
+      margin: 0 auto;
+    }
+    
+    .header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: flex-start;
+      margin-bottom: 24px;
+      gap: 16px;
+    }
+    
+    .header-content {
+      flex: 1;
+    }
+    
+    .header h1 { 
+      margin: 0; 
+      color: #333;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    
+    .header p { 
+      margin: 8px 0 0 0; 
+      color: #666;
+      font-size: 16px;
+    }
+    
+    .empty-state { 
+      text-align: center; 
+      padding: 48px 24px;
+    }
+    
+    .empty-state mat-icon { 
+      font-size: 64px; 
+      width: 64px; 
+      height: 64px; 
+      color: #666; 
+      margin-bottom: 16px;
+    }
+    
+    .empty-state h2 { 
+      margin: 0 0 8px 0; 
+      color: #333;
+      font-size: 24px;
+    }
+    
+    .empty-state p { 
+      margin: 0; 
+      color: #666;
+      font-size: 16px;
+    }
+    
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 16px;
+      }
+      
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+      
+      .header h1 {
+        font-size: 24px;
+      }
+      
+      .header p {
+        font-size: 14px;
+      }
+      
+      .empty-state {
+        padding: 32px 16px;
+      }
+      
+      .empty-state mat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+      }
+      
+      .empty-state h2 {
+        font-size: 20px;
+      }
+      
+      .empty-state p {
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .page-container {
+        padding: 12px;
+      }
+      
+      .header h1 {
+        font-size: 20px;
+      }
+      
+      .empty-state {
+        padding: 24px 12px;
+      }
+    }
   `]
 })
 export class ClientsComponent implements OnInit {

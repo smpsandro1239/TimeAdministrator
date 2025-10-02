@@ -48,7 +48,27 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .flex-row { flex-direction: row; }
 .justify-center { justify-content: center; }
 .justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
 .align-center { align-items: center; }
+.align-start { align-items: flex-start; }
+.align-end { align-items: flex-end; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-nowrap { flex-wrap: nowrap; }
+.flex-1 { flex: 1; }
+
+/* Classes responsivas */
+.mobile-only { display: none; }
+.desktop-only { display: block; }
+
+@media (max-width: 768px) {
+  .mobile-only { display: block; }
+  .desktop-only { display: none; }
+  
+  .mobile-flex-column { flex-direction: column; }
+  .mobile-text-center { text-align: center; }
+  .mobile-w-100 { width: 100%; }
+  .mobile-mb-2 { margin-bottom: 16px; }
+}
 
 /* Componentes personalizados */
 .card-container {
@@ -88,7 +108,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-top: 4px;
 }
 
-/* Responsividade */
+/* Responsividade Global */
+@media (max-width: 1024px) {
+  .card-container {
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
 @media (max-width: 768px) {
   .card-container {
     padding: 8px;
@@ -97,6 +124,56 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   
   .full-width-form {
     padding: 16px;
+  }
+  
+  /* Botões responsivos */
+  .mat-mdc-raised-button .button-text,
+  .mat-mdc-flat-button .button-text {
+    display: none;
+  }
+  
+  /* Tabelas responsivas */
+  .mat-mdc-table {
+    font-size: 14px;
+  }
+  
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    padding: 8px 4px;
+  }
+  
+  /* Cards responsivos */
+  .mat-mdc-card {
+    margin: 8px 0;
+  }
+  
+  .mat-mdc-card-content {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-container {
+    padding: 4px;
+    gap: 4px;
+  }
+  
+  .full-width-form {
+    padding: 12px;
+  }
+  
+  /* Texto menor em telas pequenas */
+  h1 { font-size: 20px !important; }
+  h2 { font-size: 18px !important; }
+  h3 { font-size: 16px !important; }
+  
+  .mat-mdc-card-content {
+    padding: 12px;
+  }
+  
+  /* Formulários compactos */
+  .mat-mdc-form-field {
+    font-size: 14px;
   }
 }
 

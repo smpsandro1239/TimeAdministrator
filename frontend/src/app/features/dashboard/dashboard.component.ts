@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
@@ -51,7 +54,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
 
       <!-- Métricas Admin -->
       <div *ngIf="metrics && !loading" class="metrics-section">
-        <mat-grid-list cols="4" rowHeight="120px" gutterSize="16px">
+        <mat-grid-list [cols]="getGridCols()" rowHeight="120px" gutterSize="16px">
           <mat-grid-tile>
             <mat-card class="metric-card clickable" (click)="navigate('/admin/clients')">
               <mat-card-content>
@@ -362,6 +365,12 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
       color: #666;
     }
 
+    @media (max-width: 1024px) {
+      .actions-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+    }
+
     @media (max-width: 768px) {
       .dashboard-container {
         padding: 16px;
@@ -370,6 +379,11 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
       .header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 12px;
+      }
+      
+      .header h1 {
+        font-size: 24px;
       }
       
       .actions-grid {
@@ -382,25 +396,81 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
         text-align: center;
         gap: 8px;
       }
+      
+      .metric-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+      
+      .metric-info h3 {
+        font-size: 20px;
+      }
+      
+      .action-card mat-icon {
+        font-size: 40px;
+        width: 40px;
+        height: 40px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .dashboard-container {
+        padding: 12px;
+      }
+      
+      .header h1 {
+        font-size: 20px;
+      }
+      
+      .subtitle {
+        font-size: 14px;
+      }
+      
+      .action-card mat-card-content {
+        padding: 16px;
+      }
+      
+      .action-card h3 {
+        font-size: 16px;
+      }
+      
+      .action-card p {
+        font-size: 12px;
+      }
     }
   `]
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   loading = true;
   isAdmin = false;
   isClient = false;
   metrics: DashboardMetrics | null = null;
   selectedPeriod: '7d' | '30d' | '90d' | 'all' = '30d';
+  gridCols = 4;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
     private dashboardService: DashboardService,
-    private router: Router
+    private router: Router,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
     console.log('Dashboard ngOnInit chamado');
-    this.authService.currentUser$.subscribe(user => {
+    
+    // Observar mudanças de breakpoint
+    this.breakpointObserver.observe([
+      Breakpoints.XSmall,
+      Breakpoints.Small,
+      Breakpoints.Medium,
+      Breakpoints.Large
+    ]).pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.updateGridCols();
+    });
+    
+    this.authService.currentUser$.pipe(takeUntil(this.destroy$)).subscribe(user => {
       console.log('User no dashboard:', user);
       if (user) {
         this.isAdmin = user.role === UserRole.ADMIN;
@@ -413,6 +483,11 @@ export class DashboardComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+  
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadMetrics(): void {
@@ -444,5 +519,21 @@ export class DashboardComponent implements OnInit {
     }).catch(error => {
       console.error('Erro na navegação:', error);
     });
+  }
+
+  updateGridCols(): void {
+    if (this.breakpointObserver.isMatched(Breakpoints.XSmall)) {
+      this.gridCols = 1;
+    } else if (this.breakpointObserver.isMatched(Breakpoints.Small)) {
+      this.gridCols = 2;
+    } else if (this.breakpointObserver.isMatched(Breakpoints.Medium)) {
+      this.gridCols = 3;
+    } else {
+      this.gridCols = 4;
+    }
+  }
+  
+  getGridCols(): number {
+    return this.gridCols;
   }
 }

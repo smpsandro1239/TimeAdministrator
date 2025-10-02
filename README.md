@@ -242,99 +242,64 @@ docker-compose down -v
 
 ## 📸 Capturas de Ecrã da Aplicação
 
-### 🏠 Dashboard Principal
-*Visão geral com métricas em tempo real e KPIs de negócio*
+### 🏠 Dashboard Administrativo
+*Painel principal com métricas em tempo real, KPIs e visão geral do negócio*
 
-![Dashboard Principal](screenshots/dashboard-main.png)
+![Dashboard Administrador](screenshots/dashboard/Dashboard%20Administrador.png)
 
 ---
 
 ### 👥 Gestão de Clientes
-*Interface completa para gestão de clientes com preferências de notificação*
+*Interface completa para gestão de clientes com preferências de notificação individuais*
 
-![Gestão de Clientes](screenshots/clients-management.png)
+![Gestão de Clientes](screenshots/clients/Gestão%20de%20Clientes.png)
 
-#### 🔍 Detalhes do Cliente
-*Diálogo avançado com informações completas do cliente*
+#### 👥 Gestão de Utilizadores
+*Sistema avançado de gestão de utilizadores com controlo de permissões*
 
-![Detalhes do Cliente](screenshots/client-details.png)
-
-#### ➕ Adicionar Cliente
-*Formulário responsivo para adição de novos clientes*
-
-![Adicionar Cliente](screenshots/add-client.png)
+![Gestão de Utilizadores](screenshots/clients/Gestão%20de%20Utilizadores.png)
 
 ---
 
 ### 💳 Gestão de Subscrições
-*Controlo completo sobre subscrições e renovações*
+*Controlo completo sobre subscrições, renovações e estados de pagamento*
 
-![Gestão de Subscrições](screenshots/subscriptions-management.png)
-
-#### 🔄 Renovar Subscrição
-*Interface para renovação e gestão de subscrições*
-
-![Renovar Subscrição](screenshots/renew-subscription.png)
+![Gestão de Subscrições](screenshots/subscriptions/Gestão%20de%20Subscrições.png)
 
 ---
 
 ### 💰 Sistema de Pagamentos
-*Gestão avançada de pagamentos com múltiplos métodos*
+*Gestão avançada de pagamentos com múltiplos métodos (Stripe, MBWay, Transferência)*
 
-![Sistema de Pagamentos](screenshots/payments-system.png)
-
-#### 📱 Pagamentos MBWay
-*Interface dedicada para pagamentos móveis via MBWay*
-
-![Pagamentos MBWay](screenshots/mbway-payments.png)
+![Gestão de Pagamentos](screenshots/payments/Gestão%20de%20Pagamentos.png)
 
 ---
 
 ### 📧 Sistema de Notificações
-*Gestão completa de notificações multi-canal*
+*Gestão completa de notificações multi-canal (Email, WhatsApp, Telegram)*
 
-![Sistema de Notificações](screenshots/notifications-system.png)
-
-#### 📊 Dashboard de Notificações
-*Estatísticas e métricas de entrega de notificações*
-
-![Dashboard de Notificações](screenshots/notifications-dashboard.png)
+![Sistema de Notificações](screenshots/notifications/Sistema%20de%20Notificações.png)
 
 ---
 
-### 📈 Relatórios e Analytics
-*Relatórios avançados com métricas de negócio*
+### 📈 Relatórios e Análises
+*Relatórios avançados com métricas de negócio, KPIs e analytics detalhados*
 
-![Relatórios e Analytics](screenshots/reports-analytics.png)
-
-#### 📊 Métricas Detalhadas
-*Análise aprofundada de KPIs e métricas de performance*
-
-![Métricas Detalhadas](screenshots/detailed-metrics.png)
+![Relatórios e Análises Avançadas](screenshots/reports/Relatórios%20e%20Análises%20Avançadas.png)
 
 ---
 
 ### ⚙️ Configurações do Sistema
-*Painel completo de configurações e integrações*
+*Painel completo de configurações, integrações e parâmetros do sistema*
 
-![Configurações do Sistema](screenshots/system-settings.png)
-
-#### 🔗 Integrações
-*Configuração de APIs externas (Stripe, Telegram, MBWay)*
-
-![Integrações](screenshots/integrations-config.png)
+![Configurações do Sistema](screenshots/settings/Configurações%20do%20Sistema.png)
 
 ---
 
-### 📱 Interface Móvel
-*Design responsivo otimizado para dispositivos móveis*
+### 📱 Interface Móvel Responsiva
+*Design 100% responsivo otimizado para dispositivos móveis com navegação touch-friendly*
 
-![Interface Móvel](screenshots/mobile-interface.png)
-
-#### 📱 Navegação Móvel
-*Menu de navegação otimizado para touch*
-
-![Navegação Móvel](screenshots/mobile-navigation.png)
+![Dashboard Móvel](screenshots/mobile/Dashboard%20Administrador-TLM.png)
 
 ---
 
