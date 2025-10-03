@@ -27,21 +27,23 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   `,
   styles: [`
     :host {
-      display: flex;
-      width: 100%;
-      min-height: 100vh;
+      display: block;
+      height: 100vh;
+      overflow: hidden;
     }
 
     .layout-wrapper {
       display: flex;
       width: 100%;
-      min-height: 100vh;
+      height: 100vh;
     }
 
     .main-content {
       flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
       background: #f5f5f5;
-      min-height: 100vh;
+      height: 100vh;
     }
 
     .main-content.mobile {
@@ -49,12 +51,13 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     }
 
     @media (max-width: 768px) {
-      :host {
-        display: block;
+      .layout-wrapper {
+        flex-direction: column;
+        height: 100vh;
       }
       
-      .layout-wrapper {
-        display: block;
+      .main-content {
+        height: calc(100vh - 80px);
       }
     }
   `]
