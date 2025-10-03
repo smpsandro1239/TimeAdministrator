@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { SidebarComponent } from '../sidebar/sidebar.component';
 import { MobileNavComponent } from '../mobile-nav/mobile-nav.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-layout',
@@ -29,31 +29,25 @@ import { MobileNavComponent } from '../mobile-nav/mobile-nav.component';
     :host {
       display: block;
       width: 100%;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
     }
-    
+
     .layout-wrapper {
       display: flex;
       width: 100%;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
     }
-    
+
     .main-content {
       flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
       background: #f5f5f5;
-      height: 100vh;
+      min-height: 100vh;
     }
-    
+
     .main-content.mobile {
-      height: calc(100vh - 80px);
-      padding-bottom: 20px;
+      padding-bottom: 100px;
     }
-    
+
     @media (max-width: 768px) {
       .layout-wrapper {
         flex-direction: column;
