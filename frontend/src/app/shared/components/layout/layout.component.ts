@@ -27,7 +27,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   `,
   styles: [`
     :host {
-      display: block;
+      display: flex;
       width: 100%;
       min-height: 100vh;
     }
@@ -49,8 +49,12 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     }
 
     @media (max-width: 768px) {
+      :host {
+        display: block;
+      }
+      
       .layout-wrapper {
-        flex-direction: column;
+        display: block;
       }
     }
   `]
