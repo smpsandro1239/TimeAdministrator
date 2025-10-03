@@ -2,9 +2,30 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 html, body { 
-  height: 100%; 
-  margin: 0; 
-  font-family: Roboto, "Helvetica Neue", sans-serif; 
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow: hidden;
+}
+
+body {
+  position: fixed;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Fix para scroll em mobile */
+@media (max-width: 768px) {
+  html, body {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 /* Responsive Dialog Styles */
@@ -42,6 +63,11 @@ html, body {
 
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
+  body {
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
   .responsive-dialog {
     width: 95vw !important;
     max-height: 90vh !important;

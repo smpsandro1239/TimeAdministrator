@@ -37,7 +37,7 @@ import { User, UserRole } from '../../../models/user.model';
         </a>
         
         <a routerLink="/admin/payments" routerLinkActive="active" class="nav-item">
-          <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small">payment</mat-icon>
+          <mat-icon matBadge="3" matBadgeColor="warn" matBadgeSize="small" aria-hidden="false">payment</mat-icon>
           <span>Pagamentos</span>
         </a>
         
@@ -97,6 +97,7 @@ import { User, UserRole } from '../../../models/user.model';
       box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
       z-index: 1000;
       padding: 8px 0;
+      pointer-events: auto;
     }
     
     .nav-items {
