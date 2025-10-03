@@ -17,7 +17,7 @@ import { MobileNavComponent } from '../mobile-nav/mobile-nav.component';
     MobileNavComponent
   ],
   template: `
-    <div class="layout">
+    <div class="layout-wrapper">
       <app-sidebar *ngIf="!(isMobile$ | async)"></app-sidebar>
       <main class="main-content" [class.mobile]="isMobile$ | async">
         <ng-content></ng-content>
@@ -26,34 +26,37 @@ import { MobileNavComponent } from '../mobile-nav/mobile-nav.component';
     </div>
   `,
   styles: [`
-    .layout {
-      display: flex;
+    :host {
+      display: block;
+      width: 100%;
       height: 100vh;
       overflow: hidden;
     }
-
+    
+    .layout-wrapper {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
     .main-content {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
       background: #f5f5f5;
-      min-width: 0;
+      height: 100vh;
     }
-
+    
     .main-content.mobile {
-      padding-bottom: 80px;
-      width: 100vw;
+      height: calc(100vh - 80px);
+      padding-bottom: 20px;
     }
     
     @media (max-width: 768px) {
-      .layout {
+      .layout-wrapper {
         flex-direction: column;
-      }
-      
-      .main-content {
-        height: calc(100vh - 80px);
-        width: 100%;
-        padding: 0;
       }
     }
   `]

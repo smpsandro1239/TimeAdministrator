@@ -170,9 +170,9 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <div class="info-row">
                     <mat-icon>notifications</mat-icon>
                     <div class="notification-icons">
-                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.email}">email</mat-icon>
-                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.whatsapp}">chat</mat-icon>
-                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences?.telegram}">send</mat-icon>
+                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences.email}">email</mat-icon>
+                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences.whatsapp}">chat</mat-icon>
+                      <mat-icon class="notification-icon" [ngClass]="{enabled: client.notificationPreferences.telegram}">send</mat-icon>
                     </div>
                   </div>
                 </div>
