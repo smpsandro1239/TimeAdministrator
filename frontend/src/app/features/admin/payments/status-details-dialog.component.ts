@@ -19,11 +19,12 @@ import { MatTableModule } from '@angular/material/table';
     
     <mat-dialog-content>
       <div class="summary">
-        <p><strong>Total de pagamentos:</strong> {{ data.payments.length }}</p>
-        <p *ngIf="data.status !== 'total'"><strong>Valor total:</strong> {{ getTotalValue() }}€</p>
+        <p><strong>Total:</strong> {{ data.payments.length }}</p>
+        <p *ngIf="data.status !== 'total'"><strong>Valor:</strong> {{ getTotalValue() }}€</p>
       </div>
       
-      <table mat-table [dataSource]="data.payments" class="details-table">
+      <!-- Desktop Table -->
+      <table mat-table [dataSource]="data.payments" class="details-table desktop-only">
         <ng-container matColumnDef="client">
           <th mat-header-cell *matHeaderCellDef>Cliente</th>
           <td mat-cell *matCellDef="let payment">{{ payment.clientName }}</td>
@@ -47,19 +48,102 @@ import { MatTableModule } from '@angular/material/table';
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
+      
+      <!-- Mobile Cards -->
+      <div class="mobile-only">
+        <div class="payment-card" *ngFor="let payment of data.payments">
+          <div class="card-row">
+            <span class="label">Cliente:</span>
+            <span class="value">{{ payment.clientName }}</span>
+          </div>
+          <div class="card-row">
+            <span class="label">Referência:</span>
+            <span class="value">{{ payment.reference }}</span>
+          </div>
+          <div class="card-row">
+            <span class="label">Valor:</span>
+            <span class="value amount">{{ payment.amount }}€</span>
+          </div>
+          <div class="card-row">
+            <span class="label">Data:</span>
+            <span class="value">{{ formatDate(payment.date) }}</span>
+          </div>
+        </div>
+      </div>
     </mat-dialog-content>
     
     <mat-dialog-actions>
-      <button mat-button mat-dialog-close>Fechar</button>
+      <button mat-raised-button color="primary" mat-dialog-close>Fechar</button>
     </mat-dialog-actions>
   `,
   styles: [`
-    .dialog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .summary { background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
-    .summary p { margin: 4px 0; }
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+      margin: -24px -24px 0 -24px;
+    }
+    .dialog-header h2 {
+      color: white;
+      margin: 0;
+      font-size: 20px;
+    }
+    .dialog-header button {
+      color: white;
+    }
+    .summary {
+      background: #e3f2fd;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #2196F3;
+    }
+    .summary p {
+      margin: 4px 0;
+      color: #1565C0;
+    }
     .details-table { width: 100%; }
-    .amount-cell { text-align: right; font-weight: 500; }
-    mat-dialog-content { max-height: 500px; overflow-y: auto; }
+    .amount-cell { text-align: right; font-weight: 600; color: #2196F3; }
+    mat-dialog-content { max-height: 60vh; overflow-y: auto; padding: 0 24px; }
+    mat-dialog-actions { padding: 16px 24px; justify-content: flex-end; }
+    
+    .desktop-only { display: block; }
+    .mobile-only { display: none; }
+    
+    @media (max-width: 768px) {
+      .desktop-only { display: none; }
+      .mobile-only { display: block; }
+      
+      .payment-card {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 12px;
+      }
+      .card-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f5f5f5;
+      }
+      .card-row:last-child { border-bottom: none; }
+      .label {
+        font-weight: 500;
+        color: #666;
+      }
+      .value {
+        font-weight: 500;
+        color: #333;
+      }
+      .value.amount {
+        color: #2196F3;
+        font-weight: 600;
+      }
+      mat-dialog-actions button { width: 100%; }
+    }
   `]
 })
 export class StatusDetailsDialogComponent {

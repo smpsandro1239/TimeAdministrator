@@ -25,14 +25,34 @@ import { MatIconModule } from '@angular/material/icon';
   ],
   template: `
     <div class="dialog-header">
-      <h2 mat-dialog-title>Renovar Subscrição</h2>
-      <mat-icon color="primary">refresh</mat-icon>
+      <div class="header-content">
+        <mat-icon class="title-icon">refresh</mat-icon>
+        <div class="title-section">
+          <h2 mat-dialog-title>{{ data.clientName }}</h2>
+          <p class="subtitle">Renovar Subscrição</p>
+        </div>
+      </div>
+      <button mat-icon-button mat-dialog-close class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
     
     <mat-dialog-content>
-      <div class="client-info">
-        <h3>Cliente: {{ data.clientName }}</h3>
-        <p>Email: {{ data.clientEmail }}</p>
+      <div class="current-info">
+        <div class="info-header">
+          <mat-icon>info</mat-icon>
+          <span>Subscrição Expirada</span>
+        </div>
+        <div class="info-content">
+          <div class="info-item">
+            <span class="label">Email:</span>
+            <span class="value">{{ data.clientEmail }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Plano Anterior:</span>
+            <span class="value">{{ getPlanText(data.plan) }}</span>
+          </div>
+        </div>
       </div>
       
       <form [formGroup]="renewForm" class="form">
@@ -47,7 +67,11 @@ import { MatIconModule } from '@angular/material/icon';
         </mat-form-field>
 
         <div class="price-info">
-          <strong>Preço: €{{ renewForm.get('price')?.value }}</strong>
+          <mat-icon>euro</mat-icon>
+          <div>
+            <div class="price-label">Valor Total</div>
+            <div class="price-value">€{{ renewForm.get('price')?.value }}</div>
+          </div>
         </div>
 
         <mat-form-field appearance="outline">
@@ -81,8 +105,8 @@ import { MatIconModule } from '@angular/material/icon';
       </form>
     </mat-dialog-content>
     
-    <mat-dialog-actions>
-      <button mat-button mat-dialog-close>Cancelar</button>
+    <mat-dialog-actions class="dialog-actions">
+      <button mat-stroked-button mat-dialog-close>Cancelar</button>
       <button mat-raised-button color="primary" (click)="renew()" [disabled]="renewForm.invalid">
         <mat-icon>refresh</mat-icon>
         Renovar Subscrição
@@ -90,14 +114,152 @@ import { MatIconModule } from '@angular/material/icon';
     </mat-dialog-actions>
   `,
   styles: [`
-    .dialog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .client-info { background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
-    .client-info h3 { margin: 0 0 8px 0; color: #333; }
-    .client-info p { margin: 0; color: #666; }
-    .form { display: flex; flex-direction: column; gap: 16px; min-width: 400px; }
-    .price-info { padding: 12px; background: #e8f5e8; border-radius: 8px; text-align: center; color: #2e7d32; }
-    .end-date-info { padding: 8px; background: #f0f0f0; border-radius: 4px; }
-    .end-date-info p { margin: 0; font-size: 14px; }
+    .dialog-header {
+      background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+      color: white;
+      margin: -24px -24px 24px -24px;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .title-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+    .title-section h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .subtitle {
+      margin: 4px 0 0 0;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    .close-button {
+      color: white;
+    }
+    .current-info {
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border-left: 4px solid #FF9800;
+    }
+    .info-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      color: #E65100;
+    }
+    .info-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .value {
+      font-weight: 600;
+      color: #333;
+    }
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 450px;
+    }
+    .price-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+      border-radius: 12px;
+      border-left: 4px solid #4CAF50;
+    }
+    .price-info mat-icon {
+      font-size: 32px;
+      color: #4CAF50;
+    }
+    .price-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .price-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2e7d32;
+    }
+    .end-date-info {
+      padding: 12px;
+      background: #e3f2fd;
+      border-radius: 8px;
+      border-left: 3px solid #2196F3;
+    }
+    .end-date-info p {
+      margin: 0;
+      font-size: 14px;
+      color: #1565C0;
+    }
+    .dialog-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      padding: 16px 24px;
+      border-top: 1px solid #e0e0e0;
+      margin: 24px -24px -24px -24px;
+    }
+    
+    @media (max-width: 768px) {
+      .form {
+        min-width: 0;
+      }
+      .info-content {
+        grid-template-columns: 1fr;
+      }
+      .dialog-header {
+        margin: -24px -16px 16px -16px;
+        padding: 16px;
+      }
+      .header-content {
+        gap: 12px;
+      }
+      .title-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+      .title-section h2 {
+        font-size: 20px;
+      }
+      .dialog-actions {
+        flex-direction: column;
+        margin: 16px -16px -24px -16px;
+      }
+      .dialog-actions button {
+        width: 100%;
+      }
+    }
   `]
 })
 export class RenewSubscriptionDialogComponent {
@@ -116,6 +278,16 @@ export class RenewSubscriptionDialogComponent {
       paymentStatus: ['pending', Validators.required],
       paymentMethod: ['stripe']
     });
+  }
+
+  getPlanText(plan: string): string {
+    const plans: { [key: string]: string } = {
+      'monthly': '1 Mês',
+      'quarterly': '3 Meses',
+      'biannual': '6 Meses',
+      'annual': '12 Meses'
+    };
+    return plans[plan] || plan;
   }
 
   updatePrice(): void {

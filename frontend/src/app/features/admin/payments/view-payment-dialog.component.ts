@@ -19,41 +19,63 @@ import { MatChipsModule } from '@angular/material/chips';
     </div>
     
     <mat-dialog-content>
-      <div class="payment-info">
-        <div class="info-section">
+      <div class="info-card">
+        <div class="card-header">
+          <mat-icon>person</mat-icon>
           <h3>Cliente</h3>
-          <p><strong>Nome:</strong> {{ data.clientName }}</p>
-          <p><strong>Email:</strong> {{ getClientEmail() }}</p>
         </div>
-        
-        <mat-divider></mat-divider>
-        
-        <div class="info-section">
+        <div class="info-row">
+          <span class="label">Nome:</span>
+          <span class="value">{{ data.clientName }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Email:</span>
+          <span class="value">{{ getClientEmail() }}</span>
+        </div>
+      </div>
+      
+      <div class="info-card">
+        <div class="card-header">
+          <mat-icon>payment</mat-icon>
           <h3>Pagamento</h3>
-          <p><strong>Referência:</strong> {{ data.reference }}</p>
-          <p><strong>Valor:</strong> {{ data.amount }}€</p>
-          <p><strong>Método:</strong> {{ getMethodText(data.method) }}</p>
-          <p><strong>Data:</strong> {{ formatDate(data.date) }}</p>
-          <p><strong>Estado:</strong> 
-            <mat-chip [ngClass]="data.status">{{ getStatusText(data.status) }}</mat-chip>
-          </p>
         </div>
-        
-        <mat-divider *ngIf="data.notes"></mat-divider>
-        
-        <div class="info-section" *ngIf="data.notes">
+        <div class="info-row">
+          <span class="label">Referência:</span>
+          <span class="value">{{ data.reference }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Valor:</span>
+          <span class="value amount">{{ data.amount }}€</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Método:</span>
+          <span class="value">{{ getMethodText(data.method) }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Data:</span>
+          <span class="value">{{ formatDate(data.date) }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Estado:</span>
+          <mat-chip [ngClass]="data.status">{{ getStatusText(data.status) }}</mat-chip>
+        </div>
+      </div>
+      
+      <div class="info-card" *ngIf="data.notes">
+        <div class="card-header">
+          <mat-icon>notes</mat-icon>
           <h3>Observações</h3>
-          <p>{{ data.notes }}</p>
         </div>
+        <p class="notes">{{ data.notes }}</p>
       </div>
     </mat-dialog-content>
     
     <mat-dialog-actions>
-      <button mat-button *ngIf="data.status === 'pending'" (click)="approve()" color="primary">
+      <button mat-raised-button *ngIf="data.status === 'pending'" (click)="approve()" color="primary">
         <mat-icon>check</mat-icon>
         Aprovar
       </button>
-      <button mat-button *ngIf="data.status === 'pending'" (click)="reject()" color="warn">
+      <button mat-raised-button *ngIf="data.status === 'pending'" (click)="reject()" color="warn">
         <mat-icon>close</mat-icon>
         Rejeitar
       </button>
@@ -61,14 +83,93 @@ import { MatChipsModule } from '@angular/material/chips';
     </mat-dialog-actions>
   `,
   styles: [`
-    .dialog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .payment-info { max-height: 400px; overflow-y: auto; }
-    .info-section { margin: 16px 0; }
-    .info-section h3 { margin: 0 0 12px 0; color: #333; font-size: 16px; }
-    .info-section p { margin: 8px 0; }
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+      margin: -24px -24px 0 -24px;
+    }
+    .dialog-header h2 {
+      color: white;
+      margin: 0;
+      font-size: 20px;
+    }
+    .dialog-header button {
+      color: white;
+    }
+    mat-dialog-content {
+      max-height: 60vh;
+      overflow-y: auto;
+      padding: 20px 24px;
+    }
+    .info-card {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #2196F3;
+    }
+    .card-header mat-icon {
+      color: #2196F3;
+    }
+    .card-header h3 {
+      margin: 0;
+      color: #2196F3;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .label {
+      font-weight: 500;
+      color: #666;
+    }
+    .value {
+      font-weight: 500;
+      color: #333;
+      text-align: right;
+    }
+    .value.amount {
+      color: #2196F3;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .notes {
+      margin: 0;
+      color: #666;
+      line-height: 1.6;
+    }
     mat-chip.pending { background: #fff3e0; color: #ef6c00; }
     mat-chip.approved { background: #e8f5e8; color: #2e7d32; }
     mat-chip.rejected { background: #ffebee; color: #c62828; }
+    mat-dialog-actions {
+      padding: 16px 24px;
+      gap: 8px;
+    }
+    
+    @media (max-width: 768px) {
+      mat-dialog-actions {
+        flex-direction: column;
+      }
+      mat-dialog-actions button {
+        width: 100%;
+      }
+    }
   `]
 })
 export class ViewPaymentDialogComponent {

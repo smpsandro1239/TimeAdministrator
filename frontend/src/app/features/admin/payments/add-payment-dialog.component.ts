@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -17,10 +18,15 @@ import { map, startWith } from 'rxjs/operators';
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, 
-    MatInputModule, MatSelectModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatAutocompleteModule
+    MatInputModule, MatSelectModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatAutocompleteModule, MatIconModule
   ],
   template: `
-    <h2 mat-dialog-title>Adicionar Pagamento</h2>
+    <div class="dialog-header">
+      <h2 mat-dialog-title>Adicionar Pagamento</h2>
+      <button mat-icon-button mat-dialog-close>
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
     
     <mat-dialog-content>
       <form [formGroup]="paymentForm" class="form">
@@ -74,12 +80,53 @@ import { map, startWith } from 'rxjs/operators';
     <mat-dialog-actions>
       <button mat-button mat-dialog-close>Cancelar</button>
       <button mat-raised-button color="primary" (click)="save()" [disabled]="paymentForm.invalid">
+        <mat-icon>add</mat-icon>
         Adicionar
       </button>
     </mat-dialog-actions>
   `,
   styles: [`
-    .form { display: flex; flex-direction: column; gap: 16px; min-width: 400px; }
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+      margin: -24px -24px 0 -24px;
+    }
+    .dialog-header h2 {
+      color: white;
+      margin: 0;
+      font-size: 20px;
+    }
+    .dialog-header button {
+      color: white;
+    }
+    mat-dialog-content {
+      padding: 20px 24px;
+    }
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 400px;
+    }
+    mat-dialog-actions {
+      padding: 16px 24px;
+      gap: 8px;
+    }
+    
+    @media (max-width: 768px) {
+      .form {
+        min-width: 100%;
+      }
+      mat-dialog-actions {
+        flex-direction: column-reverse;
+      }
+      mat-dialog-actions button {
+        width: 100%;
+      }
+    }
   `]
 })
 export class AddPaymentDialogComponent {
