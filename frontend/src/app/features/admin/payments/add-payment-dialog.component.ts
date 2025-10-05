@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
@@ -16,12 +16,20 @@ import { map, startWith } from 'rxjs/operators';
   selector: 'app-add-payment-dialog',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, 
-    MatInputModule, MatSelectModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatAutocompleteModule
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatAutocompleteModule
   ],
   template: `
     <h2 mat-dialog-title>Adicionar Pagamento</h2>
-    
+
     <mat-dialog-content>
       <form [formGroup]="paymentForm" class="form">
         <mat-form-field appearance="outline">
@@ -70,7 +78,7 @@ import { map, startWith } from 'rxjs/operators';
         </mat-form-field>
       </form>
     </mat-dialog-content>
-    
+
     <mat-dialog-actions>
       <button mat-button mat-dialog-close>Cancelar</button>
       <button mat-raised-button color="primary" (click)="save()" [disabled]="paymentForm.invalid">
@@ -99,13 +107,13 @@ export class AddPaymentDialogComponent {
       status: ['pending', Validators.required],
       notes: ['']
     });
-    
+
     this.filteredClients = this.paymentForm.get('clientName')!.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || ''))
     );
   }
-  
+
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.clients.filter(client => client.toLowerCase().includes(filterValue));
@@ -115,7 +123,7 @@ export class AddPaymentDialogComponent {
     if (this.paymentForm.valid) {
       const formValue = this.paymentForm.value;
       const reference = `PAY-${String(Date.now()).slice(-6)}`;
-      
+
       this.dialogRef.close({
         ...formValue,
         reference,
