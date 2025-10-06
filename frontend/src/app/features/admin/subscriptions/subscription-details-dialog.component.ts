@@ -560,6 +560,8 @@ export class SubscriptionDetailsDialogComponent {
   }
 
   getExpiryClass(endDate: Date): string {
+    if (!endDate) return 'expiry-normal';
+
     const now = new Date();
     const diffTime = endDate.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

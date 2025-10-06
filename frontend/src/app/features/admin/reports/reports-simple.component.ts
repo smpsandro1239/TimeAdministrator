@@ -806,10 +806,13 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   initCharts() {
-    if (this.revenueChartRef && this.monthlyChartRef) {
-      this.createRevenueChart();
-      this.createMonthlyChart();
-    }
+    // Aguardar o DOM estar pronto antes de inicializar gráficos
+    setTimeout(() => {
+      if (this.revenueChartRef?.nativeElement && this.monthlyChartRef?.nativeElement) {
+        this.createRevenueChart();
+        this.createMonthlyChart();
+      }
+    }, 100);
   }
 
   createRevenueChart() {
@@ -959,9 +962,20 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
         maxWidth: '1200px',
         height: '80vh',
         data: {
-          subscriptionId: item.subscriptionId,
+          id: item.subscriptionId,
           clientId: item.clientId,
-          clientName: item.clientName
+          clientName: item.clientName,
+          clientEmail: `${item.clientName.toLowerCase().replace(' ', '.')}@email.com`,
+          plan: item.plan,
+          duration: this.getDurationFromPlan(item.plan),
+          durationUnit: 'days',
+          price: item.value,
+          startDate: new Date(Date.now() - (this.getDurationFromPlan(item.plan) - item.daysLeft) * 24 * 60 * 60 * 1000),
+          endDate: new Date(Date.now() + item.daysLeft * 24 * 60 * 60 * 1000),
+          status: item.daysLeft > 0 ? 'active' : 'expired',
+          paymentMethod: 'stripe',
+          autoRenew: false,
+          notes: `Subscrição ${item.plan} - Valor: ${item.value}€`
         }
       });
 
@@ -972,6 +986,16 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
         }
       });
     });
+  }
+
+  private getDurationFromPlan(plan: string): number {
+    switch(plan) {
+      case '1 Mês': return 30;
+      case '3 Meses': return 90;
+      case '6 Meses': return 180;
+      case '1 Ano': return 365;
+      default: return 30;
+    }
   }
 
   comparePeriods() {

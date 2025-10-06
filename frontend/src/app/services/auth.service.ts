@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { LoginRequest, LoginResponse, RegisterRequest, User, UserRole } from '../models/user.model';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class AuthService {
   private loadUserFromStorage(): void {
     const token = localStorage.getItem('access_token');
     const user = localStorage.getItem('current_user');
-    
+
     if (token && user) {
       try {
         const parsedUser = JSON.parse(user);
@@ -43,6 +43,14 @@ export class AuthService {
 
   register(userData: RegisterRequest): Observable<any> {
     return this.http.post(`${this.API_URL}/auth/register`, userData);
+  }
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/auth/reset-password`, { token, newPassword });
   }
 
   logout(): void {
