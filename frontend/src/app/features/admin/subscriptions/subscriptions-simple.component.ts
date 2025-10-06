@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
 
 @Component({
@@ -30,7 +30,80 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             Nova Subscrição
           </button>
         </div>
-        
+
+        <!-- Expiry Period Stats -->
+        <div class="stats-grid">
+          <div class="stat-card critical" (click)="showExpiryPeriod('expired')" matTooltip="Ver lista de subscrições expiradas">
+            <div class="stat-icon">
+              <mat-icon>error</mat-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ getExpiryCount('expired') }}</div>
+              <div class="stat-label">Expiradas</div>
+            </div>
+          </div>
+
+          <div class="stat-card critical" (click)="showExpiryPeriod(1)" matTooltip="Ver lista de subscrições que expiram em menos de 1 dia">
+            <div class="stat-icon">
+              <mat-icon>warning</mat-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ getExpiryCount(1) }}</div>
+              <div class="stat-label">< 1 Dia</div>
+            </div>
+          </div>
+
+          <div class="stat-card warning" (click)="showExpiryPeriod(3)" matTooltip="Ver lista de subscrições que expiram em menos de 3 dias">
+            <div class="stat-icon">
+              <mat-icon>schedule</mat-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ getExpiryCount(3) }}</div>
+              <div class="stat-label">< 3 Dias</div>
+            </div>
+          </div>
+
+          <div class="stat-card warning" (click)="showExpiryPeriod(7)" matTooltip="Ver lista de subscrições que expiram em menos de 7 dias">
+            <div class="stat-icon">
+              <mat-icon>event</mat-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ getExpiryCount(7) }}</div>
+              <div class="stat-label">< 7 Dias</div>
+            </div>
+          </div>
+
+          <div class="stat-card caution" (click)="showExpiryPeriod(15)" matTooltip="Ver lista de subscrições que expiram em menos de 15 dias">
+            <div class="stat-icon">
+              <mat-icon>calendar_today</mat-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ getExpiryCount(15) }}</div>
+              <div class="stat-label">< 15 Dias</div>
+            </div>
+          </div>
+
+          <div class="stat-card info" (click)="showExpiryPeriod(30)" matTooltip="Ver lista de subscrições que expiram em menos de 30 dias">
+            <div class="stat-icon">
+              <mat-icon>date_range</mat-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ getExpiryCount(30) }}</div>
+              <div class="stat-label">< 30 Dias</div>
+            </div>
+          </div>
+
+          <div class="stat-card info" (click)="showExpiryPeriod(60)" matTooltip="Ver lista de subscrições que expiram em menos de 60 dias">
+            <div class="stat-icon">
+              <mat-icon>event_available</mat-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value">{{ getExpiryCount(60) }}</div>
+              <div class="stat-label">< 60 Dias</div>
+            </div>
+          </div>
+        </div>
+
         <mat-card>
           <mat-card-content>
             <div class="toolbar">
@@ -41,7 +114,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <mat-icon matSuffix>search</mat-icon>
                 </mat-form-field>
               </div>
-              
+
               <div class="filters">
                 <mat-form-field appearance="outline">
                   <mat-label>Estado</mat-label>
@@ -53,7 +126,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                     <mat-option value="cancelled">Cancelada</mat-option>
                   </mat-select>
                 </mat-form-field>
-                
+
                 <mat-form-field appearance="outline">
                   <mat-label>Plano</mat-label>
                   <mat-select [(value)]="planFilter" (selectionChange)="applyFilter()">
@@ -64,14 +137,14 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                     <mat-option value="annual">Anual</mat-option>
                   </mat-select>
                 </mat-form-field>
-                
+
                 <button mat-stroked-button (click)="exportData()" matTooltip="Exportar dados">
                   <mat-icon>download</mat-icon>
                   Exportar
                 </button>
               </div>
             </div>
-            
+
             <div class="results-info" *ngIf="searchTerm || statusFilter !== 'all' || planFilter !== 'all'">
               <span>A mostrar {{ filteredSubscriptions.length }} de {{ subscriptions.length }} subscrições</span>
               <button mat-button (click)="clearFilters()">
@@ -79,7 +152,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                 Limpar filtros
               </button>
             </div>
-            
+
             <!-- Desktop Table -->
             <div class="desktop-table">
               <table mat-table [dataSource]="filteredSubscriptions" class="subscriptions-table">
@@ -87,43 +160,43 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <th mat-header-cell *matHeaderCellDef>Cliente</th>
                   <td mat-cell *matCellDef="let sub">{{ sub.clientName }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="plan">
                   <th mat-header-cell *matHeaderCellDef>Plano</th>
                   <td mat-cell *matCellDef="let sub">
                     <span class="plan-badge" [ngClass]="sub.plan">{{ getPlanText(sub.plan) }}</span>
                   </td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="startDate">
                   <th mat-header-cell *matHeaderCellDef>Início</th>
                   <td mat-cell *matCellDef="let sub">{{ formatDate(sub.startDate) }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="endDate">
                   <th mat-header-cell *matHeaderCellDef>Fim</th>
                   <td mat-cell *matCellDef="let sub">{{ formatDate(sub.endDate) }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="daysLeft">
                   <th mat-header-cell *matHeaderCellDef>Dias</th>
                   <td mat-cell *matCellDef="let sub" class="days-cell">
                     <span class="days-left" [ngClass]="getDaysLeftClass(sub)">{{ getDaysLeft(sub) }}</span>
                   </td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="status">
                   <th mat-header-cell *matHeaderCellDef>Estado</th>
                   <td mat-cell *matCellDef="let sub">
                     <span class="status" [ngClass]="sub.status">{{ getStatusText(sub.status) }}</span>
                   </td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="value">
                   <th mat-header-cell *matHeaderCellDef>Valor</th>
                   <td mat-cell *matCellDef="let sub" class="value-cell">{{ sub.value }}€</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef>Ações</th>
                   <td mat-cell *matCellDef="let sub" (click)="$event.stopPropagation()">
@@ -133,11 +206,11 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                     <button mat-icon-button (click)="renewSubscription(sub)" matTooltip="Renovar">
                       <mat-icon>refresh</mat-icon>
                     </button>
-                    <button mat-icon-button *ngIf="getDaysLeft(sub) < 0 && sub.status === 'inactive'" 
+                    <button mat-icon-button *ngIf="getDaysLeft(sub) < 0 && sub.status === 'inactive'"
                             (click)="keepActive(sub)" color="primary" matTooltip="Manter ativo +1 mês">
                       <mat-icon>play_arrow</mat-icon>
                     </button>
-                    <button mat-icon-button *ngIf="sub.manuallyActive" 
+                    <button mat-icon-button *ngIf="sub.manuallyActive"
                             (click)="deactivate(sub)" color="warn" matTooltip="Desativar">
                       <mat-icon>stop</mat-icon>
                     </button>
@@ -146,7 +219,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                     </button>
                   </td>
                 </ng-container>
-                
+
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewSubscription(row)" class="clickable-row"></tr>
               </table>
@@ -159,7 +232,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <div class="subscription-card-title">{{ sub.clientName }}</div>
                   <span class="status" [ngClass]="sub.status">{{ getStatusText(sub.status) }}</span>
                 </div>
-                
+
                 <div class="subscription-card-details">
                   <div class="subscription-card-detail">
                     <div class="subscription-card-label">Plano</div>
@@ -182,7 +255,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                     <div class="subscription-card-value">{{ formatDate(sub.endDate) }}</div>
                   </div>
                 </div>
-                
+
                 <div class="subscription-card-actions" (click)="$event.stopPropagation()">
                   <button mat-stroked-button (click)="viewSubscription(sub)">
                     <mat-icon>visibility</mat-icon>
@@ -207,6 +280,142 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
   styles: [`
     .container { padding: 24px; max-width: 1400px; margin: 0 auto; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .stat-card.critical {
+      border-color: #f44336;
+      background: linear-gradient(135deg, #fff 0%, #ffebee 100%);
+    }
+
+    .stat-card.critical:hover {
+      background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    }
+
+    .stat-card.warning {
+      border-color: #ff9800;
+      background: linear-gradient(135deg, #fff 0%, #fff3e0 100%);
+    }
+
+    .stat-card.warning:hover {
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    }
+
+    .stat-card.caution {
+      border-color: #ffc107;
+      background: linear-gradient(135deg, #fff 0%, #fffde7 100%);
+    }
+
+    .stat-card.caution:hover {
+      background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+    }
+
+    .stat-card.info {
+      border-color: #2196F3;
+      background: linear-gradient(135deg, #fff 0%, #e3f2fd 100%);
+    }
+
+    .stat-card.info:hover {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    }
+
+    .stat-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .stat-card.critical .stat-icon {
+      background: #ffebee;
+    }
+
+    .stat-card.critical .stat-icon mat-icon {
+      color: #f44336;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .stat-card.warning .stat-icon {
+      background: #fff3e0;
+    }
+
+    .stat-card.warning .stat-icon mat-icon {
+      color: #ff9800;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .stat-card.caution .stat-icon {
+      background: #fffde7;
+    }
+
+    .stat-card.caution .stat-icon mat-icon {
+      color: #ffc107;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .stat-card.info .stat-icon {
+      background: #e3f2fd;
+    }
+
+    .stat-card.info .stat-icon mat-icon {
+      color: #2196F3;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .stat-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+      color: #333;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
     h1 { margin: 0 0 8px 0; color: #2196F3; font-size: 28px; }
     p { margin: 0; color: #666; }
     .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 16px; }
@@ -234,10 +443,10 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .value-cell { text-align: right; font-weight: 500; }
     .clickable-row { cursor: pointer; }
     .clickable-row:hover { background: #f5f5f5; }
-    
+
     .mobile-cards { display: none; }
     .desktop-table { display: block; }
-    
+
     .subscription-card {
       border: 1px solid #e0e0e0;
       border-radius: 12px;
@@ -248,64 +457,70 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       cursor: pointer;
       transition: transform 0.2s;
     }
-    
+
     .subscription-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
-    
+
     .subscription-card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
     }
-    
+
     .subscription-card-title {
       font-weight: 600;
       color: #333;
       font-size: 16px;
     }
-    
+
     .subscription-card-details {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       margin-bottom: 12px;
     }
-    
+
     .subscription-card-detail {
       display: flex;
       flex-direction: column;
     }
-    
+
     .subscription-card-label {
       font-size: 12px;
       color: #666;
       text-transform: uppercase;
       margin-bottom: 4px;
     }
-    
+
     .subscription-card-value {
       font-size: 14px;
       color: #333;
     }
-    
+
     .subscription-price {
       font-weight: 600;
       color: #2196F3;
       font-size: 16px;
     }
-    
+
     .subscription-card-actions {
       display: flex;
       gap: 8px;
       justify-content: flex-end;
     }
-    
+
     @media (max-width: 768px) {
       .container { padding: 16px; }
       .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .stat-card { padding: 16px; gap: 12px; }
+      .stat-icon { width: 40px; height: 40px; }
+      .stat-card .stat-icon mat-icon { font-size: 24px !important; width: 24px !important; height: 24px !important; }
+      .stat-value { font-size: 24px; }
+      .stat-label { font-size: 11px; }
       .toolbar { flex-direction: column; align-items: stretch; gap: 16px; }
       .search-bar mat-form-field { width: 100%; }
       .filters { flex-wrap: wrap; }
@@ -316,8 +531,9 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       .subscription-card-actions { justify-content: stretch; }
       .subscription-card-actions button { flex: 1; }
     }
-    
+
     @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
       .subscription-card-actions {
         flex-direction: column;
         gap: 8px;
@@ -341,33 +557,33 @@ export class SubscriptionsSimpleComponent implements OnInit {
   searchTerm = '';
   statusFilter = 'all';
   planFilter = 'all';
-  
+
   constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {}
-  
+
   ngOnInit(): void {
     this.checkExpiredSubscriptions();
     this.applyFilter();
   }
-  
+
   applyFilter(): void {
     this.filteredSubscriptions = this.subscriptions.filter(sub => {
-      const matchesSearch = !this.searchTerm || 
+      const matchesSearch = !this.searchTerm ||
         sub.clientName.toLowerCase().includes(this.searchTerm.toLowerCase());
-      
+
       const matchesStatus = this.statusFilter === 'all' || sub.status === this.statusFilter;
       const matchesPlan = this.planFilter === 'all' || sub.plan === this.planFilter;
-      
+
       return matchesSearch && matchesStatus && matchesPlan;
     });
   }
-  
+
   getDaysLeft(subscription: any): number {
     const today = new Date();
     const endDate = new Date(subscription.endDate);
     const diffTime = endDate.getTime() - today.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
-  
+
   getDaysLeftClass(subscription: any): string {
     const days = this.getDaysLeft(subscription);
     if (days < 0) return 'expired';
@@ -376,11 +592,11 @@ export class SubscriptionsSimpleComponent implements OnInit {
     if (days <= 30) return 'caution';
     return 'safe';
   }
-  
+
   formatDate(date: Date): string {
     return new Date(date).toLocaleDateString('pt-PT');
   }
-  
+
   getPlanText(plan: string): string {
     switch(plan) {
       case 'monthly': return 'Mensal';
@@ -390,7 +606,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
       default: return plan;
     }
   }
-  
+
   getDefaultPrice(plan: string): number {
     switch(plan) {
       case 'monthly': return 10.00;
@@ -400,7 +616,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
       default: return 0;
     }
   }
-  
+
   getStatusText(status: string): string {
     switch(status) {
       case 'active': return 'Ativa';
@@ -410,7 +626,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
       default: return status;
     }
   }
-  
+
   checkExpiredSubscriptions(): void {
     this.subscriptions.forEach(sub => {
       const days = this.getDaysLeft(sub);
@@ -419,7 +635,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
       }
     });
   }
-  
+
   keepActive(subscription: any): void {
     import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
@@ -431,7 +647,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
           cancelText: 'Cancelar'
         }
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const index = this.subscriptions.findIndex(s => s.id === subscription.id);
@@ -461,7 +677,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
       }
     });
   }
-  
+
   deactivate(subscription: any): void {
     const index = this.subscriptions.findIndex(s => s.id === subscription.id);
     if (index !== -1) {
@@ -471,11 +687,53 @@ export class SubscriptionsSimpleComponent implements OnInit {
       this.snackBar.open(`${subscription.clientName} desativado`, 'Fechar', { duration: 2000 });
     }
   }
-  
+
+  getExpiryCount(period: number | string): number {
+    if (period === 'expired') {
+      return this.subscriptions.filter(sub => this.getDaysLeft(sub) < 0).length;
+    }
+
+    const periodNum = Number(period);
+    return this.subscriptions.filter(sub => {
+      const days = this.getDaysLeft(sub);
+      return days >= 0 && days < periodNum;
+    }).length;
+  }
+
+  showExpiryPeriod(period: number | string): void {
+    let filteredSubs;
+
+    if (period === 'expired') {
+      filteredSubs = this.subscriptions.filter(sub => this.getDaysLeft(sub) < 0);
+    } else {
+      const periodNum = Number(period);
+      filteredSubs = this.subscriptions.filter(sub => {
+        const days = this.getDaysLeft(sub);
+        return days >= 0 && days < periodNum;
+      });
+    }
+
+    if (filteredSubs.length === 0) {
+      this.snackBar.open('Nenhuma subscrição encontrada neste período', 'Fechar', { duration: 2000 });
+      return;
+    }
+
+    import('./expiry-period-dialog.component').then(m => {
+      this.dialog.open(m.ExpiryPeriodDialogComponent, {
+        width: '900px',
+        maxWidth: '95vw',
+        data: {
+          period: period,
+          subscriptions: filteredSubs
+        }
+      });
+    });
+  }
+
   addSubscription(): void {
     this.snackBar.open('Adicionar nova subscrição: Em desenvolvimento', 'Fechar', { duration: 2000 });
   }
-  
+
   viewSubscription(subscription: any): void {
     import('./view-subscription-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ViewSubscriptionDialogComponent, {
@@ -490,7 +748,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
           paymentDate: subscription.startDate
         }
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result?.action === 'edit') {
           this.editSubscription(result.subscription);
@@ -502,7 +760,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   editSubscription(subscription: any): void {
     import('./edit-subscription-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.EditSubscriptionDialogComponent, {
@@ -514,7 +772,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
           paymentMethod: 'stripe'
         }
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const index = this.subscriptions.findIndex(s => s.id === subscription.id);
@@ -527,7 +785,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   renewSubscription(subscription: any): void {
     import('./renew-subscription-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.RenewSubscriptionDialogComponent, {
@@ -537,14 +795,14 @@ export class SubscriptionsSimpleComponent implements OnInit {
           clientEmail: `${subscription.clientName.toLowerCase().replace(' ', '.')}@email.com`
         }
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const index = this.subscriptions.findIndex(s => s.id === subscription.id);
           if (index !== -1) {
-            this.subscriptions[index] = { 
-              ...this.subscriptions[index], 
-              ...result, 
+            this.subscriptions[index] = {
+              ...this.subscriptions[index],
+              ...result,
               value: result.price,
               startDate: result.startDate,
               endDate: result.endDate,
@@ -557,11 +815,11 @@ export class SubscriptionsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   cancelSubscription(subscription: any): void {
     this.confirmCancelSubscription(subscription);
   }
-  
+
   confirmCancelSubscription(subscription: any): void {
     import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
@@ -573,7 +831,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
           cancelText: 'Manter Ativa'
         }
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const index = this.subscriptions.findIndex(s => s.id === subscription.id);
@@ -596,11 +854,11 @@ export class SubscriptionsSimpleComponent implements OnInit {
       }
     });
   }
-  
+
   exportData(): void {
     this.snackBar.open('Exportar dados: Em desenvolvimento', 'Fechar', { duration: 2000 });
   }
-  
+
   clearFilters(): void {
     this.searchTerm = '';
     this.statusFilter = 'all';
