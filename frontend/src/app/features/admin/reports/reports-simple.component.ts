@@ -1,33 +1,33 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LayoutComponent } from '../../../shared/components/layout/layout.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Chart, registerables } from 'chart.js';
-import { ReportsService, ReportData, RevenueByPlan, ExpiringSubscription, RecentPayment } from '../../../services/reports.service';
-import { DetailedReportModalComponent } from './detailed-report-modal.component';
-import { ScheduleReportModalComponent } from './schedule-report-modal.component';
-import { PeriodComparisonModalComponent } from './period-comparison-modal.component';
+import { ExpiringSubscription, RecentPayment, ReportData, ReportsService, RevenueByPlan } from '../../../services/reports.service';
+import { LayoutComponent } from '../../../shared/components/layout/layout.component';
 import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component';
+import { DetailedReportModalComponent } from './detailed-report-modal.component';
+import { PeriodComparisonModalComponent } from './period-comparison-modal.component';
+import { ScheduleReportModalComponent } from './schedule-report-modal.component';
 
 @Component({
   selector: 'app-reports-simple',
   standalone: true,
   imports: [
-    CommonModule, MatCardModule, MatButtonModule, MatIconModule, 
-    MatTableModule, MatSelectModule, MatFormFieldModule, MatDatepickerModule, 
-    MatNativeDateModule, MatInputModule, MatDialogModule, MatProgressSpinnerModule, 
+    CommonModule, MatCardModule, MatButtonModule, MatIconModule,
+    MatTableModule, MatSelectModule, MatFormFieldModule, MatDatepickerModule,
+    MatNativeDateModule, MatInputModule, MatDialogModule, MatProgressSpinnerModule,
     MatTooltipModule, FormsModule, LayoutComponent
   ],
   template: `
@@ -49,7 +49,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </button>
           </div>
         </div>
-        
+
         <div class="filters-section">
           <mat-card>
             <mat-card-header>
@@ -71,14 +71,14 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                     <mat-option value="custom">Personalizado</mat-option>
                   </mat-select>
                 </mat-form-field>
-                
+
                 <mat-form-field appearance="outline" *ngIf="selectedPeriod === 'custom'">
                   <mat-label>Data início</mat-label>
                   <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="updateData()">
                   <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
                   <mat-datepicker #startPicker></mat-datepicker>
                 </mat-form-field>
-                
+
                 <mat-form-field appearance="outline" *ngIf="selectedPeriod === 'custom'">
                   <mat-label>Data fim</mat-label>
                   <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="updateData()">
@@ -86,7 +86,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                   <mat-datepicker #endPicker></mat-datepicker>
                 </mat-form-field>
               </div>
-              
+
               <div class="advanced-filters" *ngIf="showAdvancedFilters">
                 <div class="filters">
                   <mat-form-field appearance="outline">
@@ -98,7 +98,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                       <mat-option value="ANNUAL">Anual</mat-option>
                     </mat-select>
                   </mat-form-field>
-                  
+
                   <mat-form-field appearance="outline">
                     <mat-label>Estado do Pagamento</mat-label>
                     <mat-select [(value)]="selectedPaymentStatus" (selectionChange)="updateData()" multiple>
@@ -107,18 +107,18 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                       <mat-option value="failed">Falhado</mat-option>
                     </mat-select>
                   </mat-form-field>
-                  
+
                   <mat-form-field appearance="outline">
                     <mat-label>Valor Mínimo (€)</mat-label>
                     <input matInput type="number" [(ngModel)]="minAmount" (ngModelChange)="updateData()">
                   </mat-form-field>
-                  
+
                   <mat-form-field appearance="outline">
                     <mat-label>Valor Máximo (€)</mat-label>
                     <input matInput type="number" [(ngModel)]="maxAmount" (ngModelChange)="updateData()">
                   </mat-form-field>
                 </div>
-                
+
                 <div class="filter-actions">
                   <button mat-button (click)="clearFilters()">
                     <mat-icon>clear</mat-icon>
@@ -133,9 +133,9 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-content>
           </mat-card>
         </div>
-        
+
         <div class="metrics-grid" *ngIf="!loading">
-          <mat-card class="metric-card revenue" 
+          <mat-card class="metric-card revenue"
                    (click)="showMetricDetails('revenue')"
                    matTooltip="{{ getMetricTooltip('revenue') }}"
                    matTooltipPosition="above">
@@ -148,8 +148,8 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
               <p>Receita Total</p>
             </mat-card-content>
           </mat-card>
-          
-          <mat-card class="metric-card subscriptions" 
+
+          <mat-card class="metric-card subscriptions"
                    (click)="showMetricDetails('subscriptions')"
                    matTooltip="{{ getMetricTooltip('subscriptions') }}"
                    matTooltipPosition="above">
@@ -162,8 +162,8 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
               <p>Subscrições Activas</p>
             </mat-card-content>
           </mat-card>
-          
-          <mat-card class="metric-card expiring" 
+
+          <mat-card class="metric-card expiring"
                    (click)="showMetricDetails('expiring')"
                    matTooltip="{{ getMetricTooltip('expiring') }}"
                    matTooltipPosition="above">
@@ -176,8 +176,8 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
               <p>A Expirar (30 dias)</p>
             </mat-card-content>
           </mat-card>
-          
-          <mat-card class="metric-card conversion" 
+
+          <mat-card class="metric-card conversion"
                    (click)="showMetricDetails('conversion')"
                    matTooltip="{{ getMetricTooltip('conversion') }}"
                    matTooltipPosition="above">
@@ -191,7 +191,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-content>
           </mat-card>
         </div>
-        
+
         <div class="loading-section" *ngIf="loading">
           <mat-card>
             <mat-card-content class="loading-content">
@@ -200,7 +200,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-content>
           </mat-card>
         </div>
-        
+
         <div class="charts-section" *ngIf="!loading">
           <mat-card class="chart-card">
             <mat-card-header>
@@ -213,7 +213,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
               <canvas #revenueChart></canvas>
             </mat-card-content>
           </mat-card>
-          
+
           <mat-card class="chart-card">
             <mat-card-header>
               <mat-card-title>Evolução Mensal</mat-card-title>
@@ -226,7 +226,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-content>
           </mat-card>
         </div>
-        
+
         <div class="advanced-section" *ngIf="!loading">
           <mat-card class="analysis-card">
             <mat-card-header>
@@ -242,7 +242,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                     {{ revenueGrowth }}%
                   </div>
                 </div>
-                
+
                 <div class="trend-item">
                   <div class="trend-label">Novas Subscrições</div>
                   <div class="trend-value" [ngClass]="subscriptionGrowth >= 0 ? 'positive' : 'negative'">
@@ -250,7 +250,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                     {{ subscriptionGrowth }}%
                   </div>
                 </div>
-                
+
                 <div class="trend-item">
                   <div class="trend-label">Taxa de Retenção</div>
                   <div class="trend-value positive">
@@ -258,7 +258,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                     {{ retentionRate }}%
                   </div>
                 </div>
-                
+
                 <div class="trend-item">
                   <div class="trend-label">Valor Médio por Cliente</div>
                   <div class="trend-value">
@@ -270,7 +270,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-content>
           </mat-card>
         </div>
-        
+
         <!-- KPIs em Tempo Real -->
         <div class="realtime-kpis" *ngIf="!loading">
           <mat-card>
@@ -283,7 +283,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-header>
             <mat-card-content>
               <div class="kpis-grid">
-                <div class="kpi-item" 
+                <div class="kpi-item"
                      matTooltip="{{ getKpiTooltip('mrr') }}"
                      matTooltipPosition="above"
                      matTooltipClass="kpi-tooltip">
@@ -296,7 +296,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                     <div class="kpi-change positive">+{{ realtimeKpis.mrrGrowth }}% este mês</div>
                   </div>
                 </div>
-                
+
                 <div class="kpi-item"
                      matTooltip="{{ getKpiTooltip('churn') }}"
                      matTooltipPosition="above"
@@ -312,7 +312,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                     </div>
                   </div>
                 </div>
-                
+
                 <div class="kpi-item"
                      matTooltip="{{ getKpiTooltip('ltv') }}"
                      matTooltipPosition="above"
@@ -330,7 +330,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-content>
           </mat-card>
         </div>
-        
+
         <div class="reports-grid" *ngIf="!loading">
           <mat-card class="report-card">
             <mat-card-header>
@@ -341,32 +341,36 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
               <table mat-table [dataSource]="expiringData" class="report-table">
                 <ng-container matColumnDef="client">
                   <th mat-header-cell *matHeaderCellDef>Cliente</th>
-                  <td mat-cell *matCellDef="let item">{{ item.clientName }}</td>
+                  <td mat-cell *matCellDef="let item">
+                    <button mat-button class="client-link" (click)="openSubscriptionDetails(item)">
+                      {{ item.clientName }}
+                    </button>
+                  </td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="plan">
                   <th mat-header-cell *matHeaderCellDef>Plano</th>
                   <td mat-cell *matCellDef="let item">{{ item.plan }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="expires">
                   <th mat-header-cell *matHeaderCellDef>Expira em</th>
                   <td mat-cell *matCellDef="let item" [ngClass]="getDaysClass(item.daysLeft)">
                     {{ item.daysLeft }} dias
                   </td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="value">
                   <th mat-header-cell *matHeaderCellDef>Valor</th>
                   <td mat-cell *matCellDef="let item">{{ item.value }}€</td>
                 </ng-container>
-                
+
                 <tr mat-header-row *matHeaderRowDef="expiringColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: expiringColumns;"></tr>
               </table>
             </mat-card-content>
           </mat-card>
-          
+
           <mat-card class="report-card">
             <mat-card-header>
               <mat-card-title>Receitas por Plano</mat-card-title>
@@ -378,28 +382,28 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                   <th mat-header-cell *matHeaderCellDef>Plano</th>
                   <td mat-cell *matCellDef="let item">{{ item.plan }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="subscriptions">
                   <th mat-header-cell *matHeaderCellDef>Subscrições</th>
                   <td mat-cell *matCellDef="let item">{{ item.count }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="revenue">
                   <th mat-header-cell *matHeaderCellDef>Receita</th>
                   <td mat-cell *matCellDef="let item">{{ item.revenue }}€</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="percentage">
                   <th mat-header-cell *matHeaderCellDef>%</th>
                   <td mat-cell *matCellDef="let item">{{ item.percentage }}%</td>
                 </ng-container>
-                
+
                 <tr mat-header-row *matHeaderRowDef="revenueColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: revenueColumns;"></tr>
               </table>
             </mat-card-content>
           </mat-card>
-          
+
           <mat-card class="report-card">
             <mat-card-header>
               <mat-card-title>Pagamentos Recentes</mat-card-title>
@@ -411,31 +415,31 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                   <th mat-header-cell *matHeaderCellDef>Data</th>
                   <td mat-cell *matCellDef="let item">{{ item.date | date:'dd/MM/yyyy' }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="client">
                   <th mat-header-cell *matHeaderCellDef>Cliente</th>
                   <td mat-cell *matCellDef="let item">{{ item.clientName }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="amount">
                   <th mat-header-cell *matHeaderCellDef>Valor</th>
                   <td mat-cell *matCellDef="let item">{{ item.amount }}€</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="status">
                   <th mat-header-cell *matHeaderCellDef>Estado</th>
                   <td mat-cell *matCellDef="let item">
                     <span class="status-badge" [ngClass]="item.status.toLowerCase()">{{ getStatusText(item.status) }}</span>
                   </td>
                 </ng-container>
-                
+
                 <tr mat-header-row *matHeaderRowDef="paymentsColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: paymentsColumns;"></tr>
               </table>
             </mat-card-content>
           </mat-card>
         </div>
-        
+
         <div class="alerts-section" *ngIf="!loading && alerts.length > 0">
           <mat-card class="alerts-card">
             <mat-card-header>
@@ -458,7 +462,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
             </mat-card-content>
           </mat-card>
         </div>
-        
+
         <div class="quick-actions" *ngIf="!loading">
           <mat-card>
             <mat-card-header>
@@ -470,32 +474,32 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
                   <mat-icon>email</mat-icon>
                   Enviar Lembretes
                 </button>
-                
+
                 <button mat-raised-button (click)="generateDetailedReport()">
                   <mat-icon>assessment</mat-icon>
                   Relatório Detalhado
                 </button>
-                
+
                 <button mat-raised-button color="accent" (click)="sendMonthlyReport()">
                   <mat-icon>send</mat-icon>
                   Enviar Relatório Mensal
                 </button>
-                
+
                 <button mat-raised-button (click)="exportToExcel()">
                   <mat-icon>table_chart</mat-icon>
                   Exportar Excel
                 </button>
-                
+
                 <button mat-raised-button (click)="scheduleReport()">
                   <mat-icon>schedule</mat-icon>
                   Agendar Relatório
                 </button>
-                
+
                 <button mat-raised-button color="accent" (click)="comparePeriods()">
                   <mat-icon>compare</mat-icon>
                   Comparar Períodos
                 </button>
-                
+
                 <button mat-raised-button (click)="showCohortAnalysis()">
                   <mat-icon>analytics</mat-icon>
                   Análise de Coortes
@@ -566,7 +570,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
     .quick-actions { margin-bottom: 24px; }
     .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
     .actions-grid button { height: 48px; }
-    
+
     /* KPIs em Tempo Real */
     .realtime-kpis { margin-bottom: 24px; }
     .pulse { animation: pulse 2s infinite; color: #4caf50; }
@@ -585,7 +589,7 @@ import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component'
     .kpi-status.good { color: #4caf50; font-weight: 600; }
     .kpi-status.acceptable { color: #ff9800; font-weight: 600; }
     .kpi-status.critical { color: #f44336; font-weight: 600; }
-    
+
     /* Tooltip personalizado */
     ::ng-deep .kpi-tooltip {
       background: #333 !important;
@@ -613,31 +617,31 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
   private realtimeInterval?: any;
   @ViewChild('revenueChart') revenueChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('monthlyChart') monthlyChartRef!: ElementRef<HTMLCanvasElement>;
-  
+
   loading = true;
   selectedPeriod = '30days';
   startDate: Date | null = null;
   endDate: Date | null = null;
-  
+
   // Filtros avançados
   showAdvancedFilters = false;
   selectedPlanType: string[] = [];
   selectedPaymentStatus: string[] = [];
   minAmount: number | null = null;
   maxAmount: number | null = null;
-  
+
   // Métricas principais
   totalRevenue = 0;
   activeSubscriptions = 0;
   expiringSubscriptions = 0;
   conversionRate = 0;
-  
+
   // Métricas avançadas
   revenueGrowth = 12;
   subscriptionGrowth = 8;
   retentionRate = 85;
   averageRevenuePerClient = 0;
-  
+
   // KPIs em tempo real
   lastUpdate = new Date();
   realtimeKpis = {
@@ -648,12 +652,12 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     ltv: 890,
     ltvGrowth: 12.3
   };
-  
+
   // Dados das tabelas
   expiringData: ExpiringSubscription[] = [];
   revenueByPlan: RevenueByPlan[] = [];
   recentPayments: RecentPayment[] = [];
-  
+
   // Alertas
   alerts: any[] = [
     {
@@ -669,25 +673,25 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       message: 'Relatório mensal disponível para download'
     }
   ];
-  
+
   // Colunas das tabelas
   expiringColumns = ['client', 'plan', 'expires', 'value'];
   revenueColumns = ['plan', 'subscriptions', 'revenue', 'percentage'];
   paymentsColumns = ['date', 'client', 'amount', 'status'];
-  
+
   // Gráficos
   revenueChart?: Chart;
   monthlyChart?: Chart;
   revenueChartType: 'doughnut' | 'bar' = 'doughnut';
   monthlyChartType: 'line' | 'bar' = 'line';
-  
+
   constructor(
     private reportsService: ReportsService,
     private dialog: MatDialog
   ) {
     Chart.register(...registerables);
   }
-  
+
   ngOnInit() {
     // Carregar dados mock imediatamente para demonstração
     this.loadMockData();
@@ -696,36 +700,35 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     // Iniciar actualizações em tempo real dos KPIs
     this.startRealtimeUpdates();
   }
-  
+
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.initCharts();
-    }, 100);
+    // Charts will be initialized after data loading
   }
-  
+
   updateData() {
     this.loading = true;
-    
+
     const params = {
       period: this.selectedPeriod,
       startDate: this.startDate,
       endDate: this.endDate
     };
-    
+
     this.reportsService.getReportData(params).subscribe({
       next: (data: ReportData) => {
         this.totalRevenue = data.totalRevenue;
         this.activeSubscriptions = data.activeSubscriptions;
         this.expiringSubscriptions = data.expiringSubscriptions;
         this.conversionRate = data.conversionRate;
-        
+
         this.expiringData = data.expiringData;
         this.revenueByPlan = data.revenueByPlan;
         this.recentPayments = data.recentPayments;
-        
+
         this.calculateAdvancedMetrics();
         this.loading = false;
-        
+        this.initCharts();
+
         setTimeout(() => {
           this.updateCharts(data);
         }, 100);
@@ -735,40 +738,43 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
         // Usar dados mock em caso de erro
         this.loadMockData();
         this.loading = false;
+        this.initCharts();
       }
     });
   }
-  
+
   loadMockData() {
     // Dados mock para demonstração
     this.totalRevenue = 45280;
     this.activeSubscriptions = 156;
     this.expiringSubscriptions = 23;
     this.conversionRate = 68;
-    
+
     this.expiringData = [
       { clientName: 'João Silva', plan: '1 Mês', daysLeft: 5, value: 29.99, clientId: '1', subscriptionId: '1' },
       { clientName: 'Maria Santos', plan: '3 Meses', daysLeft: 12, value: 79.99, clientId: '2', subscriptionId: '2' },
       { clientName: 'Pedro Costa', plan: '6 Meses', daysLeft: 18, value: 149.99, clientId: '3', subscriptionId: '3' },
       { clientName: 'Ana Ferreira', plan: '1 Ano', daysLeft: 25, value: 279.99, clientId: '4', subscriptionId: '4' }
     ];
-    
+
     this.revenueByPlan = [
       { plan: '1 Mês', count: 45, revenue: 1349.55, percentage: 25 },
       { plan: '3 Meses', count: 38, revenue: 3039.62, percentage: 35 },
       { plan: '6 Meses', count: 28, revenue: 4199.72, percentage: 30 },
       { plan: '1 Ano', count: 15, revenue: 4199.85, percentage: 10 }
     ];
-    
+
     this.recentPayments = [
       { date: new Date('2024-01-15'), clientName: 'Carlos Oliveira', amount: 29.99, method: 'stripe', status: 'completed', paymentId: '1' },
       { date: new Date('2024-01-14'), clientName: 'Sofia Rodrigues', amount: 79.99, method: 'stripe', status: 'completed', paymentId: '2' },
       { date: new Date('2024-01-13'), clientName: 'Miguel Pereira', amount: 149.99, method: 'manual', status: 'pending', paymentId: '3' },
       { date: new Date('2024-01-12'), clientName: 'Rita Almeida', amount: 279.99, method: 'stripe', status: 'completed', paymentId: '4' }
     ];
-    
+
     this.calculateAdvancedMetrics();
-    
+    this.loading = false;
+    this.initCharts();
+
     // Actualizar gráficos com dados mock
     const mockData: ReportData = {
       totalRevenue: this.totalRevenue,
@@ -787,26 +793,27 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
         { month: 'Jun', revenue: 25400 }
       ]
     };
-    
+
     setTimeout(() => {
       this.updateCharts(mockData);
     }, 100);
   }
-  
+
   calculateAdvancedMetrics() {
     if (this.activeSubscriptions > 0) {
       this.averageRevenuePerClient = Math.round(this.totalRevenue / this.activeSubscriptions);
     }
   }
-  
+
   initCharts() {
     if (this.revenueChartRef && this.monthlyChartRef) {
       this.createRevenueChart();
       this.createMonthlyChart();
     }
   }
-  
+
   createRevenueChart() {
+    if (!this.revenueChartRef?.nativeElement) return;
     const ctx = this.revenueChartRef.nativeElement.getContext('2d');
     if (ctx) {
       this.revenueChart = new Chart(ctx, {
@@ -831,8 +838,9 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       });
     }
   }
-  
+
   createMonthlyChart() {
+    if (!this.monthlyChartRef?.nativeElement) return;
     const ctx = this.monthlyChartRef.nativeElement.getContext('2d');
     if (ctx) {
       this.monthlyChart = new Chart(ctx, {
@@ -870,7 +878,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       });
     }
   }
-  
+
   updateCharts(data: ReportData) {
     // Destruir gráficos existentes antes de actualizar
     if (this.revenueChart) {
@@ -879,18 +887,18 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     if (this.monthlyChart) {
       this.monthlyChart.destroy();
     }
-    
+
     // Recriar gráficos com novos dados
     setTimeout(() => {
       this.createRevenueChart();
       this.createMonthlyChart();
-      
+
       if (this.revenueChart && data.revenueByPlan) {
         this.revenueChart.data.labels = data.revenueByPlan.map(item => item.plan);
         this.revenueChart.data.datasets[0].data = data.revenueByPlan.map(item => item.revenue);
         this.revenueChart.update();
       }
-      
+
       if (this.monthlyChart && data.monthlyRevenue) {
         this.monthlyChart.data.labels = data.monthlyRevenue.map(item => item.month);
         this.monthlyChart.data.datasets[0].data = data.monthlyRevenue.map(item => item.revenue);
@@ -898,7 +906,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     }, 100);
   }
-  
+
   toggleChartType(chartType: 'revenue' | 'monthly') {
     if (chartType === 'revenue') {
       this.revenueChartType = this.revenueChartType === 'doughnut' ? 'bar' : 'doughnut';
@@ -910,15 +918,15 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       this.createMonthlyChart();
     }
   }
-  
+
   toggleAdvancedFilters() {
     this.showAdvancedFilters = !this.showAdvancedFilters;
   }
-  
+
   refreshData() {
     this.updateData();
   }
-  
+
   clearFilters() {
     this.selectedPlanType = [];
     this.selectedPaymentStatus = [];
@@ -926,7 +934,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     this.maxAmount = null;
     this.updateData();
   }
-  
+
   saveFilterPreset() {
     const preset = {
       period: this.selectedPeriod,
@@ -938,11 +946,34 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     localStorage.setItem('reportFilters', JSON.stringify(preset));
     alert('Filtros guardados com sucesso!');
   }
-  
+
   showMetricDetails(metric: string) {
     console.log('Mostrar detalhes da métrica:', metric);
   }
-  
+
+  openSubscriptionDetails(item: ExpiringSubscription) {
+    // Import the subscription details dialog component
+    import('../subscriptions/subscription-details-dialog.component').then(module => {
+      const dialogRef = this.dialog.open(module.SubscriptionDetailsDialogComponent, {
+        width: '90vw',
+        maxWidth: '1200px',
+        height: '80vh',
+        data: {
+          subscriptionId: item.subscriptionId,
+          clientId: item.clientId,
+          clientName: item.clientName
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          // Refresh data if needed
+          this.updateData();
+        }
+      });
+    });
+  }
+
   comparePeriods() {
     const dialogData = {
       currentPeriod: {
@@ -983,7 +1014,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
         }
       ]
     };
-    
+
     this.dialog.open(PeriodComparisonModalComponent, {
       width: '90vw',
       maxWidth: '1000px',
@@ -991,7 +1022,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       data: dialogData
     });
   }
-  
+
   showCohortAnalysis() {
     this.dialog.open(CohortAnalysisModalComponent, {
       width: '95vw',
@@ -1000,13 +1031,13 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       data: {}
     });
   }
-  
+
   getDaysClass(days: number): string {
     if (days <= 7) return 'days-critical';
     if (days <= 15) return 'days-warning';
     return 'days-normal';
   }
-  
+
   getPeriodText(): string {
     const periods: { [key: string]: string } = {
       '7days': 'Últimos 7 dias',
@@ -1017,7 +1048,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     };
     return periods[this.selectedPeriod] || 'Período seleccionado';
   }
-  
+
   getStatusText(status: string): string {
     const statusMap: { [key: string]: string } = {
       'completed': 'Completo',
@@ -1027,7 +1058,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     };
     return statusMap[status] || status;
   }
-  
+
   getAlertIcon(type: string): string {
     const icons: { [key: string]: string } = {
       'warning': 'warning',
@@ -1036,32 +1067,32 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     };
     return icons[type] || 'info';
   }
-  
+
   dismissAlert(alertId: number) {
     this.alerts = this.alerts.filter(alert => alert.id !== alertId);
   }
-  
+
   sendExpirationReminders() {
     if (this.expiringData.length === 0) {
       alert('Não há subscrições a expirar nos próximos 30 dias.');
       return;
     }
-    
+
     const confirmSend = confirm(`Enviar lembretes para ${this.expiringData.length} clientes com subscrições a expirar?`);
     if (confirmSend) {
       console.log('Enviando lembretes de expiração para:', this.expiringData);
       alert('Lembretes enviados com sucesso!');
     }
   }
-  
+
   sendMonthlyReport() {
     const nextMonth = new Date();
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     const monthName = nextMonth.toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' });
-    
+
     const expiringNextMonth = this.expiringData.filter(item => item.daysLeft <= 30);
     const totalValue = expiringNextMonth.reduce((sum, item) => sum + item.value, 0);
-    
+
     const reportData = {
       month: monthName,
       expiringCount: expiringNextMonth.length,
@@ -1073,17 +1104,17 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
         daysLeft: item.daysLeft
       }))
     };
-    
+
     const confirmSend = confirm(
       `Enviar relatório mensal para ${monthName}?\n\n` +
       `• ${expiringNextMonth.length} subscrições a expirar\n` +
       `• Valor total: ${totalValue.toFixed(2)}€\n\n` +
       `O relatório será enviado por Email, WhatsApp e Telegram.`
     );
-    
+
     if (confirmSend) {
       console.log('Enviando relatório mensal:', reportData);
-      
+
       // Simular envio para diferentes canais
       setTimeout(() => {
         alert(
@@ -1096,12 +1127,12 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
           `• Valor total em risco: ${totalValue.toFixed(2)}€`
         );
       }, 1500);
-      
+
       // Mostrar loading
       alert('A enviar relatório mensal... Por favor aguarde.');
     }
   }
-  
+
   generateDetailedReport() {
     const dialogData = {
       title: `Relatório Detalhado - ${this.getPeriodText()}`,
@@ -1144,7 +1175,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
         }
       ]
     };
-    
+
     this.dialog.open(DetailedReportModalComponent, {
       width: '90vw',
       maxWidth: '1200px',
@@ -1152,7 +1183,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       data: dialogData
     });
   }
-  
+
   exportToExcel() {
     const data = {
       metrics: {
@@ -1165,7 +1196,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       revenueByPlan: this.revenueByPlan,
       recentPayments: this.recentPayments
     };
-    
+
     const jsonData = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonData], { type: 'application/json' });
     const url = window.URL.createObjectURL(blob);
@@ -1175,20 +1206,20 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     a.click();
     window.URL.revokeObjectURL(url);
   }
-  
+
   scheduleReport() {
     const dialogRef = this.dialog.open(ScheduleReportModalComponent, {
       width: '600px',
       maxHeight: '90vh'
     });
-    
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log('Relatório agendado:', result);
       }
     });
   }
-  
+
   exportReport() {
     this.reportsService.exportReport({
       period: this.selectedPeriod,
@@ -1208,7 +1239,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     });
   }
-  
+
   getMetricTooltip(metric: string): string {
     const tooltips: { [key: string]: string } = {
       'revenue': `Receita Total: ${this.totalRevenue}€\n\nEsta métrica representa o valor total de receitas geradas no período seleccionado.\n\nPara melhorar:\n• Aumentar preços dos planos\n• Promover planos de maior valor\n• Reduzir cancelamentos\n• Implementar upselling`,
@@ -1218,7 +1249,7 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     };
     return tooltips[metric] || 'Informação não disponível';
   }
-  
+
   getKpiTooltip(kpi: string): string {
     const tooltips: { [key: string]: string } = {
       'mrr': `MRR (Monthly Recurring Revenue): ${this.realtimeKpis.mrr}€\n\nReceita recorrente mensal - valor previsível de receita que a empresa recebe mensalmente.\n\nPara melhorar:\n• Aumentar preços dos planos\n• Fazer upselling para planos superiores\n• Reduzir churn rate\n• Adquirir novos clientes`,
@@ -1227,33 +1258,33 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     };
     return tooltips[kpi] || 'Informação não disponível';
   }
-  
+
   startRealtimeUpdates() {
     // Actualizar KPIs a cada 30 segundos para simular tempo real
     this.realtimeInterval = setInterval(() => {
       this.lastUpdate = new Date();
-      
+
       // Simular pequenas variações nos KPIs
       const mrrVariation = (Math.random() - 0.5) * 100;
       const churnVariation = (Math.random() - 0.5) * 0.2;
       const ltvVariation = (Math.random() - 0.5) * 20;
-      
+
       this.realtimeKpis.mrr = Math.max(10000, this.realtimeKpis.mrr + mrrVariation);
       this.realtimeKpis.churnRate = Math.max(1, Math.min(10, this.realtimeKpis.churnRate + churnVariation));
       this.realtimeKpis.ltv = Math.max(500, this.realtimeKpis.ltv + ltvVariation);
-      
+
       // Arredondar valores
       this.realtimeKpis.mrr = Math.round(this.realtimeKpis.mrr);
       this.realtimeKpis.churnRate = Math.round(this.realtimeKpis.churnRate * 10) / 10;
       this.realtimeKpis.ltv = Math.round(this.realtimeKpis.ltv);
     }, 30000);
   }
-  
+
   ngOnDestroy() {
     if (this.realtimeInterval) {
       clearInterval(this.realtimeInterval);
     }
-    
+
     // Destruir gráficos
     if (this.revenueChart) {
       this.revenueChart.destroy();
