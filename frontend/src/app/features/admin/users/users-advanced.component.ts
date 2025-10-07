@@ -1,24 +1,22 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDialogModule, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatMenuModule } from '@angular/material/menu';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Inject } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
 
 interface User {
@@ -58,12 +56,12 @@ interface Role {
           <mat-label>Nome</mat-label>
           <input matInput formControlName="name" required>
         </mat-form-field>
-        
+
         <mat-form-field>
           <mat-label>Email</mat-label>
           <input matInput type="email" formControlName="email" required>
         </mat-form-field>
-        
+
         <mat-form-field>
           <mat-label>Função</mat-label>
           <mat-select formControlName="role" required>
@@ -72,7 +70,7 @@ interface Role {
             <mat-option value="support">Suporte</mat-option>
           </mat-select>
         </mat-form-field>
-        
+
         <mat-form-field>
           <mat-label>Estado</mat-label>
           <mat-select formControlName="status" required>
@@ -81,7 +79,7 @@ interface Role {
             <mat-option value="suspended">Suspenso</mat-option>
           </mat-select>
         </mat-form-field>
-        
+
         <mat-form-field *ngIf="!data.user">
           <mat-label>Palavra-passe</mat-label>
           <input matInput type="password" formControlName="password" required>
@@ -224,7 +222,7 @@ export class UserDialogComponent {
                       <input matInput [(ngModel)]="searchTerm" (input)="filterUsers()" placeholder="Nome ou email">
                       <mat-icon matSuffix>search</mat-icon>
                     </mat-form-field>
-                    
+
                     <mat-form-field>
                       <mat-label>Função</mat-label>
                       <mat-select [(value)]="roleFilter" (selectionChange)="filterUsers()">
@@ -234,7 +232,7 @@ export class UserDialogComponent {
                         <mat-option value="support">Suporte</mat-option>
                       </mat-select>
                     </mat-form-field>
-                    
+
                     <mat-form-field>
                       <mat-label>Estado</mat-label>
                       <mat-select [(value)]="statusFilter" (selectionChange)="filterUsers()">
@@ -324,7 +322,7 @@ export class UserDialogComponent {
                             Reset Password
                           </button>
                           <mat-divider></mat-divider>
-                          <button mat-menu-item (click)="toggleUserStatus(user)" 
+                          <button mat-menu-item (click)="toggleUserStatus(user)"
                                   [ngClass]="user.status === 'active' ? 'warn' : 'primary'">
                             <mat-icon>{{ user.status === 'active' ? 'block' : 'check_circle' }}</mat-icon>
                             {{ user.status === 'active' ? 'Suspender' : 'Ativar' }}
@@ -340,7 +338,7 @@ export class UserDialogComponent {
                     <tr mat-header-row *matHeaderRowDef="userColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: userColumns;"></tr>
                   </table>
-                  
+
                   <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
                 </mat-card-content>
               </mat-card>
@@ -457,7 +455,7 @@ export class UserDialogComponent {
     .header h1 { margin: 0; color: #1976d2; font-size: 28px; }
     .header p { margin: 4px 0 0 0; color: #666; }
     .tab-content { padding: 24px 0; }
-    
+
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .stat-card { transition: transform 0.2s; }
     .stat-card:hover { transform: translateY(-2px); }
@@ -471,11 +469,11 @@ export class UserDialogComponent {
     .stat-details { display: flex; flex-direction: column; gap: 4px; }
     .active { color: #2e7d32; }
     .inactive { color: #666; }
-    
+
     .filters-card { margin-bottom: 16px; }
     .filters-row { display: flex; gap: 16px; align-items: center; }
     .filters-row mat-form-field { min-width: 200px; }
-    
+
     .table-card { margin-bottom: 24px; }
     .users-table { width: 100%; }
     .user-avatar { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
@@ -484,7 +482,7 @@ export class UserDialogComponent {
     .user-info { display: flex; flex-direction: column; }
     .user-name { font-weight: 500; }
     .user-email { font-size: 12px; color: #666; }
-    
+
     .role-badge, .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
     .role-badge.admin { background: #ffebee; color: #d32f2f; }
     .role-badge.manager { background: #e8f5e8; color: #388e3c; }
@@ -492,13 +490,13 @@ export class UserDialogComponent {
     .status-badge.active { background: #e8f5e8; color: #2e7d32; }
     .status-badge.inactive { background: #f5f5f5; color: #666; }
     .status-badge.suspended { background: #ffebee; color: #c62828; }
-    
+
     .roles-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
     .roles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
     .role-card { transition: transform 0.2s; }
     .role-card:hover { transform: translateY(-2px); }
     .permissions-count { display: flex; align-items: center; gap: 8px; margin-top: 12px; color: #666; }
-    
+
     .permissions-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
     .permissions-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 16px; }
     .category-card { height: fit-content; }
@@ -507,7 +505,7 @@ export class UserDialogComponent {
     .permission-info { flex: 1; }
     .permission-name { font-weight: 500; margin-bottom: 4px; }
     .permission-description { font-size: 14px; color: #666; }
-    
+
     .activity-list { display: flex; flex-direction: column; gap: 16px; }
     .activity-item { display: flex; gap: 12px; padding: 12px; border-radius: 8px; background: #f9f9f9; }
     .activity-icon mat-icon { font-size: 24px; }
@@ -519,7 +517,7 @@ export class UserDialogComponent {
     .activity-title { font-weight: 500; margin-bottom: 4px; }
     .activity-description { color: #666; margin-bottom: 4px; }
     .activity-time { font-size: 12px; color: #999; }
-    
+
     @media (max-width: 768px) {
       .container { padding: 16px; }
       .header { flex-direction: column; gap: 16px; }
@@ -532,7 +530,7 @@ export class UserDialogComponent {
 })
 export class UsersAdvancedComponent implements OnInit {
   selectedTab = 0;
-  
+
   stats = {
     total: 12,
     active: 10,
@@ -545,9 +543,9 @@ export class UsersAdvancedComponent implements OnInit {
   searchTerm = '';
   roleFilter = '';
   statusFilter = '';
-  
+
   userColumns = ['avatar', 'name', 'role', 'status', 'lastLogin', 'createdAt', 'actions'];
-  
+
   users: User[] = [];
   filteredUsers: User[] = [];
   roles: Role[] = [];
@@ -673,13 +671,13 @@ export class UsersAdvancedComponent implements OnInit {
 
   filterUsers() {
     this.filteredUsers = this.users.filter(user => {
-      const matchesSearch = !this.searchTerm || 
+      const matchesSearch = !this.searchTerm ||
         user.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(this.searchTerm.toLowerCase());
-      
+
       const matchesRole = !this.roleFilter || user.role === this.roleFilter;
       const matchesStatus = !this.statusFilter || user.status === this.statusFilter;
-      
+
       return matchesSearch && matchesRole && matchesStatus;
     });
   }
@@ -714,7 +712,10 @@ export class UsersAdvancedComponent implements OnInit {
 
   createUser() {
     const dialogRef = this.dialog.open(UserDialogComponent, {
-      width: '500px',
+      width: '95vw',
+      maxWidth: '500px',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
       data: {}
     });
 
@@ -735,7 +736,10 @@ export class UsersAdvancedComponent implements OnInit {
 
   editUser(user: User) {
     const dialogRef = this.dialog.open(UserDialogComponent, {
-      width: '500px',
+      width: '95vw',
+      maxWidth: '500px',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
       data: { user }
     });
 
@@ -760,7 +764,7 @@ export class UsersAdvancedComponent implements OnInit {
   toggleUserStatus(user: User) {
     const newStatus = user.status === 'active' ? 'suspended' : 'active';
     const action = newStatus === 'active' ? 'ativado' : 'suspenso';
-    
+
     if (confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} utilizador ${user.name}?`)) {
       user.status = newStatus;
       this.snackBar.open(`Utilizador ${action}`, 'Fechar', { duration: 3000 });

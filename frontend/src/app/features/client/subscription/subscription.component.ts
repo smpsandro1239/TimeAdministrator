@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Router, RouterLink } from '@angular/router';
 
-import { ClientService } from '../../../services/client.service';
-import { SubscriptionService } from '../../../services/subscription.service';
-import { AuthService } from '../../../services/auth.service';
 import { Client } from '../../../models/client.model';
 import { Subscription } from '../../../models/subscription.model';
+import { AuthService } from '../../../services/auth.service';
+import { ClientService } from '../../../services/client.service';
+import { SubscriptionService } from '../../../services/subscription.service';
 import { CancelSubscriptionDialogComponent } from './cancel-subscription-dialog.component';
 import { SubscriptionDisplayItem } from './subscription-display.model';
 
@@ -176,8 +176,11 @@ export class SubscriptionComponent implements OnInit {
     if (!this.subscription) return;
 
     const dialogRef = this.dialog.open(CancelSubscriptionDialogComponent, {
-      width: '450px',
+      width: '95vw',
+      maxWidth: '450px',
+      maxHeight: '90vh',
       autoFocus: false,
+      panelClass: 'responsive-dialog'
     });
 
     dialogRef.afterClosed().subscribe((result) => {

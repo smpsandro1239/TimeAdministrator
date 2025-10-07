@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
 
 @Component({
@@ -30,7 +30,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             Novo Pagamento
           </button>
         </div>
-        
+
         <div class="stats-grid">
           <mat-card class="stat-card pending clickable" (click)="showStatusDetails('pending')">
             <mat-card-content>
@@ -39,7 +39,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
               <p>Pendentes</p>
             </mat-card-content>
           </mat-card>
-          
+
           <mat-card class="stat-card approved clickable" (click)="showStatusDetails('approved')">
             <mat-card-content>
               <mat-icon>check_circle</mat-icon>
@@ -47,7 +47,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
               <p>Aprovados</p>
             </mat-card-content>
           </mat-card>
-          
+
           <mat-card class="stat-card rejected clickable" (click)="showStatusDetails('rejected')">
             <mat-card-content>
               <mat-icon>cancel</mat-icon>
@@ -55,7 +55,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
               <p>Rejeitados</p>
             </mat-card-content>
           </mat-card>
-          
+
           <mat-card class="stat-card total clickable" (click)="showTotalDetails()">
             <mat-card-content>
               <mat-icon>euro</mat-icon>
@@ -64,7 +64,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             </mat-card-content>
           </mat-card>
         </div>
-        
+
         <mat-card>
           <mat-card-content>
             <div class="toolbar">
@@ -75,7 +75,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <mat-icon matSuffix>search</mat-icon>
                 </mat-form-field>
               </div>
-              
+
               <div class="filters">
                 <mat-form-field appearance="outline">
                   <mat-label>Estado</mat-label>
@@ -86,7 +86,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                     <mat-option value="rejected">Rejeitado</mat-option>
                   </mat-select>
                 </mat-form-field>
-                
+
                 <mat-form-field appearance="outline">
                   <mat-label>Método</mat-label>
                   <mat-select [(value)]="methodFilter" (selectionChange)="applyFilter()">
@@ -96,14 +96,14 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                     <mat-option value="cash">Dinheiro</mat-option>
                   </mat-select>
                 </mat-form-field>
-                
+
                 <button mat-stroked-button (click)="exportData()" matTooltip="Exportar dados">
                   <mat-icon>download</mat-icon>
                   Exportar
                 </button>
               </div>
             </div>
-            
+
             <div class="results-info" *ngIf="searchTerm || statusFilter !== 'all' || methodFilter !== 'all'">
               <span>A mostrar {{ filteredPayments.length }} de {{ payments.length }} pagamentos</span>
               <button mat-button (click)="clearFilters()">
@@ -111,7 +111,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                 Limpar filtros
               </button>
             </div>
-            
+
             <!-- Desktop Table -->
             <div class="desktop-table">
               <table mat-table [dataSource]="filteredPayments" class="payments-table">
@@ -119,53 +119,53 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <th mat-header-cell *matHeaderCellDef>Cliente</th>
                   <td mat-cell *matCellDef="let payment">{{ payment.clientName }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="reference">
                   <th mat-header-cell *matHeaderCellDef>Referência</th>
                   <td mat-cell *matCellDef="let payment">{{ payment.reference }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="amount">
                   <th mat-header-cell *matHeaderCellDef>Valor</th>
                   <td mat-cell *matCellDef="let payment" class="amount-cell">{{ payment.amount }}€</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="method">
                   <th mat-header-cell *matHeaderCellDef>Método</th>
                   <td mat-cell *matCellDef="let payment">
                     <span class="method-badge" [ngClass]="payment.method">{{ getMethodText(payment.method) }}</span>
                   </td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="date">
                   <th mat-header-cell *matHeaderCellDef>Data</th>
                   <td mat-cell *matCellDef="let payment">{{ formatDate(payment.date) }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="status">
                   <th mat-header-cell *matHeaderCellDef>Estado</th>
                   <td mat-cell *matCellDef="let payment">
                     <span class="status" [ngClass]="payment.status">{{ getStatusText(payment.status) }}</span>
                   </td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef>Ações</th>
                   <td mat-cell *matCellDef="let payment" (click)="$event.stopPropagation()">
                     <button mat-icon-button (click)="viewPayment(payment)" matTooltip="Ver detalhes">
                       <mat-icon>visibility</mat-icon>
                     </button>
-                    <button mat-icon-button *ngIf="payment.status === 'pending'" 
+                    <button mat-icon-button *ngIf="payment.status === 'pending'"
                             (click)="approvePayment(payment)" color="primary" matTooltip="Aprovar">
                       <mat-icon>check</mat-icon>
                     </button>
-                    <button mat-icon-button *ngIf="payment.status === 'pending'" 
+                    <button mat-icon-button *ngIf="payment.status === 'pending'"
                             (click)="rejectPayment(payment)" color="warn" matTooltip="Rejeitar">
                       <mat-icon>close</mat-icon>
                     </button>
                   </td>
                 </ng-container>
-                
+
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewPayment(row)" class="clickable-row"></tr>
               </table>
@@ -181,33 +181,33 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   </div>
                   <div class="amount">{{ payment.amount }}€</div>
                 </div>
-                
+
                 <div class="card-content">
                   <div class="info-row">
                     <mat-icon>payment</mat-icon>
                     <span class="method-badge" [ngClass]="payment.method">{{ getMethodText(payment.method) }}</span>
                   </div>
-                  
+
                   <div class="info-row">
                     <mat-icon>schedule</mat-icon>
                     <span>{{ formatDate(payment.date) }}</span>
                   </div>
-                  
+
                   <div class="info-row">
                     <mat-icon>info</mat-icon>
                     <span class="status" [ngClass]="payment.status">{{ getStatusText(payment.status) }}</span>
                   </div>
                 </div>
-                
+
                 <div class="card-actions" (click)="$event.stopPropagation()">
                   <button mat-icon-button (click)="viewPayment(payment)" matTooltip="Ver detalhes">
                     <mat-icon>visibility</mat-icon>
                   </button>
-                  <button mat-icon-button *ngIf="payment.status === 'pending'" 
+                  <button mat-icon-button *ngIf="payment.status === 'pending'"
                           (click)="approvePayment(payment)" color="primary" matTooltip="Aprovar">
                     <mat-icon>check</mat-icon>
                   </button>
-                  <button mat-icon-button *ngIf="payment.status === 'pending'" 
+                  <button mat-icon-button *ngIf="payment.status === 'pending'"
                           (click)="rejectPayment(payment)" color="warn" matTooltip="Rejeitar">
                     <mat-icon>close</mat-icon>
                   </button>
@@ -252,11 +252,11 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .amount-cell { text-align: right; font-weight: 500; }
     .clickable-row { cursor: pointer; }
     .clickable-row:hover { background: #f5f5f5; }
-    
+
     /* Mobile Cards Layout */
     .desktop-table { display: block; }
     .mobile-cards { display: none; }
-    
+
     .payment-card {
       background: white;
       border-radius: 12px;
@@ -267,26 +267,26 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       transition: all 0.2s ease;
       border-left: 4px solid #2196F3;
     }
-    
+
     .payment-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    
+
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 12px;
     }
-    
+
     .payment-info h3 {
       margin: 0 0 4px 0;
       font-size: 16px;
       font-weight: 600;
       color: #333;
     }
-    
+
     .reference {
       margin: 0;
       font-size: 12px;
@@ -297,17 +297,17 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       border-radius: 4px;
       display: inline-block;
     }
-    
+
     .amount {
       font-size: 18px;
       font-weight: 700;
       color: #2196F3;
     }
-    
+
     .card-content {
       margin-bottom: 12px;
     }
-    
+
     .info-row {
       display: flex;
       align-items: center;
@@ -316,14 +316,14 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       font-size: 14px;
       color: #666;
     }
-    
+
     .info-row mat-icon {
       font-size: 18px;
       width: 18px;
       height: 18px;
       color: #1976d2;
     }
-    
+
     .card-actions {
       display: flex;
       justify-content: flex-end;
@@ -331,7 +331,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       padding-top: 8px;
       border-top: 1px solid #eee;
     }
-    
+
     @media (max-width: 768px) {
       .container { padding: 16px; }
       .header { flex-direction: column; align-items: stretch; gap: 12px; }
@@ -342,37 +342,37 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       .filters { flex-wrap: wrap; justify-content: space-between; }
       .filters mat-form-field { width: calc(50% - 8px); min-width: 120px; }
       .filters button { flex: 1; min-width: 80px; }
-      
+
       /* Switch to mobile layout */
       .desktop-table { display: none; }
       .mobile-cards { display: block; }
     }
-    
+
     @media (max-width: 480px) {
       .container { padding: 12px; }
       .stats-grid { grid-template-columns: 1fr; }
       .filters mat-form-field { width: 100%; }
       .filters { flex-direction: column; }
       .filters button { width: 100%; margin-bottom: 8px; }
-      
+
       .payment-card {
         padding: 12px;
         margin-bottom: 8px;
       }
-      
+
       .payment-info h3 {
         font-size: 15px;
       }
-      
+
       .amount {
         font-size: 16px;
       }
-      
+
       .info-row {
         font-size: 13px;
         margin-bottom: 6px;
       }
-      
+
       .info-row mat-icon {
         font-size: 16px;
         width: 16px;
@@ -397,38 +397,38 @@ export class PaymentsSimpleComponent implements OnInit {
   searchTerm = '';
   statusFilter = 'all';
   methodFilter = 'all';
-  
+
   constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {}
-  
+
   ngOnInit(): void {
     this.applyFilter();
   }
-  
+
   applyFilter(): void {
     this.filteredPayments = this.payments.filter(payment => {
-      const matchesSearch = !this.searchTerm || 
+      const matchesSearch = !this.searchTerm ||
         payment.clientName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         payment.reference.toLowerCase().includes(this.searchTerm.toLowerCase());
-      
+
       const matchesStatus = this.statusFilter === 'all' || payment.status === this.statusFilter;
       const matchesMethod = this.methodFilter === 'all' || payment.method === this.methodFilter;
-      
+
       return matchesSearch && matchesStatus && matchesMethod;
     });
   }
-  
+
   getStatusCount(status: string): number {
     return this.payments.filter(p => p.status === status).length;
   }
-  
+
   getTotalAmount(): number {
     return this.payments.filter(p => p.status === 'approved').reduce((sum, p) => sum + p.amount, 0);
   }
-  
+
   formatDate(date: Date): string {
     return new Date(date).toLocaleDateString('pt-PT');
   }
-  
+
   getMethodText(method: string): string {
     switch(method) {
       case 'stripe': return 'Cartão';
@@ -437,7 +437,7 @@ export class PaymentsSimpleComponent implements OnInit {
       default: return method;
     }
   }
-  
+
   getStatusText(status: string): string {
     switch(status) {
       case 'pending': return 'Pendente';
@@ -446,14 +446,17 @@ export class PaymentsSimpleComponent implements OnInit {
       default: return status;
     }
   }
-  
+
   addPayment(): void {
     import('./add-payment-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.AddPaymentDialogComponent, {
-        width: '500px',
-        disableClose: true
+        width: '95vw',
+        maxWidth: '500px',
+        maxHeight: '90vh',
+        disableClose: true,
+        panelClass: 'responsive-dialog'
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.payments.push(result);
@@ -463,14 +466,17 @@ export class PaymentsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   viewPayment(payment: any): void {
     import('./view-payment-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ViewPaymentDialogComponent, {
-        width: '600px',
-        data: payment
+        width: '95vw',
+        maxWidth: '600px',
+        maxHeight: '90vh',
+        data: payment,
+        panelClass: 'responsive-dialog'
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result?.action === 'approve') {
           this.approvePayment(result.payment);
@@ -480,11 +486,14 @@ export class PaymentsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   approvePayment(payment: any): void {
     import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
-        width: '400px',
+        width: '95vw',
+        maxWidth: '400px',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           title: 'Aprovar Pagamento',
           message: `Confirma a aprovação do pagamento ${payment.reference} de ${payment.clientName} no valor de ${payment.amount}€?`,
@@ -492,7 +501,7 @@ export class PaymentsSimpleComponent implements OnInit {
           cancelText: 'Cancelar'
         }
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const index = this.payments.findIndex(p => p.id === payment.id);
@@ -514,11 +523,14 @@ export class PaymentsSimpleComponent implements OnInit {
       }
     });
   }
-  
+
   rejectPayment(payment: any): void {
     import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
-        width: '400px',
+        width: '95vw',
+        maxWidth: '400px',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           title: 'Rejeitar Pagamento',
           message: `Confirma a rejeição do pagamento ${payment.reference} de ${payment.clientName}?`,
@@ -526,7 +538,7 @@ export class PaymentsSimpleComponent implements OnInit {
           cancelText: 'Cancelar'
         }
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const index = this.payments.findIndex(p => p.id === payment.id);
@@ -548,11 +560,11 @@ export class PaymentsSimpleComponent implements OnInit {
       }
     });
   }
-  
+
   exportData(): void {
     this.snackBar.open('Exportar dados: Em desenvolvimento', 'Fechar', { duration: 2000 });
   }
-  
+
   clearFilters(): void {
     this.searchTerm = '';
     this.statusFilter = 'all';
@@ -560,13 +572,16 @@ export class PaymentsSimpleComponent implements OnInit {
     this.applyFilter();
     this.snackBar.open('Filtros limpos', 'Fechar', { duration: 1500 });
   }
-  
+
   showStatusDetails(status: string): void {
     const statusPayments = this.payments.filter(p => p.status === status);
-    
+
     import('./status-details-dialog.component').then(m => {
       this.dialog.open(m.StatusDetailsDialogComponent, {
-        width: '700px',
+        width: '95vw',
+        maxWidth: '700px',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           status: status,
           payments: statusPayments
@@ -574,13 +589,16 @@ export class PaymentsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   showTotalDetails(): void {
     const approvedPayments = this.payments.filter(p => p.status === 'approved');
-    
+
     import('./status-details-dialog.component').then(m => {
       this.dialog.open(m.StatusDetailsDialogComponent, {
-        width: '700px',
+        width: '95vw',
+        maxWidth: '700px',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           status: 'total',
           payments: approvedPayments

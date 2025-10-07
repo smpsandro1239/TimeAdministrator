@@ -639,7 +639,10 @@ export class SubscriptionsSimpleComponent implements OnInit {
   keepActive(subscription: any): void {
     import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
-        width: '400px',
+        width: '95vw',
+        maxWidth: '400px',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           title: 'Manter Subscrição Ativa',
           message: `Deseja manter ${subscription.clientName} ativo mesmo com a subscrição expirada? Será adicionado 1 mês.`,
@@ -720,8 +723,10 @@ export class SubscriptionsSimpleComponent implements OnInit {
 
     import('./expiry-period-dialog.component').then(m => {
       this.dialog.open(m.ExpiryPeriodDialogComponent, {
-        width: '900px',
-        maxWidth: '95vw',
+        width: '95vw',
+        maxWidth: '900px',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           period: period,
           subscriptions: filteredSubs
@@ -737,7 +742,10 @@ export class SubscriptionsSimpleComponent implements OnInit {
   viewSubscription(subscription: any): void {
     import('./view-subscription-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ViewSubscriptionDialogComponent, {
-        width: '600px',
+        width: '95vw',
+        maxWidth: '600px',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           ...subscription,
           clientEmail: `${subscription.clientName.toLowerCase().replace(' ', '.')}@email.com`,
@@ -764,7 +772,10 @@ export class SubscriptionsSimpleComponent implements OnInit {
   editSubscription(subscription: any): void {
     import('./edit-subscription-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.EditSubscriptionDialogComponent, {
-        width: '500px',
+        width: '95vw',
+        maxWidth: '500px',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           ...subscription,
           price: subscription.value,
@@ -789,7 +800,10 @@ export class SubscriptionsSimpleComponent implements OnInit {
   renewSubscription(subscription: any): void {
     import('./renew-subscription-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.RenewSubscriptionDialogComponent, {
-        width: '500px',
+        width: '95vw',
+        maxWidth: '500px',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           ...subscription,
           clientEmail: `${subscription.clientName.toLowerCase().replace(' ', '.')}@email.com`
@@ -823,7 +837,10 @@ export class SubscriptionsSimpleComponent implements OnInit {
   confirmCancelSubscription(subscription: any): void {
     import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
-        width: '400px',
+        width: '95vw',
+        maxWidth: '400px',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           title: 'Cancelar Subscrição',
           message: `Tem a certeza que deseja cancelar a subscrição de ${subscription.clientName}?`,

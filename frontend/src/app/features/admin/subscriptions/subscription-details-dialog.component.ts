@@ -473,7 +473,10 @@ export class SubscriptionDetailsDialogComponent {
 
   renewSubscription() {
     const dialogRef = this.dialog.open(RenewSubscriptionDialogComponent, {
-      width: '600px',
+      width: '95vw',
+      maxWidth: '600px',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
       data: {
         subscriptionId: this.data.id,
         clientName: this.data.clientName,

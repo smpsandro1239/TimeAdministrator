@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
 
 @Component({
@@ -30,7 +30,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             Novo Cliente
           </button>
         </div>
-        
+
         <mat-card>
           <mat-card-content>
             <div class="toolbar">
@@ -41,7 +41,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <mat-icon matSuffix>search</mat-icon>
                 </mat-form-field>
               </div>
-              
+
               <div class="filters">
                 <mat-form-field appearance="outline">
                   <mat-label>Estado</mat-label>
@@ -52,25 +52,25 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                     <mat-option value="pending">Pendente</mat-option>
                   </mat-select>
                 </mat-form-field>
-                
+
                 <button mat-stroked-button (click)="exportData()" matTooltip="Exportar dados filtrados">
                   <mat-icon>download</mat-icon>
                   Exportar
                 </button>
-                
+
                 <input #fileInput type="file" accept=".csv,.xlsx" (change)="importData($event)" style="display: none">
                 <button mat-stroked-button (click)="fileInput.click()" matTooltip="Importar clientes">
                   <mat-icon>upload</mat-icon>
                   Importar
                 </button>
-                
+
                 <button mat-stroked-button (click)="refreshData()" matTooltip="Actualizar dados">
                   <mat-icon>refresh</mat-icon>
                   Actualizar
                 </button>
               </div>
             </div>
-            
+
             <div class="results-info" *ngIf="searchTerm || statusFilter !== 'all'">
               <span>A mostrar {{ filteredClients.length }} de {{ clients.length }} clientes</span>
               <button mat-button (click)="clearFilters()" *ngIf="searchTerm || statusFilter !== 'all'">
@@ -78,7 +78,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                 Limpar filtros
               </button>
             </div>
-            
+
             <!-- Desktop Table -->
             <div class="desktop-table">
               <table mat-table [dataSource]="filteredClients" class="clients-table">
@@ -86,24 +86,24 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   <th mat-header-cell *matHeaderCellDef>Nome</th>
                   <td mat-cell *matCellDef="let client">{{ client.name }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="email">
                   <th mat-header-cell *matHeaderCellDef>Email</th>
                   <td mat-cell *matCellDef="let client">{{ client.email }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="phone">
                   <th mat-header-cell *matHeaderCellDef>Telefone</th>
                   <td mat-cell *matCellDef="let client">{{ client.phone || 'N/A' }}</td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="status">
                   <th mat-header-cell *matHeaderCellDef>Estado</th>
                   <td mat-cell *matCellDef="let client">
                     <span class="status" [ngClass]="client.status">{{ getStatusText(client.status) }}</span>
                   </td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="notifications">
                   <th mat-header-cell *matHeaderCellDef>Notificações</th>
                   <td mat-cell *matCellDef="let client">
@@ -114,32 +114,32 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                     </div>
                   </td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="daysLeft">
                   <th mat-header-cell *matHeaderCellDef>Dias</th>
                   <td mat-cell *matCellDef="let client" class="days-cell">
                     <span class="days-left" [ngClass]="getDaysLeftClass(client)">{{ getDaysLeftText(client) }}</span>
                   </td>
                 </ng-container>
-                
+
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef>Ações</th>
                   <td mat-cell *matCellDef="let client">
-                    <button mat-icon-button (click)="viewClient(client)" matTooltip="Ver detalhes">
+                    <button mat-icon-button (click)="$event.stopPropagation(); viewClient(client)" matTooltip="Ver detalhes">
                       <mat-icon>visibility</mat-icon>
                     </button>
-                    <button mat-icon-button (click)="editClient(client)" matTooltip="Editar">
+                    <button mat-icon-button (click)="$event.stopPropagation(); editClient(client)" matTooltip="Editar">
                       <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button (click)="toggleStatus(client)" [matTooltip]="client.status === 'active' ? 'Desativar' : 'Ativar'">
+                    <button mat-icon-button (click)="$event.stopPropagation(); toggleStatus(client)" [matTooltip]="client.status === 'active' ? 'Desativar' : 'Ativar'">
                       <mat-icon>{{ client.status === 'active' ? 'toggle_on' : 'toggle_off' }}</mat-icon>
                     </button>
-                    <button mat-icon-button (click)="deleteClient(client)" color="warn" matTooltip="Eliminar">
+                    <button mat-icon-button (click)="$event.stopPropagation(); deleteClient(client)" color="warn" matTooltip="Eliminar">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </td>
                 </ng-container>
-                
+
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewClient(row)" class="clickable-row"></tr>
               </table>
@@ -155,18 +155,18 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                   </div>
                   <span class="status" [ngClass]="client.status">{{ getStatusText(client.status) }}</span>
                 </div>
-                
+
                 <div class="card-content">
                   <div class="info-row">
                     <mat-icon>phone</mat-icon>
                     <span>{{ client.phone || 'N/A' }}</span>
                   </div>
-                  
+
                   <div class="info-row">
                     <mat-icon>schedule</mat-icon>
                     <span class="days-left" [ngClass]="getDaysLeftClass(client)">{{ getDaysLeftText(client) }} dias</span>
                   </div>
-                  
+
                   <div class="info-row">
                     <mat-icon>notifications</mat-icon>
                     <div class="notification-icons">
@@ -176,18 +176,18 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
                     </div>
                   </div>
                 </div>
-                
-                <div class="card-actions" (click)="$event.stopPropagation()">
-                  <button mat-icon-button (click)="viewClient(client)" matTooltip="Ver detalhes">
+
+                <div class="card-actions">
+                  <button mat-icon-button (click)="$event.stopPropagation(); viewClient(client)" matTooltip="Ver detalhes">
                     <mat-icon>visibility</mat-icon>
                   </button>
-                  <button mat-icon-button (click)="editClient(client)" matTooltip="Editar">
+                  <button mat-icon-button (click)="$event.stopPropagation(); editClient(client)" matTooltip="Editar">
                     <mat-icon>edit</mat-icon>
                   </button>
-                  <button mat-icon-button (click)="toggleStatus(client)" [matTooltip]="client.status === 'active' ? 'Desativar' : 'Ativar'">
+                  <button mat-icon-button (click)="$event.stopPropagation(); toggleStatus(client)" [matTooltip]="client.status === 'active' ? 'Desativar' : 'Ativar'">
                     <mat-icon>{{ client.status === 'active' ? 'toggle_on' : 'toggle_off' }}</mat-icon>
                   </button>
-                  <button mat-icon-button (click)="deleteClient(client)" color="warn" matTooltip="Eliminar">
+                  <button mat-icon-button (click)="$event.stopPropagation(); deleteClient(client)" color="warn" matTooltip="Eliminar">
                     <mat-icon>delete</mat-icon>
                   </button>
                 </div>
@@ -225,11 +225,11 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
     .notification-icon.enabled { color: #1976d2; }
     .clickable-row { cursor: pointer; }
     .clickable-row:hover { background: #f5f5f5; }
-    
+
     /* Mobile Cards Layout */
     .desktop-table { display: block; }
     .mobile-cards { display: none; }
-    
+
     .client-card {
       background: white;
       border-radius: 12px;
@@ -239,36 +239,36 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    
+
     .client-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    
+
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 12px;
     }
-    
+
     .client-info h3 {
       margin: 0 0 4px 0;
       font-size: 16px;
       font-weight: 600;
       color: #333;
     }
-    
+
     .client-info p {
       margin: 0;
       font-size: 14px;
       color: #666;
     }
-    
+
     .card-content {
       margin-bottom: 12px;
     }
-    
+
     .info-row {
       display: flex;
       align-items: center;
@@ -277,14 +277,14 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       font-size: 14px;
       color: #666;
     }
-    
+
     .info-row mat-icon {
       font-size: 18px;
       width: 18px;
       height: 18px;
       color: #1976d2;
     }
-    
+
     .card-actions {
       display: flex;
       justify-content: flex-end;
@@ -292,7 +292,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       padding-top: 8px;
       border-top: 1px solid #eee;
     }
-    
+
     @media (max-width: 768px) {
       .container { padding: 8px; }
       .header { flex-direction: column; align-items: stretch; gap: 12px; }
@@ -302,58 +302,58 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       .filters { flex-wrap: wrap; justify-content: space-between; }
       .filters mat-form-field { width: calc(50% - 8px); min-width: 120px; }
       .filters button { flex: 1; min-width: 80px; }
-      
+
       /* Switch to mobile layout */
       .desktop-table { display: none; }
       .mobile-cards { display: block; }
-      
+
       .notification-icons { gap: 4px; }
       .notification-icon { font-size: 16px; width: 16px; height: 16px; }
     }
-    
+
     @media (max-width: 480px) {
       .filters mat-form-field { width: 100%; }
       .filters { flex-direction: column; }
       .filters button { width: 100%; margin-bottom: 8px; }
-      
+
       .client-card {
         padding: 12px;
         margin-bottom: 8px;
       }
-      
+
       .client-info h3 {
         font-size: 15px;
       }
-      
+
       .client-info p {
         font-size: 13px;
       }
-      
+
       .info-row {
         font-size: 13px;
         margin-bottom: 6px;
       }
-      
+
       .info-row mat-icon {
         font-size: 16px;
         width: 16px;
         height: 16px;
       }
-      
+
       .days-left { font-size: 11px; padding: 2px 4px; }
       .status { font-size: 10px; padding: 2px 6px; }
     }
-    
+
     /* Estilos globais para diálogos responsivos */
     :host ::ng-deep .responsive-dialog {
       width: 95vw !important;
       max-height: 90vh !important;
     }
-    
+
     :host ::ng-deep .responsive-dialog .mat-mdc-dialog-container {
       padding: 16px !important;
     }
-    
+
     @media (max-width: 768px) {
       :host ::ng-deep .responsive-dialog {
         width: 100vw !important;
@@ -361,7 +361,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
         max-width: none !important;
         max-height: none !important;
       }
-      
+
       :host ::ng-deep .responsive-dialog .mat-mdc-dialog-container {
         padding: 8px !important;
         border-radius: 0 !important;
@@ -384,25 +384,25 @@ export class ClientsSimpleComponent implements OnInit {
   filteredClients = [...this.clients];
   searchTerm = '';
   statusFilter = 'all';
-  
+
   constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {}
-  
+
   ngOnInit(): void {
     this.applyFilter();
   }
-  
+
   applyFilter(): void {
     this.filteredClients = this.clients.filter(client => {
-      const matchesSearch = !this.searchTerm || 
+      const matchesSearch = !this.searchTerm ||
         client.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         client.email.toLowerCase().includes(this.searchTerm.toLowerCase());
-      
+
       const matchesStatus = this.statusFilter === 'all' || client.status === this.statusFilter;
-      
+
       return matchesSearch && matchesStatus;
     });
   }
-  
+
   addClient(): void {
     import('./add-client-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.AddClientDialogComponent, {
@@ -412,7 +412,7 @@ export class ClientsSimpleComponent implements OnInit {
         disableClose: true,
         panelClass: 'responsive-dialog'
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const newClient = {
@@ -426,7 +426,7 @@ export class ClientsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   viewClient(client: any): void {
     import('./view-client-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ViewClientDialogComponent, {
@@ -436,7 +436,7 @@ export class ClientsSimpleComponent implements OnInit {
         data: { client },
         panelClass: 'responsive-dialog'
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result?.action === 'edit') {
           this.editClient(result.client);
@@ -448,7 +448,7 @@ export class ClientsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   editClient(client: any): void {
     import('./edit-client-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.EditClientDialogComponent, {
@@ -458,7 +458,7 @@ export class ClientsSimpleComponent implements OnInit {
         data: { client },
         panelClass: 'responsive-dialog'
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const index = this.clients.findIndex(c => c.id === client.id);
@@ -471,14 +471,14 @@ export class ClientsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   toggleStatus(client: any): void {
     const newStatus = client.status === 'active' ? 'inactive' : 'active';
     client.status = newStatus;
     this.snackBar.open(`${client.name} ${newStatus === 'active' ? 'ativado' : 'desativado'}`, 'Fechar', { duration: 2000 });
     this.applyFilter();
   }
-  
+
   deleteClient(client: any): void {
     import('./confirm-delete-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ConfirmDeleteDialogComponent, {
@@ -487,7 +487,7 @@ export class ClientsSimpleComponent implements OnInit {
         data: { client },
         panelClass: 'responsive-dialog'
       });
-      
+
       dialogRef.afterClosed().subscribe(confirmed => {
         if (confirmed) {
           const index = this.clients.findIndex(c => c.id === client.id);
@@ -500,7 +500,7 @@ export class ClientsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   exportData(): void {
     const csvData = this.filteredClients.map(client => ({
       Nome: client.name,
@@ -508,7 +508,7 @@ export class ClientsSimpleComponent implements OnInit {
       Telefone: client.phone || 'N/A',
       Estado: this.getStatusText(client.status)
     }));
-    
+
     const csvContent = this.convertToCSV(csvData);
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -517,30 +517,30 @@ export class ClientsSimpleComponent implements OnInit {
     a.download = `clientes_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
-    
+
     this.snackBar.open('Dados exportados com sucesso', 'Fechar', { duration: 2000 });
   }
-  
+
   private convertToCSV(data: any[]): string {
     if (!data.length) return '';
-    
+
     const headers = Object.keys(data[0]).join(',');
     const rows = data.map(row => Object.values(row).join(','));
     return [headers, ...rows].join('\n');
   }
-  
+
   refreshData(): void {
     this.snackBar.open('Dados actualizados', 'Fechar', { duration: 1500 });
     this.applyFilter();
   }
-  
+
   clearFilters(): void {
     this.searchTerm = '';
     this.statusFilter = 'all';
     this.applyFilter();
     this.snackBar.open('Filtros limpos', 'Fechar', { duration: 1500 });
   }
-  
+
   getDaysLeft(client: any): number {
     if (!client.subscriptionEnd) return -999;
     const today = new Date();
@@ -548,13 +548,13 @@ export class ClientsSimpleComponent implements OnInit {
     const diffTime = endDate.getTime() - today.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
-  
+
   getDaysLeftText(client: any): string {
     const days = this.getDaysLeft(client);
     if (days < -365) return '--';
     return days.toString();
   }
-  
+
   getDaysLeftClass(client: any): string {
     const days = this.getDaysLeft(client);
     if (days < -365) return 'expired';
@@ -564,18 +564,18 @@ export class ClientsSimpleComponent implements OnInit {
     if (days <= 30) return 'caution';
     return 'safe';
   }
-  
+
   importData(event: any): void {
     const file = event.target.files[0];
     if (!file) return;
-    
+
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const csv = e.target?.result as string;
         const lines = csv.split('\n');
         const headers = lines[0].split(',');
-        
+
         let imported = 0;
         for (let i = 1; i < lines.length; i++) {
           const values = lines[i].split(',');
@@ -593,7 +593,7 @@ export class ClientsSimpleComponent implements OnInit {
             imported++;
           }
         }
-        
+
         this.applyFilter();
         this.snackBar.open(`${imported} clientes importados`, 'Fechar', { duration: 2000 });
       } catch (error) {
@@ -603,7 +603,7 @@ export class ClientsSimpleComponent implements OnInit {
     reader.readAsText(file);
     event.target.value = '';
   }
-  
+
   manageSubscription(client: any): void {
     import('./manage-subscription-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ManageSubscriptionDialogComponent, {
@@ -613,7 +613,7 @@ export class ClientsSimpleComponent implements OnInit {
         data: { client },
         panelClass: 'responsive-dialog'
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result?.action === 'extended') {
           this.snackBar.open(`Subscrição de ${client.name} estendida: ${result.planText}`, 'Fechar', { duration: 3000 });
@@ -626,7 +626,7 @@ export class ClientsSimpleComponent implements OnInit {
       });
     });
   }
-  
+
   viewPayments(client: any): void {
     import('./view-payments-dialog.component').then(m => {
       const dialogRef = this.dialog.open(m.ViewPaymentsDialogComponent, {
@@ -636,7 +636,7 @@ export class ClientsSimpleComponent implements OnInit {
         data: { client },
         panelClass: 'responsive-dialog'
       });
-      
+
       dialogRef.afterClosed().subscribe(result => {
         if (result?.action === 'approved') {
           this.snackBar.open('Pagamento aprovado com sucesso', 'Fechar', { duration: 2000 });

@@ -1,18 +1,17 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDialogModule, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Inject } from '@angular/core';
 
 interface MBWayPayment {
   id: string;
@@ -52,7 +51,7 @@ interface MBWayRequest {
             </mat-option>
           </mat-select>
         </mat-form-field>
-        
+
         <mat-form-field>
           <mat-label>Plano de Subscrição</mat-label>
           <mat-select formControlName="subscriptionPlan" required>
@@ -62,18 +61,18 @@ interface MBWayRequest {
             <mat-option value="1_year">1 Ano - €279.99</mat-option>
           </mat-select>
         </mat-form-field>
-        
+
         <mat-form-field>
           <mat-label>Valor (€)</mat-label>
           <input matInput type="number" formControlName="amount" required min="0" step="0.01">
         </mat-form-field>
-        
+
         <mat-form-field>
           <mat-label>Descrição</mat-label>
-          <textarea matInput formControlName="description" rows="3" 
+          <textarea matInput formControlName="description" rows="3"
                     placeholder="TimeAdministrator - Subscrição 1 Mês"></textarea>
         </mat-form-field>
-        
+
         <div class="mbway-preview">
           <mat-icon>smartphone</mat-icon>
           <div>
@@ -150,7 +149,7 @@ export class MBWayRequestDialogComponent {
     if (this.requestForm.valid) {
       const clientId = this.requestForm.get('clientId')?.value;
       const client = this.clients.find(c => c.id === clientId);
-      
+
       const request: MBWayRequest = {
         clientId,
         clientName: client?.name || '',
@@ -159,7 +158,7 @@ export class MBWayRequestDialogComponent {
         subscriptionPlan: this.requestForm.get('subscriptionPlan')?.value,
         description: this.requestForm.get('description')?.value
       };
-      
+
       this.dialogRef.close(request);
     }
   }
@@ -323,11 +322,11 @@ export class MBWayRequestDialogComponent {
                       <button mat-icon-button (click)="viewPaymentDetails(payment)">
                         <mat-icon>visibility</mat-icon>
                       </button>
-                      <button mat-icon-button (click)="resendMBWayRequest(payment)" 
+                      <button mat-icon-button (click)="resendMBWayRequest(payment)"
                               *ngIf="payment.status === 'failed' || payment.status === 'expired'">
                         <mat-icon>refresh</mat-icon>
                       </button>
-                      <button mat-icon-button (click)="cancelMBWayRequest(payment)" 
+                      <button mat-icon-button (click)="cancelMBWayRequest(payment)"
                               *ngIf="payment.status === 'pending' || payment.status === 'sent'"
                               color="warn">
                         <mat-icon>cancel</mat-icon>
@@ -338,7 +337,7 @@ export class MBWayRequestDialogComponent {
                   <tr mat-header-row *matHeaderRowDef="paymentColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: paymentColumns;"></tr>
                 </table>
-                
+
                 <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
               </mat-card-content>
             </mat-card>
@@ -408,7 +407,7 @@ export class MBWayRequestDialogComponent {
     .header p { margin: 4px 0 0 0; color: #666; }
     .header-actions { display: flex; gap: 12px; }
     .tab-content { padding: 24px 0; }
-    
+
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .stat-card { transition: transform 0.2s; }
     .stat-card:hover { transform: translateY(-2px); }
@@ -421,27 +420,27 @@ export class MBWayRequestDialogComponent {
     .stat-value { font-size: 32px; font-weight: 600; color: #1976d2; margin-bottom: 8px; }
     .stat-details { display: flex; flex-direction: column; gap: 4px; }
     .success { color: #2e7d32; }
-    
+
     .table-card .mat-card-header { display: flex; justify-content: space-between; align-items: center; }
     .payments-table, .history-table { width: 100%; }
     .client-info { display: flex; flex-direction: column; }
     .client-name { font-weight: 500; }
     .client-phone { font-size: 12px; color: #666; }
-    
+
     .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
     .status-badge.pending { background: #fff3e0; color: #f57c00; }
     .status-badge.sent { background: #e3f2fd; color: #1976d2; }
     .status-badge.confirmed { background: #e8f5e8; color: #2e7d32; }
     .status-badge.failed { background: #ffebee; color: #c62828; }
     .status-badge.expired { background: #f5f5f5; color: #666; }
-    
+
     .expires-info { display: flex; flex-direction: column; }
     .expires-countdown { font-size: 11px; color: #666; }
     .expires-info.warning { color: #f57c00; }
     .expires-info.danger { color: #d32f2f; }
-    
+
     code { background: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-size: 12px; }
-    
+
     @media (max-width: 768px) {
       .container { padding: 16px; }
       .header { flex-direction: column; gap: 16px; }
@@ -452,7 +451,7 @@ export class MBWayRequestDialogComponent {
 export class MBWayPaymentsComponent implements OnInit {
   selectedTab = 0;
   statusFilter = '';
-  
+
   stats = {
     pending: 8,
     sent: 15,
@@ -464,7 +463,7 @@ export class MBWayPaymentsComponent implements OnInit {
 
   paymentColumns = ['client', 'amount', 'plan', 'reference', 'status', 'expires', 'actions'];
   historyColumns = ['date', 'client', 'amount', 'status', 'duration'];
-  
+
   payments: MBWayPayment[] = [];
   filteredPayments: MBWayPayment[] = [];
   allPayments: MBWayPayment[] = [];
@@ -484,7 +483,7 @@ export class MBWayPaymentsComponent implements OnInit {
 
   loadMockData() {
     const now = new Date();
-    
+
     this.payments = [
       {
         id: '1',
@@ -558,7 +557,7 @@ export class MBWayPaymentsComponent implements OnInit {
     const now = new Date();
     const timeLeft = expiresAt.getTime() - now.getTime();
     const hoursLeft = timeLeft / (1000 * 60 * 60);
-    
+
     if (hoursLeft < 2) return 'danger';
     if (hoursLeft < 6) return 'warning';
     return '';
@@ -567,12 +566,12 @@ export class MBWayPaymentsComponent implements OnInit {
   getTimeRemaining(expiresAt: Date): string {
     const now = new Date();
     const timeLeft = expiresAt.getTime() - now.getTime();
-    
+
     if (timeLeft <= 0) return 'Expirado';
-    
+
     const hours = Math.floor(timeLeft / (1000 * 60 * 60));
     const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes}m`;
     }
@@ -581,14 +580,14 @@ export class MBWayPaymentsComponent implements OnInit {
 
   getPaymentDuration(payment: MBWayPayment): string {
     if (!payment.confirmedAt) return '-';
-    
+
     const duration = payment.confirmedAt.getTime() - payment.createdAt.getTime();
     const minutes = Math.floor(duration / (1000 * 60));
-    
+
     if (minutes < 60) {
       return `${minutes}m`;
     }
-    
+
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return `${hours}h ${remainingMinutes}m`;
@@ -596,7 +595,10 @@ export class MBWayPaymentsComponent implements OnInit {
 
   createMBWayRequest() {
     const dialogRef = this.dialog.open(MBWayRequestDialogComponent, {
-      width: '500px',
+      width: '95vw',
+      maxWidth: '500px',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
       data: {}
     });
 
@@ -641,7 +643,7 @@ export class MBWayPaymentsComponent implements OnInit {
   resendMBWayRequest(payment: MBWayPayment) {
     payment.status = 'pending';
     payment.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    
+
     setTimeout(() => {
       payment.status = 'sent';
       payment.sentAt = new Date();
@@ -674,9 +676,9 @@ export class MBWayPaymentsComponent implements OnInit {
         payment.status = 'confirmed';
         payment.confirmedAt = new Date();
       }
-      
+
       // Check for expired payments
-      if ((payment.status === 'pending' || payment.status === 'sent') && 
+      if ((payment.status === 'pending' || payment.status === 'sent') &&
           new Date() > payment.expiresAt) {
         payment.status = 'expired';
       }

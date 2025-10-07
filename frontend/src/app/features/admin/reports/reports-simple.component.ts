@@ -958,9 +958,10 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     // Import the subscription details dialog component
     import('../subscriptions/subscription-details-dialog.component').then(module => {
       const dialogRef = this.dialog.open(module.SubscriptionDetailsDialogComponent, {
-        width: '90vw',
+        width: '95vw',
         maxWidth: '1200px',
-        height: '80vh',
+        maxHeight: '90vh',
+        panelClass: 'responsive-dialog',
         data: {
           id: item.subscriptionId,
           clientId: item.clientId,
@@ -1040,9 +1041,10 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     };
 
     this.dialog.open(PeriodComparisonModalComponent, {
-      width: '90vw',
+      width: '95vw',
       maxWidth: '1000px',
-      height: '80vh',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
       data: dialogData
     });
   }
@@ -1051,7 +1053,8 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     this.dialog.open(CohortAnalysisModalComponent, {
       width: '95vw',
       maxWidth: '1400px',
-      height: '90vh',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
       data: {}
     });
   }
@@ -1201,9 +1204,10 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
     };
 
     this.dialog.open(DetailedReportModalComponent, {
-      width: '90vw',
+      width: '95vw',
       maxWidth: '1200px',
-      height: '80vh',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
       data: dialogData
     });
   }
@@ -1233,8 +1237,10 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
 
   scheduleReport() {
     const dialogRef = this.dialog.open(ScheduleReportModalComponent, {
-      width: '600px',
-      maxHeight: '90vh'
+      width: '95vw',
+      maxWidth: '600px',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog'
     });
 
     dialogRef.afterClosed().subscribe(result => {
