@@ -342,7 +342,7 @@ import { ScheduleReportModalComponent } from './schedule-report-modal.component'
                 <ng-container matColumnDef="client">
                   <th mat-header-cell *matHeaderCellDef>Cliente</th>
                   <td mat-cell *matCellDef="let item">
-                    <button mat-button class="client-link" (click)="openSubscriptionDetails(item)">
+                    <button mat-button class="client-link" (click)="$event.stopPropagation(); openSubscriptionDetails(item)">
                       {{ item.clientName }}
                     </button>
                   </td>
@@ -559,6 +559,9 @@ import { ScheduleReportModalComponent } from './schedule-report-modal.component'
     .status-badge.completed { background: #e8f5e8; color: #2e7d32; }
     .status-badge.pending { background: #fff3e0; color: #f57c00; }
     .status-badge.failed { background: #ffebee; color: #c62828; }
+    .client-link { width: 100%; text-align: left; justify-content: flex-start; padding: 8px 12px; background: transparent; border: none; color: #1976d2; cursor: pointer; font-size: 14px; font-weight: 500; }
+    .client-link:hover { background: rgba(25, 118, 210, 0.04); }
+    .client-link mat-icon { display: none; }
     .alerts-section { margin-bottom: 24px; }
     .alert-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 8px; margin-bottom: 8px; }
     .alert-item.warning { background: #fff3e0; border-left: 4px solid #ff9800; }
