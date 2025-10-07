@@ -737,8 +737,8 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
         }, 100);
       },
       error: (error) => {
-        console.error('Erro ao carregar dados:', error);
-        // Usar dados mock em caso de erro
+        console.log('Backend não disponível, usando dados mock');
+        // Usar dados mock em caso de erro (backend não disponível)
         this.loadMockData();
         this.loading = false;
         this.initCharts();
