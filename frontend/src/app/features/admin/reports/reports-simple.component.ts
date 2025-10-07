@@ -886,31 +886,49 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   updateCharts(data: ReportData) {
-    // Destruir gráficos existentes antes de actualizar
+    // Destruir gráficos existentes de forma segura
     if (this.revenueChart) {
       this.revenueChart.destroy();
+      this.revenueChart = undefined;
     }
     if (this.monthlyChart) {
       this.monthlyChart.destroy();
+      this.monthlyChart = undefined;
     }
 
-    // Recriar gráficos com novos dados
+    // Pequena pausa para garantir que os gráficos foram destruídos
     setTimeout(() => {
-      this.createRevenueChart();
-      this.createMonthlyChart();
-
-      if (this.revenueChart && data.revenueByPlan) {
-        this.revenueChart.data.labels = data.revenueByPlan.map(item => item.plan);
-        this.revenueChart.data.datasets[0].data = data.revenueByPlan.map(item => item.revenue);
-        this.revenueChart.update();
+      // Recriar gráficos apenas se os elementos do DOM existirem
+      if (this.revenueChartRef?.nativeElement) {
+        this.createRevenueChart();
+      }
+      if (this.monthlyChartRef?.nativeElement) {
+        this.createMonthlyChart();
       }
 
-      if (this.monthlyChart && data.monthlyRevenue) {
-        this.monthlyChart.data.labels = data.monthlyRevenue.map(item => item.month);
-        this.monthlyChart.data.datasets[0].data = data.monthlyRevenue.map(item => item.revenue);
-        this.monthlyChart.update();
-      }
-    }, 100);
+      // Atualizar dados apenas se os gráficos foram criados com sucesso
+      setTimeout(() => {
+        if (this.revenueChart && data.revenueByPlan) {
+          try {
+            this.revenueChart.data.labels = data.revenueByPlan.map(item => item.plan);
+            this.revenueChart.data.datasets[0].data = data.revenueByPlan.map(item => item.revenue);
+            this.revenueChart.update('none'); // Evitar animações que podem causar problemas
+          } catch (error) {
+            console.warn('Erro ao atualizar gráfico de receita:', error);
+          }
+        }
+
+        if (this.monthlyChart && data.monthlyRevenue) {
+          try {
+            this.monthlyChart.data.labels = data.monthlyRevenue.map(item => item.month);
+            this.monthlyChart.data.datasets[0].data = data.monthlyRevenue.map(item => item.revenue);
+            this.monthlyChart.update('none'); // Evitar animações que podem causar problemas
+          } catch (error) {
+            console.warn('Erro ao atualizar gráfico mensal:', error);
+          }
+        }
+      }, 50);
+    }, 150);
   }
 
   toggleChartType(chartType: 'revenue' | 'monthly') {
@@ -979,7 +997,8 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
           status: item.daysLeft > 0 ? 'active' : 'expired',
           paymentMethod: 'stripe',
           autoRenew: false,
-          notes: `Subscrição ${item.plan} - Valor: ${item.value}€`
+          notes: `Subscrição ${item.plan} - Valor: ${item.value}€`,
+          payments: [] // Adicionar array vazio de payments para evitar erro
         }
       });
 
