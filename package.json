@@ -10,7 +10,7 @@
     "start:local": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "start:backend": "cd backend && npm run start:dev",
     "start:frontend": "cd frontend && ng serve",
-    "build": "cd backend && npm run build",
+    "build": "npm run install:backend && cd backend && npm run build",
     "heroku-postbuild": "npm run build",
     "stop": "docker-compose down",
     "reset": "docker-compose down -v --rmi all",
