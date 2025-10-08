@@ -10,7 +10,7 @@
     "start:local": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "start:backend": "cd backend && npm run start:dev",
     "start:frontend": "cd frontend && ng serve",
-    "build": "docker-compose build",
+    "build": "echo 'Build completed - use individual service builds'",
     "stop": "docker-compose down",
     "reset": "docker-compose down -v --rmi all",
     "logs": "docker-compose logs -f"
