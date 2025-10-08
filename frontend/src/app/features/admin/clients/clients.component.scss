@@ -83,6 +83,10 @@ mat-form-field {
   gap: 8px;
 }
 
+.file-input {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .dialog-header {
     margin: -24px -16px 16px -16px;
