@@ -186,6 +186,7 @@ import { MatTableModule } from '@angular/material/table';
 
     .content-container {
       max-width: 900px;
+      overflow-x: hidden;
     }
 
     .summary-card {

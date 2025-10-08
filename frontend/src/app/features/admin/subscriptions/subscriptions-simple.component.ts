@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -13,6 +12,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 
 @Component({
   selector: 'app-subscriptions-simple',
@@ -726,7 +726,7 @@ export class SubscriptionsSimpleComponent implements OnInit {
     }
 
     import('./expiry-period-dialog.component').then(m => {
-      this.dialog.open(m.ExpiryPeriodDialogComponent, {
+      const dialogRef = this.dialog.open(m.ExpiryPeriodDialogComponent, {
         width: '95vw',
         maxWidth: '900px',
         maxHeight: '90vh',
@@ -734,6 +734,15 @@ export class SubscriptionsSimpleComponent implements OnInit {
         data: {
           period: period,
           subscriptions: filteredSubs
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result?.action === 'renew') {
+          this.renewSubscription(result.subscription);
+        } else if (result?.action === 'view_client') {
+          // Aqui poderia navegar para a página do cliente
+          this.snackBar.open(`Ver cliente: ${result.subscription.clientName}`, 'Fechar', { duration: 2000 });
         }
       });
     });
