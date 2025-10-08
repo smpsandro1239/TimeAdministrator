@@ -37,7 +37,7 @@ import { AuthService } from '../../../services/auth.service';
       <mat-card class="register-card">
         <mat-card-header>
           <div class="logo-section">
-            <mat-icon class="app-logo">person_add</mat-icon>
+            <mat-icon class="app-logo">how_to_reg</mat-icon>
             <div class="title-section">
               <mat-card-title>Criar Conta</mat-card-title>
               <mat-card-subtitle>Junte-se ao TimeAdministrator</mat-card-subtitle>
