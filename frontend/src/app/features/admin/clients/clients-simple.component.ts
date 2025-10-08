@@ -4,20 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 
 @Component({
   selector: 'app-clients-simple',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule, MatSnackBarModule, MatDialogModule, MatSelectModule, MatTooltipModule, FormsModule, LayoutComponent],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule, MatSnackBarModule, MatDialogModule, MatSelectModule, MatTooltipModule, MatProgressSpinnerModule, FormsModule, LayoutComponent],
   template: `
     <app-layout>
       <div class="container">
@@ -33,7 +34,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
         </div>
 
         <mat-card>
-          <mat-card-content>
+          <mat-card-content *ngIf="!loading; else loadingTemplate">
             <div class="toolbar">
               <div class="search-bar">
                 <mat-form-field appearance="outline">
@@ -195,6 +196,13 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
               </div>
             </div>
           </mat-card-content>
+
+          <ng-template #loadingTemplate>
+            <mat-card-content class="loading-content">
+              <mat-spinner diameter="40"></mat-spinner>
+              <p>A carregar clientes...</p>
+            </mat-card-content>
+          </ng-template>
         </mat-card>
       </div>
     </app-layout>
@@ -345,6 +353,21 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
       .status { font-size: 10px; padding: 2px 6px; }
     }
 
+    .loading-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      text-align: center;
+    }
+
+    .loading-content p {
+      margin-top: 16px;
+      color: #666;
+      font-size: 16px;
+    }
+
     /* Estilos globais para diálogos responsivos */
     :host ::ng-deep .responsive-dialog {
       width: 95vw !important;
@@ -371,6 +394,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
   `]
 })
 export class ClientsSimpleComponent implements OnInit {
+  loading = false;
   displayedColumns: string[] = ['name', 'email', 'phone', 'status', 'notifications', 'daysLeft', 'actions'];
   clients = [
     { id: 1, name: 'João Silva', email: 'joao@email.com', phone: '912345678', status: 'active', subscriptionEnd: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: true, telegram: false } },
@@ -393,7 +417,12 @@ export class ClientsSimpleComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.applyFilter();
+    this.loading = true;
+    // Simular carregamento de dados
+    setTimeout(() => {
+      this.applyFilter();
+      this.loading = false;
+    }, 1500);
   }
 
   applyFilter(): void {

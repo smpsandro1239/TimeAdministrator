@@ -6,7 +6,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -17,6 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Chart, registerables } from 'chart.js';
 import { ExpiringSubscription, RecentPayment, ReportData, ReportsService, RevenueByPlan } from '../../../services/reports.service';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { CohortAnalysisModalComponent } from './cohort-analysis-modal.component';
 import { DetailedReportModalComponent } from './detailed-report-modal.component';
 import { PeriodComparisonModalComponent } from './period-comparison-modal.component';
@@ -707,7 +707,14 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngAfterViewInit() {
-    // Charts will be initialized after data loading
+    setTimeout(() => {
+      if (this.revenueChartRef?.nativeElement) {
+        this.createRevenueChart();
+      }
+      if (this.monthlyChartRef?.nativeElement) {
+        this.createMonthlyChart();
+      }
+    }, 100);
   }
 
   updateData() {

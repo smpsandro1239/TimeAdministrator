@@ -4,11 +4,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { RenewSubscriptionDialogComponent } from './renew-subscription-dialog.component';
 
 interface SubscriptionData {
@@ -564,7 +564,7 @@ export class SubscriptionDetailsDialogComponent {
   }
 
   getExpiryClass(endDate: Date): string {
-    if (!endDate) return 'expiry-normal';
+    if (!endDate || !(endDate instanceof Date) || isNaN(endDate.getTime())) return 'expiry-normal';
 
     const now = new Date();
     const diffTime = endDate.getTime() - now.getTime();
