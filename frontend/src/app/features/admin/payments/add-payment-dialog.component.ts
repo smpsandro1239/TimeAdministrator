@@ -251,10 +251,76 @@ import { map, startWith } from 'rxjs/operators';
       .dialog-actions {
         flex-direction: column;
         margin: 16px -16px -24px -16px;
+        padding: 16px;
       }
 
       .dialog-actions button {
         width: 100%;
+        margin-bottom: 8px;
+      }
+
+      .dialog-actions button:last-child {
+        margin-bottom: 0;
+      }
+
+      .form-section {
+        padding: 16px;
+      }
+
+      .section-title {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dialog-header {
+        margin: -16px -12px 12px -12px;
+        padding: 12px;
+      }
+
+      .header-content {
+        gap: 8px;
+      }
+
+      .title-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+
+      .title-section h2 {
+        font-size: 18px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+      }
+
+      .form {
+        gap: 16px;
+      }
+
+      .form-section {
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      .section-title {
+        margin-bottom: 12px;
+        font-size: 13px;
+      }
+
+      .section-title mat-icon {
+        font-size: 16px;
+      }
+
+      .form-row {
+        gap: 12px;
+      }
+
+      .dialog-actions {
+        margin: 12px -12px -16px -12px;
+        padding: 12px;
       }
     }
   `]
