@@ -20,5 +20,10 @@
     "paths": {
       "@/*": ["src/*"]
     }
-  }
+  },
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/database/memory-db.ts",
+    "src/database/seed-memory.ts"
+  ]
 }
