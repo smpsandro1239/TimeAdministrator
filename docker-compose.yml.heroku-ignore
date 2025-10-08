@@ -1,0 +1,91 @@
+
+
+services:
+  # Base de dados MongoDB
+  mongodb:
+    image: mongo:7.0
+    container_name: timeadmin-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: timeadministrator
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - timeadmin-network
+
+  # Backend NestJS
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: timeadmin-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/timeadministrator?authSource=admin
+      JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
+      JWT_EXPIRES_IN: 7d
+      FRONTEND_URL: http://localhost:4200
+      # Configurações de email (ajustar conforme necessário)
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: your-email@gmail.com
+      SMTP_PASS: your-app-password
+      SMTP_FROM: noreply@timeadministrator.com
+      # Configurações Twilio (ajustar conforme necessário)
+      TWILIO_ACCOUNT_SID: your-twilio-account-sid
+      TWILIO_AUTH_TOKEN: your-twilio-auth-token
+      TWILIO_WHATSAPP_FROM: whatsapp:+14155238886
+      # Configurações Stripe (ajustar conforme necessário)
+      STRIPE_PUBLISHABLE_KEY: pk_test_your-stripe-publishable-key
+      STRIPE_SECRET_KEY: sk_test_your-stripe-secret-key
+      STRIPE_WEBHOOK_SECRET: whsec_your-stripe-webhook-secret
+      LOG_LEVEL: info
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    volumes:
+      - backend_logs:/app/logs
+    networks:
+      - timeadmin-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/v1/auth/profile"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Angular
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: timeadmin-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - timeadmin-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mongodb_data:
+    driver: local
+  backend_logs:
+    driver: local
+
+networks:
+  timeadmin-network:
+    driver: bridge
