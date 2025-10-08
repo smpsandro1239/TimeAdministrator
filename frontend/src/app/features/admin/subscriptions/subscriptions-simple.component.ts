@@ -811,32 +811,35 @@ export class SubscriptionsSimpleComponent implements OnInit {
   }
 
   renewSubscription(subscription: any): void {
-    import('./renew-subscription-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.RenewSubscriptionDialogComponent, {
+    // Criar objeto cliente baseado nos dados da subscrição
+    const clientData = {
+      id: subscription.id,
+      name: subscription.clientName,
+      email: `${subscription.clientName.toLowerCase().replace(' ', '.')}@email.com`,
+      subscriptionEnd: subscription.endDate,
+      status: subscription.status === 'active' ? 'active' : 'inactive'
+    };
+
+    import('../clients/manage-subscription-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.ManageSubscriptionDialogComponent, {
         width: '95vw',
-        maxWidth: '500px',
+        maxWidth: '800px',
         maxHeight: '90vh',
         panelClass: 'responsive-dialog',
-        data: {
-          ...subscription,
-          clientEmail: `${subscription.clientName.toLowerCase().replace(' ', '.')}@email.com`
-        }
+        data: { client: clientData }
       });
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const index = this.subscriptions.findIndex(s => s.id === subscription.id);
           if (index !== -1) {
-            this.subscriptions[index] = {
-              ...this.subscriptions[index],
-              ...result,
-              value: result.price,
-              startDate: result.startDate,
-              endDate: result.endDate,
-              status: result.status
-            };
-            this.applyFilter();
-            this.snackBar.open(`Subscrição de ${subscription.clientName} renovada`, 'Fechar', { duration: 3000 });
+            // Atualizar subscrição baseado no resultado
+            if (result.action === 'extended' || result.action === 'create') {
+              this.subscriptions[index].endDate = result.client.subscriptionEnd;
+              this.subscriptions[index].status = 'active';
+              this.applyFilter();
+              this.snackBar.open(`Subscrição de ${subscription.clientName} ${result.action === 'extended' ? 'estendida' : 'criada'}`, 'Fechar', { duration: 3000 });
+            }
           }
         }
       });
