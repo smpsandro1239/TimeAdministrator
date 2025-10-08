@@ -16,7 +16,8 @@
              #fileInput
              (change)="onFileSelected($event)"
              accept=".xlsx,.xls,.csv"
-             style="display: none;">
+             class="file-input"
+             aria-label="Selecionar arquivo Excel para importação">
       <button mat-stroked-button color="accent" (click)="fileInput.click()">
         <mat-icon>upload_file</mat-icon>
         Importar Excel
