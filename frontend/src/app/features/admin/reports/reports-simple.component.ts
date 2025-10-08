@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -690,7 +691,8 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
 
   constructor(
     private reportsService: ReportsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private dialogConfig: DialogConfigService
   ) {
     Chart.register(...registerables);
   }
@@ -1062,23 +1064,23 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       ]
     };
 
-    this.dialog.open(PeriodComparisonModalComponent, {
-      width: '95vw',
-      maxWidth: '1000px',
-      maxHeight: '90vh',
-      panelClass: 'responsive-dialog',
-      data: dialogData
-    });
+    this.dialog.open(
+      PeriodComparisonModalComponent,
+      this.dialogConfig.getResponsiveConfig({
+        maxWidth: '1000px',
+        data: dialogData
+      })
+    );
   }
 
   showCohortAnalysis() {
-    this.dialog.open(CohortAnalysisModalComponent, {
-      width: '95vw',
-      maxWidth: '1400px',
-      maxHeight: '90vh',
-      panelClass: 'responsive-dialog',
-      data: {}
-    });
+    this.dialog.open(
+      CohortAnalysisModalComponent,
+      this.dialogConfig.getResponsiveConfig({
+        maxWidth: '1400px',
+        data: {}
+      })
+    );
   }
 
   getDaysClass(days: number): string {

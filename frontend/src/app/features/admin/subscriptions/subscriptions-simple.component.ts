@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -558,7 +559,11 @@ export class SubscriptionsSimpleComponent implements OnInit {
   statusFilter = 'all';
   planFilter = 'all';
 
-  constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private dialogConfig: DialogConfigService
+  ) {}
 
   ngOnInit(): void {
     this.checkExpiredSubscriptions();
@@ -638,18 +643,17 @@ export class SubscriptionsSimpleComponent implements OnInit {
 
   keepActive(subscription: any): void {
     import('../../../shared/components/confirm-dialog/confirm-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.ConfirmDialogComponent, {
-        width: '95vw',
-        maxWidth: '400px',
-        maxHeight: '90vh',
-        panelClass: 'responsive-dialog',
-        data: {
-          title: 'Manter Subscrição Ativa',
-          message: `Deseja manter ${subscription.clientName} ativo mesmo com a subscrição expirada? Será adicionado 1 mês.`,
-          confirmText: 'Manter Ativo',
-          cancelText: 'Cancelar'
-        }
-      });
+      const dialogRef = this.dialog.open(
+        m.ConfirmDialogComponent,
+        this.dialogConfig.getResponsiveConfig({
+          data: {
+            title: 'Manter Subscrição Ativa',
+            message: `Deseja manter ${subscription.clientName} ativo mesmo com a subscrição expirada? Será adicionado 1 mês.`,
+            confirmText: 'Manter Ativo',
+            cancelText: 'Cancelar'
+          }
+        })
+      );
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {

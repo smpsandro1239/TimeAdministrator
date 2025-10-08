@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -459,7 +460,8 @@ export class SubscriptionDetailsDialogComponent {
   constructor(
     private dialogRef: MatDialogRef<SubscriptionDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: SubscriptionData,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private dialogConfig: DialogConfigService
   ) {}
 
   close() {
@@ -472,19 +474,18 @@ export class SubscriptionDetailsDialogComponent {
   }
 
   renewSubscription() {
-    const dialogRef = this.dialog.open(RenewSubscriptionDialogComponent, {
-      width: '95vw',
-      maxWidth: '600px',
-      maxHeight: '90vh',
-      panelClass: 'responsive-dialog',
-      data: {
-        subscriptionId: this.data.id,
-        clientName: this.data.clientName,
-        currentPlan: this.data.plan,
-        currentPrice: this.data.price,
-        endDate: this.data.endDate
-      }
-    });
+    const dialogRef = this.dialog.open(
+      RenewSubscriptionDialogComponent,
+      this.dialogConfig.getResponsiveConfig({
+        data: {
+          subscriptionId: this.data.id,
+          clientName: this.data.clientName,
+          currentPlan: this.data.plan,
+          currentPrice: this.data.price,
+          endDate: this.data.endDate
+        }
+      })
+    );
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

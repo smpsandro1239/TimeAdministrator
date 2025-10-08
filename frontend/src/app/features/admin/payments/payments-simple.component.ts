@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -398,7 +399,11 @@ export class PaymentsSimpleComponent implements OnInit {
   statusFilter = 'all';
   methodFilter = 'all';
 
-  constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private dialogConfig: DialogConfigService
+  ) {}
 
   ngOnInit(): void {
     this.applyFilter();
@@ -449,13 +454,10 @@ export class PaymentsSimpleComponent implements OnInit {
 
   addPayment(): void {
     import('./add-payment-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.AddPaymentDialogComponent, {
-        width: '95vw',
-        maxWidth: '500px',
-        maxHeight: '90vh',
-        disableClose: true,
-        panelClass: 'responsive-dialog'
-      });
+      const dialogRef = this.dialog.open(
+        m.AddPaymentDialogComponent,
+        this.dialogConfig.getResponsiveConfig({ disableClose: true })
+      );
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
@@ -469,13 +471,10 @@ export class PaymentsSimpleComponent implements OnInit {
 
   viewPayment(payment: any): void {
     import('./view-payment-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.ViewPaymentDialogComponent, {
-        width: '95vw',
-        maxWidth: '600px',
-        maxHeight: '90vh',
-        data: payment,
-        panelClass: 'responsive-dialog'
-      });
+      const dialogRef = this.dialog.open(
+        m.ViewPaymentDialogComponent,
+        this.dialogConfig.getResponsiveConfig({ maxWidth: '600px', data: payment })
+      );
 
       dialogRef.afterClosed().subscribe(result => {
         if (result?.action === 'approve') {

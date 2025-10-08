@@ -16,20 +16,20 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
-import { 
-  NotificationsService, 
-  NotificationTemplate, 
-  NotificationHistory, 
+import {
+  NotificationsService,
+  NotificationTemplate,
+  NotificationHistory,
   NotificationStats,
-  NotificationSchedule 
+  NotificationSchedule
 } from '../../../services/notifications.service';
 
 @Component({
   selector: 'app-notifications',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, MatCardModule, MatButtonModule, MatIconModule, 
-    MatTabsModule, MatTableModule, MatFormFieldModule, 
+    CommonModule, FormsModule, MatCardModule, MatButtonModule, MatIconModule,
+    MatTabsModule, MatTableModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatSlideToggleModule, MatDialogModule,
     MatSnackBarModule, MatProgressSpinnerModule, MatTooltipModule, LayoutComponent
   ],
@@ -174,7 +174,7 @@ import {
                           </div>
                         </div>
                         <div class="schedule-actions">
-                          <mat-slide-toggle 
+                          <mat-slide-toggle
                             [checked]="schedule.isActive"
                             (change)="toggleSchedule(schedule.id, $event.checked)">
                           </mat-slide-toggle>
@@ -226,7 +226,7 @@ import {
                       </div>
                     </div>
                     <div class="template-actions">
-                      <mat-slide-toggle 
+                      <mat-slide-toggle
                         [checked]="template.isActive"
                         (change)="toggleTemplate(template.id, $event.checked)"
                         matTooltip="Activar/Desactivar template">
@@ -347,8 +347,8 @@ import {
                         <button mat-icon-button (click)="viewNotificationDetails(notification)" matTooltip="Ver detalhes">
                           <mat-icon>visibility</mat-icon>
                         </button>
-                        <button mat-icon-button 
-                                *ngIf="notification.status === 'failed'" 
+                        <button mat-icon-button
+                                *ngIf="notification.status === 'failed'"
                                 (click)="resendNotification(notification)"
                                 matTooltip="Reenviar">
                           <mat-icon>refresh</mat-icon>
@@ -375,7 +375,7 @@ import {
                         {{ getStatusText(notification.status) }}
                       </span>
                     </div>
-                    
+
                     <div class="notification-card-details">
                       <div class="notification-card-detail">
                         <div class="notification-card-label">Destinatário</div>
@@ -389,13 +389,13 @@ import {
                         <div class="notification-card-value">{{ notification.sentAt | date:'dd/MM/yyyy HH:mm' }}</div>
                       </div>
                     </div>
-                    
+
                     <div class="notification-card-actions">
                       <button mat-stroked-button (click)="viewNotificationDetails(notification)">
                         <mat-icon>visibility</mat-icon>
                         Ver
                       </button>
-                      <button mat-stroked-button color="primary" *ngIf="notification.status === 'failed'" 
+                      <button mat-stroked-button color="primary" *ngIf="notification.status === 'failed'"
                               (click)="resendNotification(notification)">
                         <mat-icon>refresh</mat-icon>
                         Reenviar
@@ -430,7 +430,7 @@ import {
                         <mat-card-subtitle>{{ schedule.type === 'email' ? 'Email' : 'WhatsApp' }}</mat-card-subtitle>
                       </div>
                     </div>
-                    <mat-slide-toggle 
+                    <mat-slide-toggle
                       [checked]="schedule.isActive"
                       (change)="toggleSchedule(schedule.id, $event.checked)">
                     </mat-slide-toggle>
@@ -554,7 +554,7 @@ import {
                       </div>
                       <mat-slide-toggle [checked]="true"></mat-slide-toggle>
                     </div>
-                    
+
                     <div class="setting-item">
                       <div class="setting-info">
                         <div class="setting-title">Notificações de Boas-vindas</div>
@@ -562,7 +562,7 @@ import {
                       </div>
                       <mat-slide-toggle [checked]="true"></mat-slide-toggle>
                     </div>
-                    
+
                     <div class="setting-item">
                       <div class="setting-info">
                         <div class="setting-title">Relatórios de Entrega</div>
@@ -586,7 +586,7 @@ import {
     .header p { margin: 4px 0 0 0; color: #666; }
     .header-actions { display: flex; gap: 12px; }
     .tab-content { padding: 24px 0; }
-    
+
     /* Stats Grid */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .stat-card { transition: transform 0.2s; }
@@ -600,14 +600,14 @@ import {
     .success { color: #2e7d32; }
     .error { color: #c62828; }
     .rate { color: #666; font-size: 14px; }
-    
+
     .stat-card.email { border-left: 4px solid #1976d2; }
     .stat-card.whatsapp { border-left: 4px solid #25d366; }
     .stat-card.total { border-left: 4px solid #9c27b0; }
-    
+
     /* Dashboard Grid */
     .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-    
+
     /* Notification List */
     .notification-list { max-height: 400px; overflow-y: auto; }
     .notification-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #e0e0e0; }
@@ -619,7 +619,7 @@ import {
     .notification-title { font-weight: 500; margin-bottom: 4px; }
     .notification-recipient { color: #666; font-size: 14px; margin-bottom: 2px; }
     .notification-time { color: #999; font-size: 12px; }
-    
+
     /* Schedule List */
     .schedule-list { max-height: 400px; overflow-y: auto; }
     .schedule-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e0e0e0; }
@@ -629,7 +629,7 @@ import {
     .schedule-details .frequency { font-size: 12px; }
     .schedule-details .time { color: #666; font-size: 14px; }
     .schedule-next { color: #999; font-size: 12px; }
-    
+
     /* Templates */
     .templates-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
     .templates-filters { display: flex; gap: 16px; }
@@ -646,7 +646,7 @@ import {
     .template-variables { font-size: 14px; }
     .variables-list { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px; }
     .variable-chip { background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 12px; }
-    
+
     /* History */
     .history-filters { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; }
     .history-table { overflow-x: auto; }
@@ -654,7 +654,7 @@ import {
     .recipient-info { }
     .recipient-name { font-weight: 500; }
     .recipient-contact { color: #666; font-size: 12px; }
-    
+
     /* Schedules */
     .schedules-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
     .schedules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 16px; }
@@ -667,7 +667,7 @@ import {
     .schedule-details { display: flex; flex-direction: column; gap: 8px; }
     .schedule-details > div { display: flex; align-items: center; gap: 8px; }
     .schedule-details mat-icon { font-size: 16px; width: 16px; height: 16px; color: #666; }
-    
+
     /* Configuration */
     .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .config-card { transition: transform 0.2s; }
@@ -677,30 +677,30 @@ import {
     .status-indicator.connected { color: #2e7d32; }
     .status-indicator.disconnected { color: #c62828; }
     .config-details p { margin: 4px 0; color: #666; }
-    
+
     .notification-settings { }
     .settings-list { display: flex; flex-direction: column; gap: 16px; }
     .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
     .setting-title { font-weight: 500; margin-bottom: 4px; }
     .setting-description { color: #666; font-size: 14px; }
-    
+
     /* Status Chips */
     .status-chip { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
     .status-chip.delivered { background: #e8f5e8; color: #2e7d32; }
     .status-chip.failed { background: #ffebee; color: #c62828; }
     .status-chip.pending { background: #fff3e0; color: #f57c00; }
     .status-chip.sent { background: #e3f2fd; color: #1976d2; }
-    
+
     .frequency-chip { background: #f5f5f5; color: #666; padding: 4px 8px; border-radius: 12px; font-size: 12px; }
-    
+
     /* Empty States */
     .empty-state { text-align: center; padding: 48px 24px; color: #666; }
     .empty-state mat-icon { font-size: 48px; width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5; }
-    
+
     /* Mobile Cards */
     .mobile-cards { display: none; }
     .desktop-table { display: block; }
-    
+
     .notification-card {
       border: 1px solid #e0e0e0;
       border-radius: 12px;
@@ -709,14 +709,14 @@ import {
       background: white;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    
+
     .notification-card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
     }
-    
+
     .notification-card-type {
       display: flex;
       align-items: center;
@@ -724,40 +724,40 @@ import {
       font-weight: 600;
       color: #333;
     }
-    
+
     .notification-card-type mat-icon.email { color: #1976d2; }
     .notification-card-type mat-icon.whatsapp { color: #25d366; }
-    
+
     .notification-card-details {
       display: flex;
       flex-direction: column;
       gap: 8px;
       margin-bottom: 12px;
     }
-    
+
     .notification-card-detail {
       display: flex;
       flex-direction: column;
     }
-    
+
     .notification-card-label {
       font-size: 12px;
       color: #666;
       text-transform: uppercase;
       margin-bottom: 4px;
     }
-    
+
     .notification-card-value {
       font-size: 14px;
       color: #333;
     }
-    
+
     .notification-card-actions {
       display: flex;
       gap: 8px;
       justify-content: flex-end;
     }
-    
+
     /* Responsive */
     @media (max-width: 768px) {
       .container { padding: 16px; }
@@ -772,7 +772,7 @@ import {
       .notification-card-actions { justify-content: stretch; }
       .notification-card-actions button { flex: 1; }
     }
-    
+
     @media (max-width: 480px) {
       .notification-card-actions {
         flex-direction: column;
@@ -783,12 +783,12 @@ import {
 })
 export class NotificationsComponent implements OnInit {
   selectedTab = 0;
-  
+
   // Stats
   emailStats: NotificationStats = { totalSent: 0, delivered: 0, failed: 0, pending: 0, deliveryRate: 0 };
   whatsappStats: NotificationStats = { totalSent: 0, delivered: 0, failed: 0, pending: 0, deliveryRate: 0 };
   totalStats: NotificationStats = { totalSent: 0, delivered: 0, failed: 0, pending: 0, deliveryRate: 0 };
-  
+
   // Data
   templates: NotificationTemplate[] = [];
   filteredTemplates: NotificationTemplate[] = [];
@@ -797,15 +797,15 @@ export class NotificationsComponent implements OnInit {
   recentHistory: NotificationHistory[] = [];
   schedules: NotificationSchedule[] = [];
   activeSchedules: NotificationSchedule[] = [];
-  
+
   // Filters
   templateFilter = 'all';
   historyFilter = 'all';
   statusFilter = 'all';
-  
+
   // Table columns
   historyColumns = ['type', 'template', 'recipient', 'status', 'sentAt', 'actions'];
-  
+
   // Config status
   emailConfigStatus: 'connected' | 'disconnected' = 'connected';
   whatsappConfigStatus: 'connected' | 'disconnected' = 'disconnected';
@@ -828,25 +828,25 @@ export class NotificationsComponent implements OnInit {
       this.emailStats = stats;
       this.calculateTotalStats();
     });
-    
+
     this.notificationsService.getStats('whatsapp').subscribe(stats => {
       this.whatsappStats = stats;
       this.calculateTotalStats();
     });
-    
+
     // Load templates
     this.notificationsService.getTemplates().subscribe(templates => {
       this.templates = templates;
       this.filterTemplates();
     });
-    
+
     // Load history
     this.notificationsService.getHistory().subscribe(history => {
       this.history = history;
       this.recentHistory = history.slice(0, 5);
       this.filterHistory();
     });
-    
+
     // Load schedules
     this.notificationsService.getSchedules().subscribe(schedules => {
       this.schedules = schedules;
@@ -860,7 +860,7 @@ export class NotificationsComponent implements OnInit {
       delivered: this.emailStats.delivered + this.whatsappStats.delivered,
       failed: this.emailStats.failed + this.whatsappStats.failed,
       pending: this.emailStats.pending + this.whatsappStats.pending,
-      deliveryRate: Math.round(((this.emailStats.delivered + this.whatsappStats.delivered) / 
+      deliveryRate: Math.round(((this.emailStats.delivered + this.whatsappStats.delivered) /
                                (this.emailStats.totalSent + this.whatsappStats.totalSent)) * 100)
     };
   }
@@ -903,15 +903,15 @@ export class NotificationsComponent implements OnInit {
   // History
   filterHistory() {
     let filtered = this.history;
-    
+
     if (this.historyFilter !== 'all') {
       filtered = filtered.filter(h => h.type === this.historyFilter);
     }
-    
+
     if (this.statusFilter !== 'all') {
       filtered = filtered.filter(h => h.status === this.statusFilter);
     }
-    
+
     this.filteredHistory = filtered;
   }
 

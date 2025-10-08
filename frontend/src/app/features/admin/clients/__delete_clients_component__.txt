@@ -1,0 +1,1 @@
+Deleting all clients.component.* files as they have been replaced by clients-simple.component.*

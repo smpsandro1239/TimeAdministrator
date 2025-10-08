@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -385,7 +386,11 @@ export class ClientsSimpleComponent implements OnInit {
   searchTerm = '';
   statusFilter = 'all';
 
-  constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private dialogConfig: DialogConfigService
+  ) {}
 
   ngOnInit(): void {
     this.applyFilter();
@@ -405,14 +410,10 @@ export class ClientsSimpleComponent implements OnInit {
 
   addClient(): void {
     import('./add-client-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.AddClientDialogComponent, {
-        width: '95vw',
-        maxWidth: '600px',
-        maxHeight: '90vh',
-        disableClose: true,
-        panelClass: 'responsive-dialog'
-      });
-
+      const dialogRef = this.dialog.open(
+        m.AddClientDialogComponent,
+        this.dialogConfig.getResponsiveConfig({ disableClose: true })
+      );
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const newClient = {
@@ -429,14 +430,10 @@ export class ClientsSimpleComponent implements OnInit {
 
   viewClient(client: any): void {
     import('./view-client-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.ViewClientDialogComponent, {
-        width: '95vw',
-        maxWidth: '700px',
-        maxHeight: '90vh',
-        data: { client },
-        panelClass: 'responsive-dialog'
-      });
-
+      const dialogRef = this.dialog.open(
+        m.ViewClientDialogComponent,
+        this.dialogConfig.getResponsiveConfig({ data: { client } })
+      );
       dialogRef.afterClosed().subscribe(result => {
         if (result?.action === 'edit') {
           this.editClient(result.client);
@@ -451,14 +448,10 @@ export class ClientsSimpleComponent implements OnInit {
 
   editClient(client: any): void {
     import('./edit-client-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.EditClientDialogComponent, {
-        width: '95vw',
-        maxWidth: '600px',
-        maxHeight: '90vh',
-        data: { client },
-        panelClass: 'responsive-dialog'
-      });
-
+      const dialogRef = this.dialog.open(
+        m.EditClientDialogComponent,
+        this.dialogConfig.getResponsiveConfig({ data: { client } })
+      );
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           const index = this.clients.findIndex(c => c.id === client.id);
@@ -481,13 +474,10 @@ export class ClientsSimpleComponent implements OnInit {
 
   deleteClient(client: any): void {
     import('./confirm-delete-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.ConfirmDeleteDialogComponent, {
-        width: '95vw',
-        maxWidth: '450px',
-        data: { client },
-        panelClass: 'responsive-dialog'
-      });
-
+      const dialogRef = this.dialog.open(
+        m.ConfirmDeleteDialogComponent,
+        this.dialogConfig.getResponsiveConfig({ data: { client } })
+      );
       dialogRef.afterClosed().subscribe(confirmed => {
         if (confirmed) {
           const index = this.clients.findIndex(c => c.id === client.id);
@@ -506,7 +496,8 @@ export class ClientsSimpleComponent implements OnInit {
       Nome: client.name,
       Email: client.email,
       Telefone: client.phone || 'N/A',
-      Estado: this.getStatusText(client.status)
+      Estado: this.getStatusText(client.status),
+      'Data de Fim': client.subscriptionEnd ? new Date(client.subscriptionEnd).toISOString().split('T')[0] : ''
     }));
 
     const csvContent = this.convertToCSV(csvData);
@@ -541,23 +532,26 @@ export class ClientsSimpleComponent implements OnInit {
     this.snackBar.open('Filtros limpos', 'Fechar', { duration: 1500 });
   }
 
-  getDaysLeft(client: any): number {
-    if (!client.subscriptionEnd) return -999;
-    const today = new Date();
+
+  getDaysLeft(client: any): number | null {
+    if (!client.subscriptionEnd) return null;
     const endDate = new Date(client.subscriptionEnd);
+    if (isNaN(endDate.getTime())) return null;
+    const today = new Date();
     const diffTime = endDate.getTime() - today.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
 
   getDaysLeftText(client: any): string {
     const days = this.getDaysLeft(client);
+    if (days === null) return '--';
     if (days < -365) return '--';
     return days.toString();
   }
 
   getDaysLeftClass(client: any): string {
     const days = this.getDaysLeft(client);
-    if (days < -365) return 'expired';
+    if (days === null || days < -365) return 'expired';
     if (days < 0) return 'expired';
     if (days <= 3) return 'critical';
     if (days <= 15) return 'warning';
@@ -573,20 +567,33 @@ export class ClientsSimpleComponent implements OnInit {
     reader.onload = (e) => {
       try {
         const csv = e.target?.result as string;
-        const lines = csv.split('\n');
-        const headers = lines[0].split(',');
+        const lines = csv.split('\n').filter(l => l.trim().length > 0);
+        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+
+        // Procurar índices das colunas
+        const nameIdx = headers.indexOf('name') !== -1 ? headers.indexOf('name') : headers.indexOf('nome');
+        const emailIdx = headers.indexOf('email');
+        const phoneIdx = headers.indexOf('phone') !== -1 ? headers.indexOf('phone') : headers.indexOf('telefone');
+        const subEndIdx = headers.indexOf('subscriptionend') !== -1 ? headers.indexOf('subscriptionend') : headers.indexOf('data de fim');
 
         let imported = 0;
         for (let i = 1; i < lines.length; i++) {
           const values = lines[i].split(',');
-          if (values.length >= 3 && values[0] && values[1]) {
+          if (values.length >= 2 && values[nameIdx] && values[emailIdx]) {
+            let subscriptionEnd: Date;
+            if (subEndIdx !== -1 && values[subEndIdx]) {
+              const parsed = new Date(values[subEndIdx].trim());
+              subscriptionEnd = isNaN(parsed.getTime()) ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : parsed;
+            } else {
+              subscriptionEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+            }
             const newClient = {
               id: Math.max(...this.clients.map(c => c.id)) + 1,
-              name: values[0].trim(),
-              email: values[1].trim(),
-              phone: values[2]?.trim() || null,
+              name: values[nameIdx]?.trim() || '',
+              email: values[emailIdx]?.trim() || '',
+              phone: phoneIdx !== -1 ? (values[phoneIdx]?.trim() || null) : null,
               status: 'pending',
-              subscriptionEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+              subscriptionEnd,
               notificationPreferences: { email: true, whatsapp: false, telegram: false }
             };
             this.clients.push(newClient);
@@ -606,14 +613,10 @@ export class ClientsSimpleComponent implements OnInit {
 
   manageSubscription(client: any): void {
     import('./manage-subscription-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.ManageSubscriptionDialogComponent, {
-        width: '95vw',
-        maxWidth: '700px',
-        maxHeight: '90vh',
-        data: { client },
-        panelClass: 'responsive-dialog'
-      });
-
+      const dialogRef = this.dialog.open(
+        m.ManageSubscriptionDialogComponent,
+        this.dialogConfig.getResponsiveConfig({ data: { client } })
+      );
       dialogRef.afterClosed().subscribe(result => {
         if (result?.action === 'extended') {
           this.snackBar.open(`Subscrição de ${client.name} estendida: ${result.planText}`, 'Fechar', { duration: 3000 });
@@ -629,14 +632,10 @@ export class ClientsSimpleComponent implements OnInit {
 
   viewPayments(client: any): void {
     import('./view-payments-dialog.component').then(m => {
-      const dialogRef = this.dialog.open(m.ViewPaymentsDialogComponent, {
-        width: '95vw',
-        maxWidth: '900px',
-        maxHeight: '90vh',
-        data: { client },
-        panelClass: 'responsive-dialog'
-      });
-
+      const dialogRef = this.dialog.open(
+        m.ViewPaymentsDialogComponent,
+        this.dialogConfig.getResponsiveConfig({ data: { client } })
+      );
       dialogRef.afterClosed().subscribe(result => {
         if (result?.action === 'approved') {
           this.snackBar.open('Pagamento aprovado com sucesso', 'Fechar', { duration: 2000 });
