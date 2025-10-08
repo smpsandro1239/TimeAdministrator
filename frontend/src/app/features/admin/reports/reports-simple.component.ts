@@ -895,6 +895,8 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   updateCharts(data: ReportData) {
+    console.log('Atualizando gráficos com dados:', data);
+
     // Destruir gráficos existentes de forma segura
     if (this.revenueChart) {
       this.revenueChart.destroy();
@@ -910,31 +912,47 @@ export class ReportsSimpleComponent implements OnInit, AfterViewInit, OnDestroy 
       // Recriar gráficos apenas se os elementos do DOM existirem
       if (this.revenueChartRef?.nativeElement) {
         this.createRevenueChart();
+        console.log('Gráfico de receita criado');
       }
       if (this.monthlyChartRef?.nativeElement) {
         this.createMonthlyChart();
+        console.log('Gráfico mensal criado');
       }
 
       // Atualizar dados apenas se os gráficos foram criados com sucesso
       setTimeout(() => {
-        if (this.revenueChart && data.revenueByPlan) {
+        if (this.revenueChart && data.revenueByPlan && data.revenueByPlan.length > 0) {
           try {
-            this.revenueChart.data.labels = data.revenueByPlan.map(item => item.plan);
-            this.revenueChart.data.datasets[0].data = data.revenueByPlan.map(item => item.revenue);
+            const labels = data.revenueByPlan.map(item => item.plan);
+            const values = data.revenueByPlan.map(item => item.revenue);
+            console.log('Atualizando gráfico de receita:', { labels, values });
+
+            this.revenueChart.data.labels = labels;
+            this.revenueChart.data.datasets[0].data = values;
             this.revenueChart.update('none'); // Evitar animações que podem causar problemas
+            console.log('Gráfico de receita atualizado com sucesso');
           } catch (error) {
             console.warn('Erro ao atualizar gráfico de receita:', error);
           }
+        } else {
+          console.warn('Gráfico de receita não atualizado: chart existe?', !!this.revenueChart, 'dados existem?', !!data.revenueByPlan);
         }
 
-        if (this.monthlyChart && data.monthlyRevenue) {
+        if (this.monthlyChart && data.monthlyRevenue && data.monthlyRevenue.length > 0) {
           try {
-            this.monthlyChart.data.labels = data.monthlyRevenue.map(item => item.month);
-            this.monthlyChart.data.datasets[0].data = data.monthlyRevenue.map(item => item.revenue);
+            const labels = data.monthlyRevenue.map(item => item.month);
+            const values = data.monthlyRevenue.map(item => item.revenue);
+            console.log('Atualizando gráfico mensal:', { labels, values });
+
+            this.monthlyChart.data.labels = labels;
+            this.monthlyChart.data.datasets[0].data = values;
             this.monthlyChart.update('none'); // Evitar animações que podem causar problemas
+            console.log('Gráfico mensal atualizado com sucesso');
           } catch (error) {
             console.warn('Erro ao atualizar gráfico mensal:', error);
           }
+        } else {
+          console.warn('Gráfico mensal não atualizado: chart existe?', !!this.monthlyChart, 'dados existem?', !!data.monthlyRevenue);
         }
       }, 50);
     }, 150);

@@ -55,6 +55,28 @@ import { MatSelectModule } from '@angular/material/select';
         </div>
       </div>
 
+      <!-- Current Subscription Info -->
+      <div class="current-subscription">
+        <div class="info-header">
+          <mat-icon>card_membership</mat-icon>
+          <span>Subscrição Atual</span>
+        </div>
+        <div class="info-content">
+          <div class="info-item">
+            <span class="label">Plano Atual:</span>
+            <span class="value">{{ data.currentPlan }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Valor Atual:</span>
+            <span class="value">{{ data.currentPrice }}€</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Data de Fim:</span>
+            <span class="value">{{ data.endDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+
       <form [formGroup]="renewForm" class="form">
         <div class="form-section">
           <h3 class="section-title">
@@ -182,12 +204,17 @@ import { MatSelectModule } from '@angular/material/select';
       color: white;
     }
 
-    .client-info {
+    .client-info, .current-subscription {
       background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
       border-radius: 12px;
       padding: 20px;
       margin-bottom: 24px;
       border-left: 4px solid #2196F3;
+    }
+
+    .current-subscription {
+      background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+      border-left-color: #9c27b0;
     }
 
     .info-header {
@@ -394,14 +421,22 @@ export class RenewSubscriptionDialogComponent {
     public dialogRef: MatDialogRef<RenewSubscriptionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    const today = new Date();
+    // Usar a data de fim da subscrição atual como data de início da renovação
+    const startDate = data.endDate ? new Date(data.endDate) : new Date();
+
+    // Mapear o plano atual para o formato do form
+    const currentPlan = this.mapPlanToFormValue(data.currentPlan);
+
     this.renewForm = this.fb.group({
-      plan: ['monthly', Validators.required],
-      price: [10.00],
-      startDate: [today, Validators.required],
+      plan: [currentPlan, Validators.required],
+      price: [data.currentPrice || 10.00],
+      startDate: [startDate, Validators.required],
       paymentStatus: ['pending', Validators.required],
       paymentMethod: ['stripe']
     });
+
+    // Atualizar preço baseado no plano selecionado
+    this.updatePrice();
   }
 
   updatePrice(): void {
@@ -416,6 +451,16 @@ export class RenewSubscriptionDialogComponent {
     if (prices[plan]) {
       this.renewForm.patchValue({ price: prices[plan] });
     }
+  }
+
+  private mapPlanToFormValue(plan: string): string {
+    const planMap: { [key: string]: string } = {
+      '1 Mês': 'monthly',
+      '3 Meses': 'quarterly',
+      '6 Meses': 'biannual',
+      '1 Ano': 'annual'
+    };
+    return planMap[plan] || 'monthly';
   }
 
   getCalculatedEndDate(): string {
