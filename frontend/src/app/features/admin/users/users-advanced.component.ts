@@ -253,7 +253,7 @@ export class UserDialogComponent {
     CommonModule, FormsModule, ReactiveFormsModule, MatCardModule, MatButtonModule,
     MatIconModule, MatTableModule, MatPaginatorModule, MatSortModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatDialogModule, MatSnackBarModule, MatSlideToggleModule,
-  MatChipsModule, MatTabsModule, MatMenuModule, MatDividerModule, LayoutComponent, RoleDialogComponent, PermissionDialogComponent
+  MatChipsModule, MatTabsModule, MatMenuModule, MatDividerModule, LayoutComponent
   ],
   template: `
     <app-layout>
