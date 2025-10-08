@@ -9,7 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DialogConfigService } from '../../../shared/services/dialog-config.service';
-import { RenewSubscriptionDialogComponent } from './renew-subscription-dialog.component';
 
 interface SubscriptionData {
   id: string;
@@ -474,24 +473,29 @@ export class SubscriptionDetailsDialogComponent {
   }
 
   renewSubscription() {
-    const dialogRef = this.dialog.open(
-      RenewSubscriptionDialogComponent,
-      this.dialogConfig.getResponsiveConfig({
-        data: {
-          subscriptionId: this.data.id,
-          clientName: this.data.clientName,
-          currentPlan: this.data.plan,
-          currentPrice: this.data.price,
-          endDate: this.data.endDate
-        }
-      })
-    );
+    // Criar objeto cliente baseado nos dados da subscrição
+    const clientData = {
+      id: this.data.clientId,
+      name: this.data.clientName,
+      email: this.data.clientEmail,
+      subscriptionEnd: this.data.endDate,
+      status: this.data.status === 'active' ? 'active' : 'inactive'
+    };
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log('Subscription renewed:', result);
-        this.close();
-      }
+    import('../clients/manage-subscription-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(
+        m.ManageSubscriptionDialogComponent,
+        this.dialogConfig.getResponsiveConfig({
+          data: { client: clientData }
+        })
+      );
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          console.log('Subscription managed:', result);
+          this.close();
+        }
+      });
     });
   }
 
