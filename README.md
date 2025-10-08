@@ -1,12 +1,14 @@
 # TimeAdministrator - Sistema Completo de Gestão de Subscrições
 
 ## 📋 Descrição
+
 Sistema profissional de gestão de subscrições de clientes com interface moderna e responsiva, desenvolvido com Angular 18+, NestJS, MongoDB e Docker. Solução completa para empresas que necessitam de gerir clientes, subscrições, pagamentos e notificações automáticas.
 
 ## 🎯 Funcionalidades Principais
 
 ### 👨‍💼 Painel Administrativo
-- 👥 **Gestão Completa de Clientes**: CRUD avançado com preferências de notificação individuais
+
+- 👥 **Gestão Completa de Clientes**: CRUD avançado com preferências de notificação individuais e campo de notas personalizado
 - 📊 **Dashboard Executivo**: Métricas em tempo real, KPIs e análises avançadas
 - 💳 **Gestão de Subscrições**: Controlo total sobre períodos, renovações e estados
 - 💰 **Sistema de Pagamentos**: Stripe, MBWay e aprovação manual de pagamentos
@@ -16,6 +18,7 @@ Sistema profissional de gestão de subscrições de clientes com interface moder
 - 🔧 **Configurações do Sistema**: Integração com APIs externas e configurações avançadas
 
 ### 👤 Área do Cliente
+
 - 🏠 **Dashboard Pessoal**: Visão geral da conta e subscrição ativa
 - 👤 **Perfil Completo**: Gestão de dados pessoais e preferências
 - 📋 **Estado da Subscrição**: Informações detalhadas e histórico completo
@@ -24,6 +27,7 @@ Sistema profissional de gestão de subscrições de clientes com interface moder
 - 💰 **Pagamentos Seguros**: Integração com Stripe e MBWay
 
 ### 🔧 Funcionalidades Técnicas Avançadas
+
 - 🔐 **Autenticação JWT**: Sistema seguro com refresh tokens
 - 📱 **100% Responsivo**: Interface otimizada para mobile-first
 - 🔔 **Notificações Inteligentes**: Sistema de cron jobs com templates dinâmicos
@@ -35,12 +39,14 @@ Sistema profissional de gestão de subscrições de clientes com interface moder
 ## 🛠️ Stack Tecnológico
 
 ### Frontend
+
 - **Angular 18+** com TypeScript
 - **Angular Material** para componentes UI
 - **RxJS** para programação reativa
 - **Nginx** para servir em produção
 
 ### Backend
+
 - **NestJS** com TypeScript
 - **MongoDB** com Mongoose ODM
 - **JWT** para autenticação
@@ -49,6 +55,7 @@ Sistema profissional de gestão de subscrições de clientes com interface moder
 - **Winston** para logging
 
 ### Integrações Externas
+
 - **Stripe** para pagamentos online seguros
 - **MBWay** para pagamentos móveis via SMS
 - **Nodemailer** para envio de emails profissionais
@@ -58,7 +65,8 @@ Sistema profissional de gestão de subscrições de clientes com interface moder
 - **MongoDB Atlas** para base de dados na cloud
 
 ## 📁 Estrutura do Projeto
-```
+
+```bash
 TimeAdministrator/
 ├── frontend/                    # Aplicação Angular 18+
 │   ├── src/
@@ -108,6 +116,7 @@ TimeAdministrator/
 ## ⚡ Instalação e Configuração
 
 ### Pré-requisitos
+
 - **Docker Desktop** (recomendado para produção)
 - **Node.js 20+** (obrigatório para desenvolvimento)
 - **Git** para clonar o repositório
@@ -115,6 +124,7 @@ TimeAdministrator/
 ### 🚀 Início Rápido
 
 #### Opção 1: Docker (Recomendado)
+
 ```bash
 # Clone o repositório
 git clone https://github.com/smpsandro1239/TimeAdministrator.git
@@ -125,6 +135,7 @@ scripts\start-docker.bat
 ```
 
 #### Opção 2: Desenvolvimento Local
+
 ```bash
 # Clone o repositório
 git clone https://github.com/smpsandro1239/TimeAdministrator.git
@@ -135,18 +146,22 @@ scripts\start-local.bat
 ```
 
 ### 📱 Acesso à Aplicação
-- **Frontend**: http://localhost:4200
-- **Backend API**: http://localhost:3000/api/v1
+
+- **Frontend**: <http://localhost:4200>
+- **Backend API**: <http://localhost:3000/api/v1>
 - **MongoDB**: localhost:27017
 
 ### 🔑 Credenciais Padrão
-- **Email**: admin@timeadministrator.com
+
+- **Email**: <admin@timeadministrator.com>
 - **Password**: admin123
 
 ### 🔧 Desenvolvimento
 
 #### 🚀 Modo Produção (Docker)
+
 Para usar o sistema completo em produção:
+
 ```bash
 # Iniciar sistema completo
 start-system.bat
@@ -159,47 +174,57 @@ reset-system.bat
 ```
 
 #### 💻 Modo Desenvolvimento (Hot-Reload)
+
 Para desenvolvimento ativo com recarga automática:
 
-**Opção 1: Script Automático (Recomendado)**
+### Opção 1: Script Automático (Recomendado)
+
 1. **Terminal 1** - Backend:
+
    ```bash
    cd backend
    npm run start:mock
    ```
 
 2. **Terminal 2** - Frontend:
+
    ```bash
    start-dev.bat
    ```
 
-**Opção 2: Manual**
+### Opção 2: Manual
+
 1. **Parar Docker** (se estiver rodando):
+
    ```bash
    docker-compose down
    ```
 
 2. **Iniciar Backend em modo mock**:
+
    ```bash
    cd backend
    npm run start:mock
    ```
 
 3. **Iniciar Frontend** (nova janela de terminal):
+
    ```bash
    cd frontend
    ng serve --port 4200
    ```
 
-4. **Aceder**: http://localhost:4200
+4. **Aceder**: <http://localhost:4200>
 
-#### 🔥 Vantagens do Modo Desenvolvimento:
+#### 🔥 Vantagens do Modo Desenvolvimento
+
 - ✅ **Hot-reload**: Mudanças aparecem automaticamente
 - ✅ **Desenvolvimento rápido**: Sem rebuild do Docker
 - ✅ **Debug fácil**: Logs diretos no terminal
 - ✅ **Edição em tempo real**: Ideal para desenvolvimento ativo
 
-#### 🐳 Quando usar Docker:
+#### 🐳 Quando usar Docker
+
 - ✅ **Demonstrações**: Sistema completo funcionando
 - ✅ **Testes**: Ambiente idêntico à produção
 - ✅ **Deploy**: Pronto para produção
@@ -208,12 +233,17 @@ Para desenvolvimento ativo com recarga automática:
 
 | Script | Descrição |
 |--------|-----------|
-| `start-docker.bat` | Inicia aplicação com Docker (produção) |
-| `start-local.bat` | Inicia desenvolvimento local |
-| `stop.bat` | Para todos os serviços |
-| `logs.bat` | Mostra logs em tempo real |
-| `reset.bat` | Reset completo (base de dados + containers) |
-| `install.bat` | Instala todas as dependências |
+| `start-docker.bat` | Inicia aplicação completa com Docker (produção) |
+| `start-local.bat` | Inicia desenvolvimento local (frontend + backend + MongoDB) |
+| `start-frontend.bat` | Inicia apenas o frontend Angular |
+| `start-backend.bat` | Inicia apenas o backend NestJS |
+| `start-system.bat` | Menu principal com opções de inicialização |
+| `stop-system.bat` | Para todos os serviços do sistema |
+| `reset-system.bat` | Reset completo do sistema |
+| `scripts/stop.bat` | Para serviços específicos |
+| `scripts/logs.bat` | Mostra logs em tempo real |
+| `scripts/reset.bat` | Reset de containers e dados |
+| `scripts/install.bat` | Instala todas as dependências |
 
 ## ⚙️ Configuração
 
@@ -247,19 +277,20 @@ STRIPE_PUBLISHABLE_KEY=pk_test_your-publishable-key
 ### Configuração de Email
 
 Para Gmail:
+
 1. Ative a autenticação de 2 fatores
 2. Gere uma palavra-passe de aplicação
 3. Use essa palavra-passe no `SMTP_PASS`
 
 ### Configuração do Stripe
 
-1. Crie uma conta em https://stripe.com
+1. Crie uma conta em [Stripe](https://stripe.com)
 2. Obtenha as chaves de API no dashboard
 3. Configure o webhook endpoint: `http://your-domain.com/api/v1/payments/stripe/webhook`
 
 ### Configuração do Twilio
 
-1. Crie uma conta em https://twilio.com
+1. Crie uma conta em [Twilio](https://twilio.com)
 2. Configure o WhatsApp Business API
 3. Obtenha as credenciais no console
 
@@ -293,61 +324,70 @@ docker-compose down -v
 ## 📸 Capturas de Ecrã da Aplicação
 
 ### 🏠 Dashboard Administrativo
-*Painel principal com métricas em tempo real, KPIs e visão geral do negócio*
+
+Painel principal com métricas em tempo real, KPIs e visão geral do negócio
 
 ![Dashboard Administrador](screenshots/dashboard/Dashboard%20Administrador.png)
 
 ---
 
 ### 👥 Gestão de Clientes
-*Interface completa para gestão de clientes com preferências de notificação individuais*
+
+Interface completa para gestão de clientes com preferências de notificação individuais
 
 ![Gestão de Clientes](screenshots/clients/Gestão%20de%20Clientes.png)
 
 #### 👥 Gestão de Utilizadores
-*Sistema avançado de gestão de utilizadores com controlo de permissões*
+
+Sistema avançado de gestão de utilizadores com controlo de permissões
 
 ![Gestão de Utilizadores](screenshots/clients/Gestão%20de%20Utilizadores.png)
 
 ---
 
 ### 💳 Gestão de Subscrições
-*Controlo completo sobre subscrições, renovações e estados de pagamento*
+
+Controlo completo sobre subscrições, renovações e estados de pagamento
 
 ![Gestão de Subscrições](screenshots/subscriptions/Gestão%20de%20Subscrições.png)
 
 ---
 
 ### 💰 Sistema de Pagamentos
-*Gestão avançada de pagamentos com múltiplos métodos (Stripe, MBWay, Transferência)*
+
+Gestão avançada de pagamentos com múltiplos métodos (Stripe, MBWay, Transferência)
 
 ![Gestão de Pagamentos](screenshots/payments/Gestão%20de%20Pagamentos.png)
 
 ---
 
 ### 📧 Sistema de Notificações
-*Gestão completa de notificações multi-canal (Email, WhatsApp, Telegram)*
+
+Gestão completa de notificações multi-canal (Email, WhatsApp, Telegram)
 
 ![Sistema de Notificações](screenshots/notifications/Sistema%20de%20Notificações.png)
 
 ---
 
 ### 📈 Relatórios e Análises
-*Relatórios avançados com métricas de negócio, KPIs e analytics detalhados*
+
+Relatórios avançados com métricas de negócio, KPIs e analytics detalhados
 
 ![Relatórios e Análises Avançadas](screenshots/reports/Relatórios%20e%20Análises%20Avançadas.png)
 
 ---
 
 ### ⚙️ Configurações do Sistema
-*Painel completo de configurações, integrações e parâmetros do sistema*
+
+Painel completo de configurações, integrações e parâmetros do sistema
 
 ![Configurações do Sistema](screenshots/settings/Configurações%20do%20Sistema.png)
 
 ---
 
 ### 📱 Interface Móvel Responsiva
-*Design 100% responsivo otimizado para dispositivos móveis com navegação touch-friendly*
+
+Design 100% responsivo otimizado para dispositivos móveis com navegação touch-friendly
 
 ![Dashboard Móvel](screenshots/mobile/Dashboard%20Administrador-TLM.png)
 
@@ -358,6 +398,7 @@ docker-compose down -v
 ### 📧 Sistema de Notificações Avançado
 
 #### 🔄 Notificações Automáticas
+
 - **Cron Job Diário**: Execução automática às 9:00
 - **15 Dias Antes**: Aviso antecipado de expiração
 - **7 Dias Antes**: Lembrete de renovação
@@ -366,6 +407,7 @@ docker-compose down -v
 - **Relatórios Mensais**: Envio automático de relatórios
 
 #### 📱 Canais de Comunicação
+
 - **Email**: Templates HTML personalizados
 - **WhatsApp**: Mensagens via Twilio API
 - **Telegram**: Bot integrado com notificações instantâneas
@@ -375,12 +417,14 @@ docker-compose down -v
 ### 💰 Sistema de Pagamentos Completo
 
 #### 💳 Métodos de Pagamento
+
 - **Stripe**: Pagamentos online automáticos com cartão
 - **MBWay**: Pagamentos móveis via SMS
 - **Transferência Bancária**: Upload de comprovativo manual
 - **Multibanco**: Referência automática
 
 #### 🔄 Estados de Pagamento
+
 - **Pendente**: Aguarda processamento
 - **Processando**: Em validação
 - **Completo**: Pagamento confirmado
@@ -388,6 +432,7 @@ docker-compose down -v
 - **Cancelado**: Cancelado pelo utilizador
 
 #### ⚙️ Aprovação Administrativa
+
 - **Aprovação Manual**: Validação por administrador
 - **Aprovação Automática**: Via webhooks do Stripe
 - **Histórico Completo**: Registo de todas as ações
@@ -404,6 +449,7 @@ docker-compose down -v
 ### 📊 Métricas e KPIs
 
 #### 📈 Métricas de Negócio
+
 - **MRR (Monthly Recurring Revenue)**: Receita mensal recorrente
 - **ARR (Annual Recurring Revenue)**: Receita anual recorrente
 - **Taxa de Churn**: Percentagem de cancelamentos
@@ -411,6 +457,7 @@ docker-compose down -v
 - **CAC (Customer Acquisition Cost)**: Custo de aquisição
 
 #### 📊 Analytics Avançados
+
 - **Análise de Coorte**: Comportamento por período
 - **Comparação de Períodos**: Mês vs mês, ano vs ano
 - **Previsões**: Projeções baseadas em dados históricos
@@ -419,12 +466,14 @@ docker-compose down -v
 ## 🔒 Segurança e Conformidade
 
 ### 🔐 Autenticação e Autorização
+
 - **JWT com Refresh Tokens**: Sistema seguro com renovação automática
 - **Roles e Permissões**: Controlo granular de acessos
 - **Sessões Seguras**: Gestão avançada de sessões
 - **2FA (Opcional)**: Autenticação de dois fatores
 
 ### 🔒 Proteção de Dados
+
 - **HTTPS Forçado**: Encriptação em todas as comunicações
 - **Rate Limiting**: Proteção contra ataques DDoS
 - **Validação Rigorosa**: Sanitização de todos os inputs
@@ -433,6 +482,7 @@ docker-compose down -v
 - **Audit Logs**: Registo de todas as ações críticas
 
 ### 📜 Conformidade RGPD
+
 - **Consentimento**: Gestão de consentimentos
 - **Direito ao Esquecimento**: Eliminação completa de dados
 - **Portabilidade**: Exportação de dados pessoais
@@ -444,6 +494,7 @@ docker-compose down -v
 
 1. **Configure as variáveis de ambiente**
 2. **Execute o build**
+
 ```bash
 docker-compose up --build -d
 ```
@@ -477,18 +528,21 @@ npm run e2e
 ## 📱 Responsividade Mobile
 
 ### 🎯 Design Mobile-First
+
 - **Interface 100% Responsiva**: Otimizada para todos os dispositivos
 - **Touch-Friendly**: Botões e elementos adequados para touch
 - **Performance Mobile**: Carregamento rápido em redes móveis
 - **Navegação Intuitiva**: Menu adaptativo para mobile
 
 ### 📐 Breakpoints Implementados
+
 - **Desktop**: > 1024px - Layout completo com sidebar
 - **Tablet**: 768px - 1024px - Layout adaptado
 - **Mobile**: < 768px - Layout mobile com navegação inferior
 - **Mobile Small**: < 480px - Layout otimizado para ecrãs pequenos
 
 ### ✨ Funcionalidades Mobile
+
 - **Diálogos Responsivos**: Adaptam-se automaticamente ao tamanho do ecrã
 - **Tabelas Scrolláveis**: Navegação horizontal em tabelas grandes
 - **Formulários Otimizados**: Campos e botões adequados para mobile
@@ -499,6 +553,7 @@ npm run e2e
 ### ✅ Versão 2.0 - Funcionalidades Implementadas
 
 #### 🆕 Novas Funcionalidades
+
 - ✅ **Sistema de Notificações Multi-Canal** (Email, WhatsApp, Telegram)
 - ✅ **Pagamentos MBWay** com SMS automático
 - ✅ **Preferências de Notificação por Cliente**
@@ -509,14 +564,20 @@ npm run e2e
 - ✅ **Sistema de Configurações Avançadas**
 
 #### 🔧 Melhorias Técnicas
+
 - ✅ **Responsividade Mobile Completa**
 - ✅ **Correção de Barras de Rolagem Duplas**
 - ✅ **Otimização de Performance**
 - ✅ **Padronização Visual Completa**
 - ✅ **Navegação Mobile Otimizada**
 - ✅ **Formulários Touch-Friendly**
+- ✅ **Correção de Bugs Críticos** (ViewChild undefined, validações null)
+- ✅ **Campo de Notas em Clientes** (registro e edição)
+- ✅ **Diálogos de Pagamento Responsivos**
+- ✅ **Scripts de Inicialização Avançados** (.bat para diferentes modos)
 
 #### 📊 Analytics e Métricas
+
 - ✅ **KPIs de Negócio** (MRR, ARR, Churn, LTV)
 - ✅ **Análise de Coorte**
 - ✅ **Comparação de Períodos**
@@ -524,6 +585,7 @@ npm run e2e
 - ✅ **Exportação de Relatórios**
 
 ### 🔮 Próximas Funcionalidades (Roadmap)
+
 - 🔄 **API REST Completa** para integrações externas
 - 🔄 **App Mobile Nativa** (React Native)
 - 🔄 **Integração com CRM** (Salesforce, HubSpot)
@@ -547,10 +609,14 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 📞 Suporte
 
-- **Email**: suporte@timeadministrator.com
+- **Email**: <suporte@timeadministrator.com>
 - **GitHub Issues**: Para reportar bugs
 - **Documentação**: Wiki do projeto
 
 ---
 
 **TimeAdministrator** - Gestão de subscrições simplificada e eficiente! 🚀
+
+---
+
+*Desenvolvido com ❤️ por [Kilo Code](https://github.com/smpsandro1239)*
