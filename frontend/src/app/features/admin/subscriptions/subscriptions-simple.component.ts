@@ -39,7 +39,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
             </div>
             <div class="stat-content">
               <div class="stat-value">{{ getExpiryCount('expired') }}</div>
-              <div class="stat-label">Expiradas</div>
+              <div class="stat-label">OFF</div>
             </div>
           </div>
 

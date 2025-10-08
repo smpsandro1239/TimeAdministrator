@@ -140,7 +140,7 @@ import { AuthService } from '../../../services/auth.service';
       </mat-card>
 
       <div class="footer-info">
-        <p>&copy; 2024 TimeAdministrator. Todos os direitos reservados.</p>
+        <p>&copy; 2025 TimeAdministrator. Todos os direitos reservados.</p>
       </div>
     </div>
   `,
