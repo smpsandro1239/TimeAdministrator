@@ -53,7 +53,9 @@ import { MatTableModule } from '@angular/material/table';
           <table mat-table [dataSource]="data.subscriptions" class="details-table">
             <ng-container matColumnDef="client">
               <th mat-header-cell *matHeaderCellDef>Cliente</th>
-              <td mat-cell *matCellDef="let sub">{{ sub.clientName }}</td>
+              <td mat-cell *matCellDef="let sub">
+                <span class="client-link" (click)="onClientClick(sub)">{{ sub.clientName }}</span>
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="plan">
@@ -78,6 +80,16 @@ import { MatTableModule } from '@angular/material/table';
             <ng-container matColumnDef="value">
               <th mat-header-cell *matHeaderCellDef>Valor</th>
               <td mat-cell *matCellDef="let sub" class="value-cell">{{ sub.value }}€</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Ações</th>
+              <td mat-cell *matCellDef="let sub">
+                <button mat-raised-button color="primary" (click)="onRenewClick(sub)">
+                  <mat-icon>refresh</mat-icon>
+                  Renovar
+                </button>
+              </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -174,7 +186,6 @@ import { MatTableModule } from '@angular/material/table';
 
     .content-container {
       max-width: 900px;
-      min-width: 700px;
     }
 
     .summary-card {
@@ -287,6 +298,17 @@ import { MatTableModule } from '@angular/material/table';
       font-size: 15px;
     }
 
+    .client-link {
+      color: #1976d2;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .client-link:hover {
+      text-decoration: underline;
+    }
+
     .subscription-card {
       background: white;
       border-radius: 12px;
@@ -394,7 +416,7 @@ import { MatTableModule } from '@angular/material/table';
   `]
 })
 export class ExpiryPeriodDialogComponent {
-  displayedColumns: string[] = ['client', 'plan', 'endDate', 'daysLeft', 'value'];
+  displayedColumns: string[] = ['client', 'plan', 'endDate', 'daysLeft', 'value', 'actions'];
 
   constructor(
     public dialogRef: MatDialogRef<ExpiryPeriodDialogComponent>,
@@ -461,5 +483,15 @@ export class ExpiryPeriodDialogComponent {
     if (days <= 15) return 'warning';
     if (days <= 30) return 'caution';
     return 'safe';
+  }
+
+  onClientClick(subscription: any): void {
+    // Close dialog and return subscription data for navigation
+    this.dialogRef.close({ action: 'view_client', subscription });
+  }
+
+  onRenewClick(subscription: any): void {
+    // Close dialog and return subscription data for renewal
+    this.dialogRef.close({ action: 'renew', subscription });
   }
 }
