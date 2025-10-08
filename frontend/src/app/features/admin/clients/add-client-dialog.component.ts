@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-add-client-dialog',
@@ -64,6 +64,12 @@ import { FormsModule } from '@angular/forms';
               <mat-option [value]="12">12 meses</mat-option>
             </mat-select>
             <mat-icon matSuffix>calendar_month</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Notas (opcional)</mat-label>
+            <textarea matInput [(ngModel)]="client.notes" placeholder="Informações adicionais sobre o cliente..." rows="3"></textarea>
+            <mat-icon matSuffix>notes</mat-icon>
           </mat-form-field>
         </div>
 
@@ -133,6 +139,7 @@ export class AddClientDialogComponent {
     email: string;
     phone: string;
     status: string;
+    notes?: string;
     notificationPreferences: {
       email: boolean;
       whatsapp: boolean;
@@ -144,6 +151,7 @@ export class AddClientDialogComponent {
     email: '',
     phone: '',
     status: 'active',
+    notes: '',
     notificationPreferences: {
       email: true,
       whatsapp: false,
