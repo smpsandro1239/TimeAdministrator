@@ -1,3 +1,120 @@
+// Dialog component for creating/editing a role
+@Component({
+  selector: 'app-role-dialog',
+  template: `
+    <h2 mat-dialog-title>{{ data.role ? 'Editar Função' : 'Nova Função' }}</h2>
+    <mat-dialog-content>
+      <form [formGroup]="roleForm" class="role-form">
+        <mat-form-field>
+          <mat-label>Nome da Função</mat-label>
+          <input matInput formControlName="name" required>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Descrição</mat-label>
+          <textarea matInput formControlName="description" rows="2"></textarea>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Permissões</mat-label>
+          <mat-select formControlName="permissions" multiple>
+            <mat-option *ngFor="let perm of data.permissions" [value]="perm.name">
+              {{ perm.name }} <span style="color:#888">- {{ perm.description }}</span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button (click)="onCancel()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!roleForm.valid">{{ data.role ? 'Guardar' : 'Criar' }}</button>
+    </mat-dialog-actions>
+  `,
+  styles: [`
+    .role-form { display: flex; flex-direction: column; gap: 16px; min-width: 350px; }
+  `],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule]
+})
+export class RoleDialogComponent {
+  roleForm: FormGroup;
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<RoleDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { role?: Role; permissions: any[] }
+  ) {
+    this.roleForm = this.fb.group({
+      name: [data.role?.name || '', Validators.required],
+      description: [data.role?.description || ''],
+      permissions: [data.role?.permissions || []]
+    });
+  }
+  onCancel() {
+    this.dialogRef.close();
+  }
+  onSave() {
+    if (this.roleForm.valid) {
+      this.dialogRef.close(this.roleForm.value);
+    }
+  }
+}
+
+// Dialog component for creating/editing a permission
+@Component({
+  selector: 'app-permission-dialog',
+  template: `
+    <h2 mat-dialog-title>{{ data.permission ? 'Editar Permissão' : 'Nova Permissão' }}</h2>
+    <mat-dialog-content>
+      <form [formGroup]="permissionForm" class="permission-form">
+        <mat-form-field>
+          <mat-label>Nome da Permissão</mat-label>
+          <input matInput formControlName="name" required placeholder="ex: users.create">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Descrição</mat-label>
+          <textarea matInput formControlName="description" rows="2" required></textarea>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Categoria</mat-label>
+          <input matInput formControlName="category" required placeholder="ex: Utilizadores">
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button (click)="onCancel()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!permissionForm.valid">{{ data.permission ? 'Guardar' : 'Criar' }}</button>
+    </mat-dialog-actions>
+  `,
+  styles: [`
+    .permission-form { display: flex; flex-direction: column; gap: 16px; min-width: 350px; }
+  `],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule]
+})
+export class PermissionDialogComponent {
+  permissionForm: FormGroup;
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<PermissionDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { permission?: Permission }
+  ) {
+    this.permissionForm = this.fb.group({
+      name: [data.permission?.name || '', Validators.required],
+      description: [data.permission?.description || '', Validators.required],
+      category: [data.permission?.category || '', Validators.required]
+    });
+  }
+  onCancel() {
+    this.dialogRef.close();
+  }
+  onSave() {
+    if (this.permissionForm.valid) {
+      this.dialogRef.close(this.permissionForm.value);
+    }
+  }
+}
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,6 +135,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 
 interface User {
   id: string;
@@ -135,7 +253,7 @@ export class UserDialogComponent {
     CommonModule, FormsModule, ReactiveFormsModule, MatCardModule, MatButtonModule,
     MatIconModule, MatTableModule, MatPaginatorModule, MatSortModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatDialogModule, MatSnackBarModule, MatSlideToggleModule,
-    MatChipsModule, MatTabsModule, MatMenuModule, MatDividerModule, LayoutComponent
+  MatChipsModule, MatTabsModule, MatMenuModule, MatDividerModule, LayoutComponent, RoleDialogComponent, PermissionDialogComponent
   ],
   template: `
     <app-layout>
@@ -378,6 +496,10 @@ export class UserDialogComponent {
                       <mat-icon>visibility</mat-icon>
                       Ver Permissões
                     </button>
+                    <button mat-button color="warn" (click)="deleteRole(role)">
+                      <mat-icon>delete</mat-icon>
+                      Eliminar
+                    </button>
                   </mat-card-actions>
                 </mat-card>
               </div>
@@ -555,7 +677,8 @@ export class UsersAdvancedComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialogConfig: DialogConfigService
   ) {
     this.loadMockData();
   }
@@ -711,13 +834,10 @@ export class UsersAdvancedComponent implements OnInit {
   }
 
   createUser() {
-    const dialogRef = this.dialog.open(UserDialogComponent, {
-      width: '95vw',
-      maxWidth: '500px',
-      maxHeight: '90vh',
-      panelClass: 'responsive-dialog',
-      data: {}
-    });
+    const dialogRef = this.dialog.open(
+      UserDialogComponent,
+      this.dialogConfig.getResponsiveConfig({ data: {} })
+    );
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -735,13 +855,10 @@ export class UsersAdvancedComponent implements OnInit {
   }
 
   editUser(user: User) {
-    const dialogRef = this.dialog.open(UserDialogComponent, {
-      width: '95vw',
-      maxWidth: '500px',
-      maxHeight: '90vh',
-      panelClass: 'responsive-dialog',
-      data: { user }
-    });
+    const dialogRef = this.dialog.open(
+      UserDialogComponent,
+      this.dialogConfig.getResponsiveConfig({ data: { user } })
+    );
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -780,22 +897,111 @@ export class UsersAdvancedComponent implements OnInit {
   }
 
   createRole() {
-    console.log('Create new role');
+    const dialogRef = this.dialog.open(RoleDialogComponent, {
+      width: '95vw',
+      maxWidth: '500px',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
+      data: {
+        permissions: this.permissionCategories.flatMap(cat => cat.permissions)
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const newRole: Role = {
+          id: Date.now().toString(),
+          name: result.name,
+          description: result.description,
+          permissions: result.permissions,
+          userCount: 0
+        };
+        this.roles.push(newRole);
+        this.snackBar.open('Função criada com sucesso', 'Fechar', { duration: 3000 });
+      }
+    });
+  }
+
+  deleteRole(role: Role) {
+    if (confirm('Eliminar a função "' + role.name + '"? Esta ação não pode ser desfeita.')) {
+      this.roles = this.roles.filter(r => r.id !== role.id);
+      this.snackBar.open('Função eliminada', 'Fechar', { duration: 3000 });
+    }
   }
 
   editRole(role: Role) {
-    console.log('Edit role:', role);
+    const dialogRef = this.dialog.open(RoleDialogComponent, {
+      width: '95vw',
+      maxWidth: '500px',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
+      data: {
+        role: role,
+        permissions: this.permissionCategories.flatMap(cat => cat.permissions)
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        Object.assign(role, result);
+        this.snackBar.open('Função atualizada com sucesso', 'Fechar', { duration: 3000 });
+      }
+    });
   }
 
   viewRolePermissions(role: Role) {
-    console.log('View role permissions:', role);
+    const permissionsText = role.permissions.length > 0
+      ? role.permissions.join(', ')
+      : 'Nenhuma permissão atribuída';
+
+    alert(`Permissões da função "${role.name}":\n\n${permissionsText}`);
   }
 
   createPermission() {
-    console.log('Create new permission');
+    const dialogRef = this.dialog.open(PermissionDialogComponent, {
+      width: '95vw',
+      maxWidth: '500px',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const newPermission: Permission = {
+          id: Date.now().toString(),
+          name: result.name,
+          description: result.description,
+          category: result.category
+        };
+
+        // Add to the appropriate category or create new one
+        let category = this.permissionCategories.find(cat => cat.name === result.category);
+        if (!category) {
+          category = { name: result.category, permissions: [] };
+          this.permissionCategories.push(category);
+        }
+        category.permissions.push(newPermission);
+
+        this.snackBar.open('Permissão criada com sucesso', 'Fechar', { duration: 3000 });
+      }
+    });
   }
 
   editPermission(permission: Permission) {
-    console.log('Edit permission:', permission);
+    const dialogRef = this.dialog.open(PermissionDialogComponent, {
+      width: '95vw',
+      maxWidth: '500px',
+      maxHeight: '90vh',
+      panelClass: 'responsive-dialog',
+      data: { permission }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        Object.assign(permission, result);
+        this.snackBar.open('Permissão atualizada com sucesso', 'Fechar', { duration: 3000 });
+      }
+    });
   }
 }
