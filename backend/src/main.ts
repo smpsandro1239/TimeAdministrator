@@ -15,12 +15,12 @@ async function bootstrap() {
   // Segurança
   app.use(helmet());
 
-  // CORS: permitir múltiplas origens
-  const allowedOrigins = [
-  'http://localhost:4200',
-  'https://time-administrator-git-main-smpsandro1239s-projects.vercel.app ',
-];
-
+    // CORS: permitir múltiplas origens
+    const allowedOrigins = [
+      'http://localhost:4200',
+      'https://time-administrator.vercel.app',
+      'https://time-administrator-git-main-smpsandro1239s-projects.vercel.app',
+    ];
   app.use(
     cors({
       origin: (origin, callback) => {
