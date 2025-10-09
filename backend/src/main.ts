@@ -24,7 +24,8 @@ async function bootstrap() {
   app.use(
     cors({
       origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        const vercelPreviewRegex = /^https:\/\/.*\.vercel\.app$/;
+        if (!origin || allowedOrigins.includes(origin) || vercelPreviewRegex.test(origin)) {
           callback(null, true);
         } else {
           callback(new Error(`Origem ${origin} não permitida por CORS`));
