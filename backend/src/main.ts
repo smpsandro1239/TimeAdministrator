@@ -17,9 +17,9 @@ async function bootstrap() {
 
   // CORS: permitir múltiplas origens
   const allowedOrigins = [
-    'http://localhost:4200',
-    'https://time-administrator-git-main-smpsandro1239s-projects.vercel.app',
-  ];
+  'http://localhost:4200',
+  'https://time-administrator-git-main-smpsandro1239s-projects.vercel.app ',
+];
 
   app.use(
     cors({
