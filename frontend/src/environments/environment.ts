@@ -1,5 +1,4 @@
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000/api/v1',
-  stripePublishableKey: 'pk_test_your-stripe-publishable-key',
+  production: true,
+  apiUrl: 'https://timeadmin-backend-bdf8b7f88c0f.herokuapp.com/api/v1'
 };
