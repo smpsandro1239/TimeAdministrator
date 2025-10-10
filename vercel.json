@@ -1,7 +1,7 @@
 {
+  "framework": "angular",
   "buildCommand": "cd frontend && npm run build",
   "outputDirectory": "frontend/dist/time-administrator-frontend",
-  "framework": "angular",
   "env": {
     "NODE_ENV": "production"
   }

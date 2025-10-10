@@ -1,26 +1,26 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
-import { Logger } from './common/logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  const logger = app.get(Logger);
+  const logger = new Logger('Bootstrap');
 
   // Segurança
   app.use(helmet());
 
-    // CORS: permitir múltiplas origens
-    const allowedOrigins = [
-      'http://localhost:4200',
-      'https://time-administrator.vercel.app',
-      'https://time-administrator-git-main-smpsandro1239s-projects.vercel.app',
-    ];
+  // CORS: permitir múltiplas origens
+  const allowedOrigins = [
+    'http://localhost:4200',
+    'https://time-administrator.vercel.app',
+    'https://time-administrator-git-main-smpsandro1239s-projects.vercel.app',
+  ];
+
   app.use(
     cors({
       origin: (origin, callback) => {
@@ -38,8 +38,8 @@ async function bootstrap() {
   // Rate limiting
   app.use(
     rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutos
-      max: 100, // máximo 100 requests por IP
+      windowMs: 15 * 60 * 1000,
+      max: 100,
       message: 'Demasiados pedidos deste IP, tente novamente mais tarde.',
     }),
   );
@@ -59,8 +59,8 @@ async function bootstrap() {
   const port = configService.get('PORT', 3000);
   await app.listen(port);
 
-  logger.log(`🚀 Aplicação iniciada na porta ${port}`, 'Bootstrap');
-  logger.log(`📖 Documentação disponível em http://localhost:${port}/api`, 'Bootstrap');
+  logger.log(`🚀 Aplicação iniciada na porta ${port}`);
+  logger.log(`📖 Documentação disponível em https://timeadmin-backend-bdf8b7f88c0f.herokuapp.com/api`);
 }
 
 bootstrap();
