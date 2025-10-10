@@ -15,13 +15,17 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
+    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": false,
+    "strict": true,
     "paths": {
       "@/*": ["src/*"]
     }
   },
+  "include": ["src/**/*"],
   "exclude": [
+    "node_modules",
+    "dist",
     "src/**/*.spec.ts",
     "src/database/memory-db.ts",
     "src/database/seed-memory.ts"
