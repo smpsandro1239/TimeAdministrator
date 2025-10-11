@@ -1,4 +1,4 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -403,7 +403,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
       .metric-card {
         width: 100% !important;
       }
-      
+
       .metric-content {
         flex-direction: row;
         text-align: left;
@@ -518,8 +518,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.authService.currentUser$.pipe(takeUntil(this.destroy$)).subscribe(user => {
       console.log('User no dashboard:', user);
       if (user) {
-        this.isAdmin = user.role === UserRole.ADMIN;
-        this.isClient = user.role === UserRole.CLIENT;
+        this.isAdmin = user.role?.toUpperCase() === UserRole.ADMIN;
+        this.isClient = user.role?.toUpperCase() === UserRole.CLIENT;
         console.log('isAdmin:', this.isAdmin, 'isClient:', this.isClient);
 
         this.loadMetrics();

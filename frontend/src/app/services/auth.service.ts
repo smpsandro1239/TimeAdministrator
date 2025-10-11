@@ -84,12 +84,12 @@ export class AuthService {
   isAdmin(): boolean {
     const user = this.getCurrentUser();
     console.log('isAdmin check - user:', user, 'role:', user?.role);
-    return user?.role === UserRole.ADMIN;
+    return user?.role?.toUpperCase() === UserRole.ADMIN;
   }
 
   isClient(): boolean {
     const user = this.getCurrentUser();
-    return user?.role === UserRole.CLIENT;
+    return user?.role?.toUpperCase() === UserRole.CLIENT;
   }
 
   getToken(): string | null {

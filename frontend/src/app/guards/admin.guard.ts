@@ -14,13 +14,13 @@ export class AdminGuard implements CanActivate {
   canActivate(): boolean {
     console.log('AdminGuard - isAuthenticated:', this.authService.isAuthenticated());
     console.log('AdminGuard - isAdmin:', this.authService.isAdmin());
-    
-    if (this.authService.isAuthenticated()) {
-      return true; // Temporariamente permitir acesso
+
+    if (this.authService.isAuthenticated() && this.authService.isAdmin()) {
+      return true;
     }
-    
-    console.log('AdminGuard - Redirecionando para dashboard');
-    this.router.navigate(['/dashboard']);
+
+    console.log('AdminGuard - Acesso negado ou usuário não é admin');
+    this.router.navigate(['/auth/login']);
     return false;
   }
 }
