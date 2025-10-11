@@ -488,9 +488,9 @@ export class LoginComponent implements OnInit {
           // Redirecionar baseado no role
           setTimeout(() => {
             if (response.user.role === UserRole.ADMIN) {
-              this.router.navigate(['/admin/dashboard']);
+              this.router.navigate(['/dashboard']);
             } else {
-              this.router.navigate(['/client/dashboard']);
+              this.router.navigate(['/dashboard']);
             }
           }, 500);
         },
