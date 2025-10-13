@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, OnInit } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatBadgeModule } from '@angular/material/badge';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
-import { AuthService } from '../../../services/auth.service';
 import { User, UserRole } from '../../../models/user.model';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -132,7 +132,7 @@ import { User, UserRole } from '../../../models/user.model';
       flex-direction: column;
       box-shadow: 4px 0 20px rgba(0,0,0,0.15);
       position: relative;
-      overflow: hidden;
+       overflow-y: auto;
     }
 
     .modern-sidebar::before {
@@ -289,7 +289,7 @@ import { User, UserRole } from '../../../models/user.model';
     .logout-btn mat-icon {
       margin-right: 8px;
     }
-    
+
     @media (max-width: 768px) {
       .modern-sidebar {
         width: 100%;
@@ -300,28 +300,28 @@ import { User, UserRole } from '../../../models/user.model';
         z-index: 1000;
         transition: left 0.3s ease;
       }
-      
+
       .modern-sidebar.open {
         left: 0;
       }
-      
+
       .brand {
         padding: 20px 16px;
       }
-      
+
       .brand-text h1 {
         font-size: 18px;
       }
-      
+
       .nav-menu {
         padding: 0 12px;
       }
-      
+
       .menu-item {
         padding: 12px 14px;
         font-size: 16px;
       }
-      
+
       .sidebar-footer {
         padding: 16px;
       }
