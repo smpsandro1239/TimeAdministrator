@@ -26,7 +26,7 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
           <mat-card>
             <mat-card-content>
               <h2>Clientes</h2>
-              <p>25 clientes registados</p>
+              <p>{{ totalClients }} clientes registados</p>
             </mat-card-content>
           </mat-card>
         </div>
@@ -41,4 +41,6 @@ import { LayoutComponent } from '../../shared/components/layout/layout.component
     mat-card { padding: 16px; }
   `]
 })
-export class DashboardSimpleComponent {}
+export class DashboardSimpleComponent {
+  totalClients = 8;
+}
