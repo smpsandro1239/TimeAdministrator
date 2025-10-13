@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -13,6 +12,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { LayoutComponent } from '../../../shared/components/layout/layout.component';
+import { DialogConfigService } from '../../../shared/services/dialog-config.service';
 
 @Component({
   selector: 'app-payments-simple',
@@ -384,16 +384,7 @@ import { LayoutComponent } from '../../../shared/components/layout/layout.compon
 })
 export class PaymentsSimpleComponent implements OnInit {
   displayedColumns: string[] = ['client', 'reference', 'amount', 'method', 'date', 'status', 'actions'];
-  payments = [
-    { id: 1, clientName: 'João Silva', reference: 'PAY-001', amount: 10.00, method: 'stripe', date: new Date('2024-10-01'), status: 'approved' },
-    { id: 2, clientName: 'Maria Santos', reference: 'PAY-002', amount: 30.00, method: 'transfer', date: new Date('2024-09-28'), status: 'pending' },
-    { id: 3, clientName: 'Pedro Costa', reference: 'PAY-003', amount: 60.00, method: 'cash', date: new Date('2024-09-25'), status: 'rejected' },
-    { id: 4, clientName: 'Ana Ferreira', reference: 'PAY-004', amount: 100.00, method: 'stripe', date: new Date('2024-09-30'), status: 'approved' },
-    { id: 5, clientName: 'Carlos Oliveira', reference: 'PAY-005', amount: 10.00, method: 'transfer', date: new Date('2024-10-02'), status: 'pending' },
-    { id: 6, clientName: 'Luísa Pereira', reference: 'PAY-006', amount: 30.00, method: 'stripe', date: new Date('2024-09-29'), status: 'approved' },
-    { id: 7, clientName: 'Rui Martins', reference: 'PAY-007', amount: 60.00, method: 'cash', date: new Date('2024-09-27'), status: 'pending' },
-    { id: 8, clientName: 'Sofia Rodrigues', reference: 'PAY-008', amount: 10.00, method: 'stripe', date: new Date('2024-10-01'), status: 'approved' }
-  ];
+  payments = [...mockDatabase.payments];
   filteredPayments = [...this.payments];
   searchTerm = '';
   statusFilter = 'all';

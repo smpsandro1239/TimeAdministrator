@@ -544,16 +544,7 @@ import { DialogConfigService } from '../../../shared/services/dialog-config.serv
 })
 export class SubscriptionsSimpleComponent implements OnInit {
   displayedColumns: string[] = ['client', 'plan', 'startDate', 'endDate', 'daysLeft', 'status', 'value', 'actions'];
-  subscriptions = [
-    { id: 1, clientName: 'João Silva', plan: 'annual', startDate: new Date('2024-01-15'), endDate: new Date('2025-01-15'), status: 'active', value: 100.00, manuallyActive: false },
-    { id: 2, clientName: 'Maria Santos', plan: 'monthly', startDate: new Date('2024-09-01'), endDate: new Date('2024-09-30'), status: 'inactive', value: 10.00, manuallyActive: false },
-    { id: 3, clientName: 'Pedro Costa', plan: 'quarterly', startDate: new Date('2024-07-01'), endDate: new Date('2024-09-25'), status: 'active', value: 30.00, manuallyActive: true },
-    { id: 4, clientName: 'Ana Ferreira', plan: 'biannual', startDate: new Date('2024-05-01'), endDate: new Date('2024-11-01'), status: 'active', value: 60.00, manuallyActive: false },
-    { id: 5, clientName: 'Carlos Oliveira', plan: 'monthly', startDate: new Date('2024-09-15'), endDate: new Date('2024-10-15'), status: 'active', value: 10.00, manuallyActive: false },
-    { id: 6, clientName: 'Luísa Pereira', plan: 'annual', startDate: new Date('2024-03-01'), endDate: new Date('2025-03-01'), status: 'active', value: 100.00, manuallyActive: false },
-    { id: 7, clientName: 'Rui Martins', plan: 'quarterly', startDate: new Date('2024-08-01'), endDate: new Date('2024-09-20'), status: 'active', value: 30.00, manuallyActive: true },
-    { id: 8, clientName: 'Sofia Rodrigues', plan: 'monthly', startDate: new Date('2024-09-20'), endDate: new Date('2024-10-20'), status: 'active', value: 10.00, manuallyActive: false }
-  ];
+  subscriptions = [...mockDatabase.subscriptions];
   filteredSubscriptions = [...this.subscriptions];
   searchTerm = '';
   statusFilter = 'all';

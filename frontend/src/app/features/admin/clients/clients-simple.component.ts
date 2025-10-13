@@ -396,16 +396,7 @@ import { DialogConfigService } from '../../../shared/services/dialog-config.serv
 export class ClientsSimpleComponent implements OnInit {
   loading = false;
   displayedColumns: string[] = ['name', 'email', 'phone', 'status', 'notifications', 'daysLeft', 'actions'];
-  clients = [
-    { id: 1, name: 'João Silva', email: 'joao@email.com', phone: '912345678', status: 'active', subscriptionEnd: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: true, telegram: false } },
-    { id: 2, name: 'Maria Santos', email: 'maria@email.com', phone: '923456789', status: 'active', subscriptionEnd: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: false, telegram: true } },
-    { id: 3, name: 'Pedro Costa', email: 'pedro@email.com', phone: null, status: 'inactive', subscriptionEnd: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), notificationPreferences: { email: false, whatsapp: false, telegram: false } },
-    { id: 4, name: 'Ana Ferreira', email: 'ana@email.com', phone: '934567890', status: 'pending', subscriptionEnd: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: true, telegram: true } },
-    { id: 5, name: 'Carlos Oliveira', email: 'carlos@email.com', phone: '945678901', status: 'active', subscriptionEnd: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: false, telegram: false } },
-    { id: 6, name: 'Luísa Pereira', email: 'luisa@email.com', phone: '956789012', status: 'active', subscriptionEnd: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), notificationPreferences: { email: false, whatsapp: true, telegram: true } },
-    { id: 7, name: 'Rui Martins', email: 'rui@email.com', phone: null, status: 'pending', subscriptionEnd: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000), notificationPreferences: { email: true, whatsapp: false, telegram: false } },
-    { id: 8, name: 'Sofia Rodrigues', email: 'sofia@email.com', phone: '967890123', status: 'inactive', subscriptionEnd: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), notificationPreferences: { email: false, whatsapp: false, telegram: true } }
-  ];
+  clients = [...mockDatabase.clients];
   filteredClients = [...this.clients];
   searchTerm = '';
   statusFilter = 'all';
