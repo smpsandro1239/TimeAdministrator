@@ -108,27 +108,6 @@ import { AuthService } from '../../../services/auth.service';
             </button>
           </form>
 
-          <div class="divider">
-            <span>ou</span>
-          </div>
-
-          <div class="demo-accounts" *ngIf="!isProduction">
-            <p class="demo-title">Contas de demonstração:</p>
-            <div class="demo-account" (click)="loginWithDemo('admin')">
-              <mat-icon>admin_panel_settings</mat-icon>
-              <div class="account-info">
-                <span class="account-name">Administrador</span>
-                <span class="account-email">admin&#64;demo.com</span>
-              </div>
-            </div>
-            <div class="demo-account" (click)="loginWithDemo('client')">
-              <mat-icon>person</mat-icon>
-              <div class="account-info">
-                <span class="account-name">Cliente</span>
-                <span class="account-email">cliente&#64;demo.com</span>
-              </div>
-            </div>
-          </div>
         </mat-card-content>
 
         <mat-card-actions class="card-actions">
@@ -418,7 +397,6 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   hidePassword = true;
-  isProduction = false;
 
   constructor(
     private fb: FormBuilder,
@@ -434,11 +412,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Verificar se está em produção
-    this.isProduction = window.location.hostname !== 'localhost' &&
-                       !window.location.hostname.includes('127.0.0.1') &&
-                       !window.location.hostname.includes('vercel.app');
-
+    // Carregar apenas o endereço de email, nunca a password.
     // Verificar se há credenciais salvas
     this.loadSavedCredentials();
   }
@@ -526,13 +500,4 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  loginWithDemo(type: 'admin' | 'client'): void {
-    const demoCredentials = {
-      admin: { email: 'admin@demo.com', password: 'admin123' },
-      client: { email: 'cliente@demo.com', password: 'cliente123' }
-    };
-
-    this.loginForm.patchValue(demoCredentials[type]);
-    this.onSubmit();
-  }
 }
