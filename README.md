@@ -133,8 +133,7 @@ heroku run "cd backend && node dist/database/seed.js" --app timeadmin-backend
 ### ✅ Resultado esperado
 
 ```text
-✅ Admin criado: admin@timeadministrator.com / admin123
-✅ Cliente criado: cliente@teste.com / cliente123
+Seed concluído. As contas existentes não são apagadas nem têm passwords substituídas.
 ```
 
 ### 📌 Nota
@@ -179,11 +178,11 @@ release: cd backend && node dist/database/seed.js
 
 ### Variáveis de Ambiente
 
-Copie `backend/.env.example` para `backend/.env` e configure:
+Copie `backend/.env.example` para `backend/.env`, substitua todos os valores de exemplo e configure os segredos fora do controlo de versões:
 
 ```env
-MONGODB_URI=mongodb://admin:password123@mongodb:27017/timeadministrator?authSource=admin
-JWT_SECRET=your-super-secret-jwt-key
+MONGODB_URI=mongodb://127.0.0.1:27017/timeadministrator
+JWT_SECRET=REPLACE_WITH_A_RANDOM_SECRET_OF_AT_LEAST_32_CHARACTERS
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
