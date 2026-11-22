@@ -1,100 +1,67 @@
+import 'dotenv/config';
 import { connect, connection } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 
-// Schemas simples
-const userSchema = {
-  name: String,
-  email: String,
-  password: String,
-  role: String,
-  isActive: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now }
-};
+async function createDatabase(): Promise<void> {
+  const uri = process.env.MONGODB_URI;
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const clientEmail = process.env.CLIENT_EMAIL;
+  const clientPassword = process.env.CLIENT_PASSWORD;
 
-const clientSchema = {
-  name: String,
-  email: String,
-  phone: String,
-  notes: String,
-  isActive: { type: Boolean, default: true },
-  userId: String,
-  createdAt: { type: Date, default: Date.now }
-};
+  if (!uri || !adminEmail || !adminPassword || adminPassword.length < 12 ||
+      !clientEmail || !clientPassword || clientPassword.length < 12) {
+    throw new Error('Define MONGODB_URI, ADMIN_EMAIL, ADMIN_PASSWORD, CLIENT_EMAIL e CLIENT_PASSWORD; passwords com pelo menos 12 caracteres.');
+  }
 
-async function createDatabase() {
   try {
-    console.log('🌱 Criando base de dados local...');
-    
-    // Conectar ao MongoDB local
-    await connect('mongodb://localhost:27017/timeadministrator');
-    console.log('✅ Conectado ao MongoDB');
-
-    // Criar coleções
+    await connect(uri);
     const db = connection.db;
-    
-    // Limpar coleções existentes
-    await db.collection('users').deleteMany({});
-    await db.collection('clients').deleteMany({});
-    
-    // Criar admin
-    const adminPassword = await bcrypt.hash('admin123', 10);
-    const adminResult = await db.collection('users').insertOne({
-      name: 'Administrador',
-      email: 'admin@timeadministrator.com',
-      password: adminPassword,
-      role: 'ADMIN',
-      isActive: true,
-      createdAt: new Date()
-    });
-    
-    console.log('✅ Admin criado:', adminResult.insertedId);
+    if (!db) throw new Error('Ligação MongoDB sem base de dados selecionada.');
 
-    // Criar cliente
-    const clientPassword = await bcrypt.hash('cliente123', 10);
-    const clientUserResult = await db.collection('users').insertOne({
-      name: 'Cliente Teste',
-      email: 'cliente@teste.com',
-      password: clientPassword,
-      role: 'CLIENT',
-      isActive: true,
-      createdAt: new Date()
-    });
-    
-    console.log('✅ Cliente user criado:', clientUserResult.insertedId);
-
-    // Criar perfil cliente
-    const clientResult = await db.collection('clients').insertOne({
-      name: 'Cliente Teste',
-      email: 'cliente@teste.com',
-      phone: '+351912345678',
-      notes: 'Cliente de teste criado automaticamente',
-      isActive: true,
-      userId: clientUserResult.insertedId.toString(),
-      createdAt: new Date()
-    });
-    
-    console.log('✅ Cliente profile criado:', clientResult.insertedId);
-
-    console.log('');
-    console.log('🎉 Base de dados criada com sucesso!');
-    console.log('');
-    console.log('📋 Credenciais para login:');
-    console.log('   👨💼 Admin: admin@timeadministrator.com / admin123');
-    console.log('   👤 Cliente: cliente@teste.com / cliente123');
-    
-  } catch (error) {
-    console.error('❌ Erro:', error.message);
-    
-    if (error.message.includes('ECONNREFUSED')) {
-      console.log('');
-      console.log('💡 SOLUÇÃO:');
-      console.log('1. Instalar MongoDB: https://www.mongodb.com/try/download/community');
-      console.log('2. Ou usar MongoDB Atlas: https://mongodb.com/atlas');
-      console.log('3. Ou executar: mongod --dbpath ./data');
+    const adminExists = await db.collection('users').findOne({ email: adminEmail });
+    if (!adminExists) {
+      await db.collection('users').insertOne({
+        name: 'Administrador',
+        email: adminEmail,
+        password: await bcrypt.hash(adminPassword, 12),
+        role: 'ADMIN',
+        isActive: true,
+        createdAt: new Date(),
+      });
     }
+
+    let clientUser = await db.collection('users').findOne({ email: clientEmail });
+    if (!clientUser) {
+      const inserted = await db.collection('users').insertOne({
+        name: 'Cliente de demonstração',
+        email: clientEmail,
+        password: await bcrypt.hash(clientPassword, 12),
+        role: 'CLIENT',
+        isActive: true,
+        createdAt: new Date(),
+      });
+      clientUser = await db.collection('users').findOne({ _id: inserted.insertedId });
+    }
+
+    const profileExists = await db.collection('clients').findOne({ email: clientEmail });
+    if (!profileExists && clientUser) {
+      await db.collection('clients').insertOne({
+        name: 'Cliente de demonstração',
+        email: clientEmail,
+        isActive: true,
+        userId: clientUser._id.toString(),
+        createdAt: new Date(),
+      });
+    }
+
+    console.log('Seed concluído sem apagar nem substituir contas existentes.');
+  } catch (error: unknown) {
+    console.error('Falha no seed:', error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
   } finally {
     await connection.close();
   }
 }
 
-createDatabase();
+void createDatabase();
