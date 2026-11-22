@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import * as bcrypt from 'bcryptjs';
 
 const mockDatabase = {
