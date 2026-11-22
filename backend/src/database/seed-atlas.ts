@@ -1,75 +1,80 @@
+import 'dotenv/config';
 import { connect, connection } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 
-async function createAtlasDatabase() {
+async function createAtlasDatabase(): Promise<void> {
+  const uri = process.env.MONGODB_URI;
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const clientEmail = process.env.CLIENT_EMAIL;
+  const clientPassword = process.env.CLIENT_PASSWORD;
+
+  if (!uri || !adminEmail || !adminPassword || !clientEmail || !clientPassword) {
+    throw new Error(
+      'Define MONGODB_URI, ADMIN_EMAIL, ADMIN_PASSWORD, CLIENT_EMAIL e CLIENT_PASSWORD no ambiente.',
+    );
+  }
+
+  if (adminPassword.length < 12 || clientPassword.length < 12) {
+    throw new Error('As passwords iniciais devem ter pelo menos 12 caracteres.');
+  }
+
   try {
-    console.log('🌱 Conectando ao MongoDB Atlas...');
-    
-    // Conectar ao MongoDB Atlas
-    const uri = 'mongodb+srv://timeadmin:TimeAdmin2024@cluster0.mongodb.net/timeadministrator?retryWrites=true&w=majority';
     await connect(uri);
-    console.log('✅ Conectado ao MongoDB Atlas');
-
     const db = connection.db;
-    
-    // Limpar coleções existentes
-    await db.collection('users').deleteMany({});
-    await db.collection('clients').deleteMany({});
-    console.log('🧹 Coleções limpas');
-    
-    // Criar admin
-    const adminPassword = await bcrypt.hash('admin123', 10);
-    const adminResult = await db.collection('users').insertOne({
-      name: 'Administrador',
-      email: 'admin@timeadministrator.com',
-      password: adminPassword,
-      role: 'ADMIN',
-      isActive: true,
-      createdAt: new Date()
-    });
-    
-    console.log('✅ Admin criado');
+    if (!db) throw new Error('Ligação MongoDB sem base de dados selecionada.');
 
-    // Criar cliente
-    const clientPassword = await bcrypt.hash('cliente123', 10);
-    const clientUserResult = await db.collection('users').insertOne({
-      name: 'Cliente Teste',
-      email: 'cliente@teste.com',
-      password: clientPassword,
-      role: 'CLIENT',
-      isActive: true,
-      createdAt: new Date()
-    });
-    
-    console.log('✅ Cliente user criado');
+    const adminExists = await db.collection('users').findOne({ email: adminEmail });
+    if (!adminExists) {
+      await db.collection('users').insertOne({
+        name: 'Administrador',
+        email: adminEmail,
+        password: await bcrypt.hash(adminPassword, 12),
+        role: 'ADMIN',
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      console.log('Conta administrativa inicial criada.');
+    } else {
+      console.log('A conta administrativa já existe; não foi alterada.');
+    }
 
-    // Criar perfil cliente
-    await db.collection('clients').insertOne({
-      name: 'Cliente Teste',
-      email: 'cliente@teste.com',
-      phone: '+351912345678',
-      notes: 'Cliente de teste criado automaticamente',
-      isActive: true,
-      userId: clientUserResult.insertedId.toString(),
-      createdAt: new Date()
-    });
-    
-    console.log('✅ Cliente profile criado');
+    const clientExists = await db.collection('users').findOne({ email: clientEmail });
+    let clientUser = clientExists;
+    if (!clientUser) {
+      const result = await db.collection('users').insertOne({
+        name: 'Cliente de demonstração',
+        email: clientEmail,
+        password: await bcrypt.hash(clientPassword, 12),
+        role: 'CLIENT',
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      clientUser = await db.collection('users').findOne({ _id: result.insertedId });
+    }
 
-    console.log('');
-    console.log('🎉 Base de dados Atlas criada com sucesso!');
-    console.log('');
-    console.log('📋 Credenciais para login:');
-    console.log('   👨💼 Admin: admin@timeadministrator.com / admin123');
-    console.log('   👤 Cliente: cliente@teste.com / cliente123');
-    console.log('');
-    console.log('🌐 Base de dados: MongoDB Atlas (Cloud)');
-    
-  } catch (error) {
-    console.error('❌ Erro:', error.message);
+    if (clientUser) {
+      const profileExists = await db.collection('clients').findOne({ email: clientEmail });
+      if (!profileExists) {
+        await db.collection('clients').insertOne({
+          name: 'Cliente de demonstração',
+          email: clientEmail,
+          isActive: true,
+          userId: clientUser._id.toString(),
+          createdAt: new Date(),
+        });
+      }
+    }
+
+    console.log('Seed concluído sem apagar ou substituir utilizadores existentes.');
+  } catch (error: unknown) {
+    console.error('Falha no seed:', error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
   } finally {
     await connection.close();
   }
 }
 
-createAtlasDatabase();
+void createAtlasDatabase();
