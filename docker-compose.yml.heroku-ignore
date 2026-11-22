@@ -28,7 +28,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      MONGODB_URI: ${MONGODB_URI:?Define MONGODB_URI no ambiente}
+      MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME:?Define MONGO_INITDB_ROOT_USERNAME no ambiente}:${MONGO_INITDB_ROOT_PASSWORD:?Define MONGO_INITDB_ROOT_PASSWORD no ambiente}@mongodb:27017/timeadministrator?authSource=admin
       JWT_SECRET: ${JWT_SECRET:?Define JWT_SECRET no ambiente}
       JWT_EXPIRES_IN: 7d
       FRONTEND_URL: http://localhost:4200
