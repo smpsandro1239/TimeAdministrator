@@ -56,10 +56,6 @@ echo 📱 Frontend: http://localhost:4200
 echo 🔧 Backend:  http://localhost:3000/api/v1
 echo 🗄️  MongoDB:  localhost:27017
 echo.
-echo 🔑 Credenciais de login:
-echo    Email: admin@timeadministrator.com
-echo    Password: admin123
-echo.
 
 REM Abrir browser automaticamente
 start http://localhost:4200
