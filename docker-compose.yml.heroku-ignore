@@ -7,8 +7,8 @@ services:
     container_name: timeadmin-mongodb
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:?Define MONGO_INITDB_ROOT_USERNAME no ambiente}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:?Define MONGO_INITDB_ROOT_PASSWORD no ambiente}
       MONGO_INITDB_DATABASE: timeadministrator
     ports:
       - "27017:27017"
@@ -28,8 +28,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      MONGODB_URI: mongodb://admin:password123@mongodb:27017/timeadministrator?authSource=admin
-      JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
+      MONGODB_URI: ${MONGODB_URI:?Define MONGODB_URI no ambiente}
+      JWT_SECRET: ${JWT_SECRET:?Define JWT_SECRET no ambiente}
       JWT_EXPIRES_IN: 7d
       FRONTEND_URL: http://localhost:4200
       # Configurações de email (ajustar conforme necessário)
