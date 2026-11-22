@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { UsersService } from '../users/users.service';
 import { UserRole } from '../users/enums/user-role.enum';
+import * as bcrypt from 'bcryptjs';
 
 async function createAdmin(): Promise<void> {
   const email = process.env.ADMIN_EMAIL;
@@ -24,7 +25,7 @@ async function createAdmin(): Promise<void> {
     await usersService.create({
       name: 'Administrador',
       email,
-      password,
+      password: await bcrypt.hash(password, 12),
       role: UserRole.ADMIN,
     });
 
