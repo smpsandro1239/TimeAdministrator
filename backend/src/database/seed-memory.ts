@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import * as bcrypt from 'bcryptjs';
 import { AppModule } from '../app.module';
