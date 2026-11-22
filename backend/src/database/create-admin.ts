@@ -2,43 +2,39 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { UsersService } from '../users/users.service';
 import { UserRole } from '../users/enums/user-role.enum';
-import * as bcrypt from 'bcryptjs';
 
-async function createAdmin() {
+async function createAdmin(): Promise<void> {
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
+
+  if (!email || !password || password.length < 12) {
+    throw new Error('Define ADMIN_EMAIL e uma ADMIN_PASSWORD com pelo menos 12 caracteres.');
+  }
+
   const app = await NestFactory.createApplicationContext(AppModule);
-  const usersService = app.get(UsersService);
-
   try {
-    // Remover utilizador admin existente
-    try {
-      const existingAdmin = await usersService.findByEmail('admin@timeadministrator.com');
-      if (existingAdmin) {
-        await usersService.remove((existingAdmin as any)._id);
-        console.log('🗑️ Utilizador admin existente removido');
-      }
-    } catch (error) {
-      console.log('ℹ️ Nenhum utilizador admin existente');
+    const usersService = app.get(UsersService);
+    const existingAdmin = await usersService.findByEmail(email);
+
+    if (existingAdmin) {
+      console.log('A conta indicada já existe; nenhuma password foi alterada.');
+      return;
     }
 
-    // Criar novo utilizador admin
-    const admin = await usersService.create({
+    await usersService.create({
       name: 'Administrador',
-      email: 'admin@timeadministrator.com',
-      password: 'admin123', // Plain password for testing
+      email,
+      password,
       role: UserRole.ADMIN,
-      phone: '+351912345678',
     });
 
-    console.log('✅ Utilizador admin criado com sucesso!');
-    console.log('📧 Email: admin@timeadministrator.com');
-    console.log('🔑 Password: admin123');
-    console.log('👤 ID:', (admin as any)._id);
-
-  } catch (error) {
-    console.error('❌ Erro ao criar admin:', error);
+    console.log('Conta administrativa criada. Não são apresentados dados de autenticação.');
   } finally {
     await app.close();
   }
 }
 
-createAdmin();
+void createAdmin().catch((error: unknown) => {
+  console.error('Falha ao criar administrador:', error instanceof Error ? error.message : String(error));
+  process.exitCode = 1;
+});
