@@ -101,10 +101,9 @@ scripts\start-docker.bat
 - **Backend API**: <http://localhost:3000/api/v1>
 - **MongoDB**: localhost:27017
 
-### 🔑 Credenciais Padrão
+### 🔐 Conta administrativa inicial
 
-- **Email**: `admin@timeadministrator.com`
-- **Password**: `admin123`
+Não existem credenciais padrão no repositório. Define `ADMIN_EMAIL` e `ADMIN_PASSWORD` no ambiente local e executa o processo de provisionamento. Usa uma password única com pelo menos 12 caracteres.
 
 ## 🚀 Deploy e Seed no Heroku (Resumo Rápido)
 
