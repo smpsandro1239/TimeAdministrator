@@ -22,7 +22,6 @@ npm install --force
 echo
 echo "🚀 Iniciando frontend em modo desenvolvimento..."
 echo "📱 Acesse: http://localhost:4200"
-echo "🔑 Login: admin@timeadministrator.com / admin123"
 echo
 
 ng serve --port 4200
