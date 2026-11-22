@@ -5,82 +5,63 @@ import { ClientsService } from '../clients/clients.service';
 import { UserRole } from '../users/enums/user-role.enum';
 import { UsersService } from '../users/users.service';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const clientEmail = process.env.CLIENT_EMAIL;
+  const clientPassword = process.env.CLIENT_PASSWORD;
+
+  if (!adminEmail || !adminPassword || adminPassword.length < 12 ||
+      !clientEmail || !clientPassword || clientPassword.length < 12) {
+    throw new Error('Define ADMIN_EMAIL, ADMIN_PASSWORD, CLIENT_EMAIL e CLIENT_PASSWORD; cada password deve ter pelo menos 12 caracteres.');
+  }
+
   const app = await NestFactory.createApplicationContext(AppModule);
-
-  const usersService = app.get(UsersService);
-  const clientsService = app.get(ClientsService);
-
   try {
-    console.log('🌱 Iniciando seed da base de dados...');
+    const usersService = app.get(UsersService);
+    const clientsService = app.get(ClientsService);
 
-    // Criar utilizador admin
-    const adminExists = await usersService.findByEmail('admin@timeadministrator.com');
+    const adminExists = await usersService.findByEmail(adminEmail);
     if (!adminExists) {
-      const hashedPassword = await bcrypt.hash('admin123', 10);
-      const admin = await usersService.create({
-        name: 'Administrador',
-        email: 'admin@timeadministrator.com',
-        password: hashedPassword,
-        role: UserRole.ADMIN
-      });
-      console.log('✅ Admin criado: admin@timeadministrator.com / admin123');
-    } else {
-      console.log('ℹ️  Admin já existe');
-    }
-
-    // Criar cliente de demonstração
-    const demoClientExists = await usersService.findByEmail('cliente@demo.com');
-    if (!demoClientExists) {
-      const hashedPassword = await bcrypt.hash('cliente123', 10);
-      const demoClientUser = await usersService.create({
-        name: 'Cliente Demo',
-        email: 'cliente@demo.com',
-        password: hashedPassword,
-        role: UserRole.CLIENT
-      });
-
-      // Criar perfil de cliente
-      await clientsService.create({
-        name: 'Cliente Demo',
-        email: 'cliente@demo.com',
-        phone: '+351912345678',
-        notes: 'Cliente de demonstração criado automaticamente',
-        isActive: true,
-        userId: (demoClientUser as any)._id.toString()
-      });
-      console.log('✅ Cliente demo criado: cliente@demo.com / cliente123');
-    } else {
-      console.log('ℹ️  Cliente demo já existe');
-    }
-
-    // Criar admin de demonstração
-    const demoAdminExists = await usersService.findByEmail('admin@demo.com');
-    if (!demoAdminExists) {
-      const hashedPassword = await bcrypt.hash('admin123', 10);
       await usersService.create({
-        name: 'Admin Demo',
-        email: 'admin@demo.com',
-        password: hashedPassword,
-        role: UserRole.ADMIN
+        name: 'Administrador',
+        email: adminEmail,
+        password: await bcrypt.hash(adminPassword, 12),
+        role: UserRole.ADMIN,
       });
-      console.log('✅ Admin demo criado: admin@demo.com / admin123');
+      console.log('Conta administrativa inicial criada.');
     } else {
-      console.log('ℹ️  Admin demo já existe');
+      console.log('A conta administrativa já existe; não foi alterada.');
     }
 
-    console.log('🎉 Seed concluído com sucesso!');
-    console.log('');
-    console.log('📋 Credenciais:');
-    console.log('   Admin: admin@timeadministrator.com / admin123');
-    console.log('   Admin Demo: admin@demo.com / admin123');
-    console.log('   Cliente Demo: cliente@demo.com / cliente123');
+    const clientExists = await usersService.findByEmail(clientEmail);
+    if (!clientExists) {
+      const clientUser = await usersService.create({
+        name: 'Cliente de demonstração',
+        email: clientEmail,
+        password: await bcrypt.hash(clientPassword, 12),
+        role: UserRole.CLIENT,
+      });
 
-  } catch (error) {
-    console.error('❌ Erro no seed:', error);
+      await clientsService.create({
+        name: 'Cliente de demonstração',
+        email: clientEmail,
+        notes: 'Conta de demonstração criada por seed.',
+        isActive: true,
+        userId: (clientUser as any)._id.toString(),
+      });
+      console.log('Conta de demonstração criada.');
+    } else {
+      console.log('A conta de demonstração já existe; não foi alterada.');
+    }
+
+    console.log('Seed concluído sem apagar contas existentes nem revelar credenciais.');
+  } catch (error: unknown) {
+    console.error('Falha no seed:', error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
   } finally {
     await app.close();
   }
 }
 
-bootstrap();
+void bootstrap();
