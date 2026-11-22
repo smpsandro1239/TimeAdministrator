@@ -48,10 +48,6 @@ echo.
 echo 📱 Frontend: http://localhost:4200
 echo 🔧 Backend:  http://localhost:3000/api/v1
 echo.
-echo 🔑 Credenciais:
-echo    Email: admin@timeadministrator.com
-echo    Password: admin123
-echo.
 echo 💡 Mudancas no codigo aparecem automaticamente!
 echo.
 
