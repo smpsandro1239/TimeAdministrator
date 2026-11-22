@@ -50,9 +50,9 @@ Após a instalação, aceda a:
 - **Backend API**: http://localhost:3000/api/v1
 - **MongoDB**: localhost:27017
 
-### 🔑 Credenciais Padrão
-- **Email**: admin@timeadministrator.com
-- **Password**: admin123
+### 🔐 Conta administrativa inicial
+
+Não são publicadas credenciais padrão. Define `ADMIN_EMAIL` e `ADMIN_PASSWORD` no ambiente local antes de executar o processo de provisionamento. Usa uma password única com pelo menos 12 caracteres.
 
 ## ⚙️ Configuração Avançada
 
@@ -62,10 +62,10 @@ Copie `backend/.env.example` para `backend/.env` e configure:
 
 ```env
 # Base de Dados
-MONGODB_URI=mongodb://admin:password123@mongodb:27017/timeadministrator?authSource=admin
+MONGODB_URI=mongodb://127.0.0.1:27017/timeadministrator
 
 # JWT
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
+JWT_SECRET=REPLACE_WITH_A_RANDOM_SECRET_OF_AT_LEAST_32_CHARACTERS
 JWT_EXPIRES_IN=7d
 
 # Email (Gmail)
@@ -204,7 +204,7 @@ scripts\install.bat
 ### Checklist Pós-Instalação
 - [ ] Frontend carrega em http://localhost:4200
 - [ ] Backend responde em http://localhost:3000/api/v1
-- [ ] Login funciona com credenciais padrão
+- [ ] Login funciona com a conta administrativa provisionada no ambiente
 - [ ] Dashboard mostra dados
 - [ ] MongoDB conecta corretamente
 
