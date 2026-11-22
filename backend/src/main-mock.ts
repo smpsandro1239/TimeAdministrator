@@ -20,7 +20,7 @@ async function bootstrap() {
   
   await app.listen(3000);
   console.log('🚀 Backend Mock rodando em http://localhost:3000');
-  console.log('📋 Credenciais: admin@timeadministrator.com / admin123');
+  console.log('Backend mock iniciado. As contas de teste são provisionadas separadamente através do ambiente.');
 }
 
 bootstrap();
