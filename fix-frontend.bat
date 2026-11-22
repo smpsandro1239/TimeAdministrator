@@ -24,7 +24,6 @@ echo.
 echo [4/4] Iniciando frontend...
 echo.
 echo 📱 Frontend: http://localhost:4200
-echo 🔑 Login: admin@timeadministrator.com / admin123
 echo.
 
 ng serve --port 4200
