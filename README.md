@@ -196,9 +196,22 @@ docker-compose logs -f backend
 docker exec -it timeadmin-backend /bin/sh
 ```
 
-## 📸 Capturas de Ecrã
+## 📸 Galeria visual
 
-> Imagens disponíveis em `screenshots/`
+A pasta `screenshots/` contém atualmente apenas o guia de organização e a checklist de captura (`screenshots/README.md`). As imagens finais ainda não estão versionadas; por isso, esta documentação não apresenta capturas fictícias nem ligações para ficheiros inexistentes.
+
+### Capturas prioritárias a publicar
+
+| Área | Captura recomendada | Estado |
+|---|---|---|
+| Dashboard | `screenshots/dashboard/dashboard-main.png` | Pendente |
+| Clientes | `screenshots/clients/clients-list.png` | Pendente |
+| Subscrições | `screenshots/subscriptions/subscriptions-list.png` | Pendente |
+| Pagamentos | `screenshots/payments/payments-overview.png` | Pendente |
+| Relatórios | `screenshots/reports/reports-overview.png` | Pendente |
+| Mobile | `screenshots/mobile/mobile-dashboard.png` | Pendente |
+
+As capturas devem ser feitas com dados demonstrativos, sem informação pessoal ou credenciais reais. Consultar [`screenshots/README.md`](screenshots/README.md) para resoluções, nomenclatura e checklist.
 
 ## 🧪 Testes
 
